@@ -1,0 +1,31 @@
+[private]
+default:
+    @just --list
+
+# Gera os artefatos de distribuição
+build:
+    uv build
+
+# Formata o código e documentacao
+format:
+    uv run ruff format .
+    uv run mdformat .
+
+# Verifica problemas de estilo e qualidade
+lint:
+    uv run ruff check .
+
+# Executa os testes (aceita argumentos extras do pytest)
+test *args:
+    uv run pytest {{args}}
+
+# Remove artefatos de build e cache
+clean:
+    #!/usr/bin/env -S uv run python
+    import shutil, pathlib
+    for pattern in ['dist', '.pytest_cache', '.ruff_cache', '.coverage']:
+        p = pathlib.Path(pattern)
+        shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)
+    for p in pathlib.Path('.').rglob('__pycache__'):
+        shutil.rmtree(p, ignore_errors=True)
+
