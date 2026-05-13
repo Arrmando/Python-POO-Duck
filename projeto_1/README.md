@@ -8,18 +8,19 @@ Veja a documentação completa em [aqui](docs/).
 
 ### Requisitos
 
-Primeiramente, instalar os seguintes programas.
-Compativel com windows e linux.
+Primeiramente, instalar os seguintes programas (compativel com windows e linux).
 
 - [uv](https://docs.astral.sh/uv/)
 - [just](https://github.com/casey/just)
 
 ### Teste manual
 
-Rodar modulos diretamente.
-O modulo pode ter um main() para testes simples.
+Um modulo pode ser executado diretamente para testes simples.
+Coloque a parte executado do código em um `if __name__ == "__main__"` para evitar execuções indesejadas desse código de teste.
+Então rode (subsitua `projeto_1.main` pelo módulo desejado):
 
 ```bash
+# O arquivo 'src/projeto_1/main.py' representa o modulo projeto_1.main
 uv run python -m projeto_1.main
 ```
 
@@ -32,8 +33,7 @@ Comandos uteis para manter a qualidade de codigo durante o desenvolvimento.
 just
 
 # exemplo
-just test  # roda tests
+just test  # roda testes
 just test -k some_test  # -k filtra por nomer. No caso: 'some_test'
-just test -vk some_test  # -v para modo verboso
-just test -svk some_test  # -s para mostrar saidas de print
+just format
 ```
