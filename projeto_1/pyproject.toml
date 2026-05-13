@@ -16,7 +16,8 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=src --cov-report=term-missing"
+addopts = "-vs"
+# addopts = "--cov=src --cov-report=term-missing"
 
 [tool.ruff]
 src = ["src"]
