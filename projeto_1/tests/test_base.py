@@ -1,31 +1,31 @@
 import pytest
 
-from projeto_1.dominio.base import Insumo
+from projeto_1.dominio.base import Insumo, PrecoComposto
 
 
-def test_insumo_nao_pode_ser_instanciado():
+@pytest.mark.parametrize("Classe", (Insumo, PrecoComposto))
+def test_classe_abstrata_nao_pode_ser_instanciada(Classe):
     error_msg = "Can't instantiate abstract class"
     with pytest.raises(TypeError, match=error_msg):
-        Insumo()
+        Classe()
 
 
-def test_subclasse_da_erro_se_nao_implementar_metodos_abstratos():
-    class Fake(Insumo): ...
+def test_subclasse_precisa_implementar_metodos_abstratos():
+    class SubclasseErrada(Insumo): ...
 
     error_msg = "Can't instantiate abstract class"
     with pytest.raises(TypeError, match=error_msg):
-        Fake()
+        SubclasseErrada()
 
-
-def test_subclasse_instanciada_se_implementa_metodos_abstratos():
-    class Fake(Insumo):
+    class SubclasseCerta(Insumo):
         def id(self): ...
         def quantidade(self): ...
         def unidade(self): ...
         def preco_base(self): ...
         def nome(self): ...
+        def calcular_total(self): ...
         def __str__(self) -> str:
             return "minha representacao"
 
-    objeto = Fake()
+    objeto = SubclasseCerta()
     assert str(objeto) == "minha representacao"

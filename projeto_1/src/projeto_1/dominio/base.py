@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
 
 
-class Insumo(ABC):
+class PrecoComposto(ABC):
+    @abstractmethod
+    def calcular_total(self) -> float: ...
+
+
+class Insumo(PrecoComposto):
     @property
     @abstractmethod
     def id(self): ...
