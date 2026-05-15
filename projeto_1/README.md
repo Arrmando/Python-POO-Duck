@@ -26,14 +26,50 @@ uv run python -m projeto_1.main
 
 ### Comandos
 
-Comandos uteis para manter a qualidade de codigo durante o desenvolvimento.
+Comandos úteis para manter a qualidade de código durante o desenvolvimento (requer `just`).
 
 ```bash
-# mostra os comandos disponiveis
+# Mostra os comandos disponíveis
 just
 
-# exemplo
-just test  # roda testes
-just test -k some_test  # -k filtra por nomer. No caso: 'some_test'
-just format
+# Exemplo
+just test             # Roda testes
+just test -k pattern  # Filtra testes por nome
+just format           # Formata o código
+```
+
+### Testes (sem uv/just)
+
+Para configurar o ambiente virtual e rodar os testes utilizando apenas `python` e `venv`:
+
+**1. Configuração do ambiente:**
+
+```bash
+# Criar o ambiente virtual
+python -m venv .venv
+
+# Ativar o ambiente virtual
+source .venv/bin/activate  # (linux/mac)
+.venv\Scripts\activate  # (windows)
+
+# Instalar dependências de desenvolvimento
+pip install --group dev -e .
+```
+
+**2. Execução dos testes:**
+
+```bash
+# Rodar todos os testes
+python -m pytest
+
+# Rodar testes filtrando por nome (ex: apenas testes que contenham 'ingrediente')
+python -m pytest -k ingrediente
+```
+
+**3. Formatação do código:**
+
+```bash
+# Formatar o código
+ruff format .
+ruff check --fix .
 ```
