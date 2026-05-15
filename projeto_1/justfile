@@ -1,3 +1,5 @@
+mod python
+
 [private]
 default:
     @just --list
@@ -29,4 +31,3 @@ clean:
         shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)
     for p in pathlib.Path('.').rglob('__pycache__'):
         shutil.rmtree(p, ignore_errors=True)
-
