@@ -75,3 +75,22 @@ dmypy.json
 
 # pyenv
 .python-version
+_build/
+
+# LaTeX (added from projeto_1)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.toc
+*.synctex.gz
+*.out
+*.blg
+*.bbl
+*.lof
+*.lot
+*.pdf
+
+
+# Project specific (added from projeto_1)
+.ruff_cache/

@@ -1,0 +1,23 @@
+name: Report
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    name: Build PDF
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: _main.tex
+          working_directory: projeto_1/docs/relatorio-parte-2/
+      - name: Rename PDF
+        run: cp projeto_1/docs/relatorio-parte-2/_main.pdf projeto_1/relatorio-parte-2.pdf
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-parte-2
+          path: projeto_1/relatorio-parte-2.pdf
