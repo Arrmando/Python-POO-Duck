@@ -3,10 +3,15 @@ from src.projeto_1.dominio.base import Insumo
 
 class Ingrediente(Insumo):
     def __init__(
-        self, nome: str, unidade: str, quantidade: int, preco_base: float, id: int = None
+        self,
+        nome: str,
+        unidade: str,
+        quantidade: int,
+        preco_base: float,
+        id: int = None,
     ):
         super().__init__()
-        
+
         self._id = id
         self.nome = nome
         self.unidade = unidade
@@ -24,7 +29,8 @@ class Ingrediente(Insumo):
     @nome.setter
     def nome(self, valor: str):
         if not valor or not isinstance(valor, str) or not valor.strip():
-            raise ValueError("O nome do ingrediente deve ser uma string não vazia.")
+            raise ValueError(
+                "O nome do ingrediente deve ser uma string não vazia.")
         self._nome = valor
 
     @property
@@ -34,7 +40,8 @@ class Ingrediente(Insumo):
     @unidade.setter
     def unidade(self, valor: str):
         if not valor or not isinstance(valor, str) or not valor.strip():
-            raise ValueError("A unidade do ingrediente deve ser uma string não vazia.")
+            raise ValueError(
+                "A unidade do ingrediente deve ser uma string não vazia.")
         self._unidade = valor
 
     @property
@@ -66,6 +73,8 @@ class Ingrediente(Insumo):
 
     def __str__(self) -> str:
         return (
-            f"Ingrediente(id={self.id}, nome='{self.nome}', unidade='{self.unidade}', "
-            f"quantidade={self.quantidade}, preco_un={self.preco_base:.2f}, total={self.calcular_total():.2f})"
+            f"Ingrediente(id={self.id}, "
+            f"nome='{self.nome}', unidade='{self.unidade}', "
+            f"quantidade={self.quantidade}, preco_un={self.preco_base:.2f}, "
+            f"total={self.calcular_total():.2f})"
         )
