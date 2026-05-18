@@ -1,5 +1,6 @@
 from projeto_1.dominio.base import Insumo
 
+
 class HomemHora(Insumo):
     # Atributo de classe: compartilhado por todas as instâncias
     _unidade: str = "h"
@@ -29,7 +30,9 @@ class HomemHora(Insumo):
     def nome(self, valor: str):
         if not valor or not isinstance(valor, str) or not valor.strip():
             raise ValueError(
-                "O nome do HomemHora deve ser uma string não vazia contendo o nome do profissional ou função.")
+                "O nome do HomemHora deve ser uma string não vazia "
+                "contendo o nome do profissional ou função."
+            )
         self._nome = valor
 
     @property
@@ -64,4 +67,8 @@ class HomemHora(Insumo):
         return self.preco_base * self.quantidade
 
     def __str__(self) -> str:
-        return f"{self.nome}: {self.quantidade}{self.unidade} x R$ {self.preco_base:.2f}/{self.unidade} = R$ {self.calcular_total():.2f}"
+        return (
+            f"{self.nome}: {self.quantidade}{self.unidade} x "
+            f"R$ {self.preco_base:.2f}/{self.unidade} = "
+            f"R$ {self.calcular_total():.2f}"
+        )

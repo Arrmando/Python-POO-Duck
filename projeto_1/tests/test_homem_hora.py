@@ -1,4 +1,5 @@
 import pytest
+
 from projeto_1.dominio.homem_hora import HomemHora
 
 
@@ -31,7 +32,8 @@ def test_id_is_readonly():
 def test_unidade_is_readonly():
     """RF: unidade é read-only (atribuição levanta AttributeError)."""
     hh = HomemHora("Cozinheiro", 5, 40.0)
-    # A classe HomemHora não possui setter para unidade, logo deve levantar AttributeError
+    # A classe HomemHora não possui setter para unidade,
+    # logo deve levantar AttributeError
     with pytest.raises(AttributeError):
         hh.unidade = "kg"
 
@@ -66,7 +68,7 @@ def test_calcular_total_retorna_valor_correto():
     hh = HomemHora("Faxineiro", 8, 15.0)
     # 8 * 15.0 = 120.0
     assert hh.calcular_total() == 120.0
-    
+
     # Alterando valores e recalculando
     hh.quantidade = 10
     hh.preco_base = 20.0
