@@ -1,0 +1,70 @@
+% --- Pacotes Básicos ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titling}
+
+% --- Configuração de Subtítulo ---
+\pretitle{\begin{center}\LARGE\bfseries}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par
+  \end{center}
+  \begin{center}\large#1
+  \end{center}
+\vskip0.5em}%
+}
+
+% --- Configuração de Autor e Data ---
+\preauthor{\begin{center}\normalsize \begin{tabular}[t]{c}}
+\postauthor{\end{tabular}\par\end{center}}
+\predate{\begin{center}\normalsize}
+\postdate{\end{center}}
+\renewcommand{\maketitlehookc}{%
+  \centering
+  \rule{0.5\textwidth}{0.5pt}
+  \vskip 1.5em
+}
+
+% --- Configuração de Snippets de Código ---
+\lstset{
+language=Python,
+basicstyle=\ttfamily\small,
+keywordstyle=\color{blue},
+stringstyle=\color{red},
+commentstyle=\color{gray},
+numbers=left,
+numberstyle=\tiny\color{gray},
+stepnumber=1,
+numbersep=10pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+rulecolor=\color{black},
+tabsize=4,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+title=\lstname,
+literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+}
+
+% --- Configuração de Página ---
+\geometry{
+a4paper,
+left=30mm,
+top=30mm,
+right=20mm,
+bottom=20mm
+}

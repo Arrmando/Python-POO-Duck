@@ -41,11 +41,14 @@ jobs:
       - run: uv sync --all-groups
       - run: just test
 
+  report:
+    name: Report
+    uses: ./.github/workflows/report.yml
+
   ready:
     name: Ready to Ship
     runs-on: ubuntu-latest
-    needs: [lint, build, test]
+    needs: [lint, build, test, report]
     steps:
       - run: echo "All checks passed"
         working-directory: ${{ github.workspace }}
-

@@ -1,0 +1,96 @@
+\section{Estrutura de classes}
+
+Em relação á primeira versão do trabalho, houve e alteraçoes, foram formalizadas classes
+para tres camadas da aplicação: domínio (modelo), persistência e API.
+
+A camada do domínio é a que havia sido apresentada antes, com poucas alterações.
+A mudança significativa foi a adição de uma nova abstração "PrecoComposto".
+Ela foi adicionada porque algumas classes possuiam um método com propósito em comum:
+calcular o preço do objeto segundo regras específicas.
+
+A camada de persistência introduziu classes para abstrair a forma como um objeto é persistido.
+Foi utilizado o padrão de repositórios, que facilita a extensão gradual da implementação.
+Por exemplo, podemos começar usando uma implementação em memória (puro python) e de forma
+independente implementar a persistencia com o banco de dados, que é mais complexa.
+
+A camada de API utiliza de uma classe base do framework \href{https://docs.litestar.dev/latest/}{litestart}.
+Essas classes são utilizadas para definir os endpoints da API, como listagem, adição ou modificação de recursos. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{uml-camada-modelo.png}
+    \caption{Camada do domínio}
+    \label{fig:uml-modelo}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{uml-camada-persistencia.png}
+    \caption{Camada de persistencia}
+    \label{fig:uml-persistencia}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{uml-camada-api.png}
+    \caption{Camada de API}
+    \label{fig:uml-api}
+\end{figure}
+
+\section{Detalhamento}
+Nessa seção escolhemos uma funcionalidade principal para detalhar: o cadastro de novos Insumos.
+
+\subsection{Funcionamento}
+% Explicação do que o usuário faz, o que ele clica, o que ele digita e
+% qual ação inicia o processo.
+
+% Indicação das classes que participam deste processo.
+
+% Explicação de quais dados são criados, alterados ou salvos durante a
+% execução desta funcionalidade.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{diagrama-atividades.png}
+%     \caption{Diagrama de Atividades}
+%     \label{fig:uml-atividades}
+% \end{figure}
+
+\subsection{Implementação}
+Abaixo apresentamos o código implementado para a classe
+\texttt{Ingrediente}, que é uma das classes principais do sistema.
+
+\lstinputlisting[
+  language=Python,
+  caption={Implementação da classe Ingrediente},
+  label={list:ingrediente}
+]{../../src/projeto_1/dominio/base.py}
+
+\subsection{Saídas do sistema}
+Abaixo apresentamos evidências do funcionamento parcial do sistema
+através de capturas de tela ou logs de execução.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\textwidth]{evidencia.png}
+%     \caption{Print da execução do sistema}
+%     \label{fig:evidencia}
+% \end{figure}
+
+\section{Estrutura do Relatório Final}
+Abaixo listamos as seções previstas para o relatório final e uma
+breve descrição de cada uma.
+
+\begin{itemize}
+  \item \textbf{Introdução:} Descrição do contexto e objetivos do projeto.
+  \item \textbf{Modelagem:} Detalhamento dos diagramas UML e decisões
+    de projeto.
+  \item \textbf{Implementação:} Descrição das tecnologias e classes principais.
+  \item \textbf{Testes:} Metodologia e resultados da validação do sistema.
+  \item \textbf{Conclusão:} Considerações finais sobre o desenvolvimento.
+\end{itemize}
+
+\section{Extensabilidade}
+Uma possibilidade de expansão futura para este projeto é [Descrição
+da Expansão].
+
