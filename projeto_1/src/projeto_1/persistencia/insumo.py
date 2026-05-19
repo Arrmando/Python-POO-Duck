@@ -13,15 +13,23 @@ class RepositorioInsumo(Repositorio):
         # a chave do dicionário será o ID do insumo e o valor será o objeto Insumo
         # correspondente
         self._dados: dict[Any, Insumo] = {}
+        self._proximo_id = 1  # contador para gerar IDs únicos para os insumos
 
     def save(self, entity: Insumo) -> None:
         """Salva um insumo no repositório, usando o ID do insumo como chave no
         dicionário"""
-        if entity.id is None:
-            raise ValueError("Não é possível salvar um insumo sem ID.")
-        if entity.id in self._dados:
-            raise ValueError(f"Já existe um insumo com ID {entity.id}.")
-        self._dados[entity.id] = entity
+        ## Se o usuário tentar passar um objeto que JÁ tem ID, o programa barra
+        if entity.id is not None:
+            raise ValueError(
+                "Não é possível salvar um insumo com ID já definido,"
+                "ele já é gerado pelo repositório."
+            )
+
+        # Define o ID gerado no objeto
+        entity._definir_id_persistencia(self._proximo_id)
+
+        self._dados[self._proximo_id] = entity
+        self._proximo_id += 1  # incrementa o contador para o próximo ID
 
     def update(self, entity: Insumo) -> None:
         """Atualiza um insumo existente no repositório, verificando se o ID do insumo
