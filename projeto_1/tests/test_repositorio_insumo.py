@@ -1,6 +1,6 @@
 import pytest
-from src.projeto_1.dominio.ingrediente import Ingrediente
 from src.projeto_1.dominio.homem_hora import HomemHora
+from src.projeto_1.dominio.ingrediente import Ingrediente
 from src.projeto_1.persistencia.insumo import RepositorioInsumo
 
 
@@ -42,19 +42,21 @@ def test_repositorio_id_incremental_e_crud():
 
 def test_repositorio_erros_de_validacao():
     repo = RepositorioInsumo()
-    
+
     # Erro 1: Tentar salvar um objeto que o usuário já colocou ID manualmente
     ing_com_id_manual = Ingrediente(
         nome="Sal", unidade="un", quantidade=2, preco_base=1.5, id=99
     )
-    with pytest.raises(ValueError, match="Não é possível salvar um insumo com ID já definido"):
+    with pytest.raises(
+        ValueError, match="Não é possível salvar um insumo com ID já definido"
+    ):
         repo.save(ing_com_id_manual)
-        
+
     # Erro 2: Tentar atualizar um objeto que nunca passou pelo save (não tem ID)
     ing_sem_id = Ingrediente(nome="Óleo", unidade="L", quantidade=1, preco_base=7.0)
     with pytest.raises(ValueError, match="Não é possível atualizar um insumo sem ID."):
         repo.update(ing_sem_id)
-        
+
     # Erro 3: Tentar atualizar um ID que tem número, mas não existe no repositório
     ing_fake = Ingrediente(nome="Fermento", unidade="g", quantidade=1, preco_base=3.0)
     ing_fake._definir_id_persistencia(999)
@@ -69,17 +71,19 @@ def test_repositorio_erros_de_validacao():
 
 def test_repositorio_polimorfismo():
     repo = RepositorioInsumo()
-    
+
     # Criamos um de cada tipo
-    ingrediente = Ingrediente(nome="Chocolate", unidade="g", quantidade=500, preco_base=0.05)
-    
+    ingrediente = Ingrediente(
+        nome="Chocolate", unidade="g", quantidade=500, preco_base=0.05
+    )
+
     # AJUSTADO: Removido o argumento 'unidade' para respeitar o construtor do HomemHora
     homem_hora = HomemHora(nome="Confeiteiro", quantidade=4, preco_base=25.0)
-    
+
     # O repositório deve aceitar ambos perfeitamente
     repo.save(ingrediente)
     repo.save(homem_hora)
-    
+
     # Garante que ambos foram salvos e mantêm a ordem incremental
     assert len(repo.list()) == 2
     assert repo.get(1) == ingrediente
