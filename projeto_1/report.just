@@ -6,7 +6,16 @@ default:
 
 # Gera o relatório da Parte 2 em PDF
 parte-2:
-    cd docs/relatorio-parte-2 && pdflatex -interaction=nonstopmode _main.tex && pdflatex -interaction=nonstopmode _main.tex
+    docker run --rm \
+        -v $(pwd):/workdir \
+        -w /workdir/docs/relatorio-parte-2 \
+        ghcr.io/xu-cheng/texlive-debian:latest \
+        pdflatex -interaction=nonstopmode _main.tex
+    docker run --rm \
+        -v $(pwd):/workdir \
+        -w /workdir/docs/relatorio-parte-2 \
+        ghcr.io/xu-cheng/texlive-debian:latest \
+        pdflatex -interaction=nonstopmode _main.tex
     cp docs/relatorio-parte-2/_main.pdf ./relatorio-parte-2.pdf
 
 # Limpa arquivos auxiliares do LaTeX
