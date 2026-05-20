@@ -41,20 +41,27 @@ Essas classes são utilizadas para definir os endpoints da API, como listagem, a
 Nessa seção escolhemos uma funcionalidade principal para detalhar: o cadastro de novos Insumos.
 
 \subsection{Funcionamento}
-% Explicação do que o usuário faz, o que ele clica, o que ele digita e
-% qual ação inicia o processo.
 
-% Indicação das classes que participam deste processo.
+O cadastro de um novo insumo é iniciado pelo usuário ao enviar uma requisição
+\texttt{POST /insumo} com um corpo JSON contendo os campos \texttt{tipo},
+\texttt{nome}, \texttt{quantidade}, \texttt{preco\_base} e, quando aplicável,
+\texttt{unidade}.
 
-% Explicação de quais dados são criados, alterados ou salvos durante a
-% execução desta funcionalidade.
+As classes que participam deste processo são:
 
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=\textwidth]{diagrama-atividades.png}
-%     \caption{Diagrama de Atividades}
-%     \label{fig:uml-atividades}
-% \end{figure}
+\begin{itemize}
+  \item \texttt{InsumoController} — recebe a requisição e coordena o fluxo;
+  \item \texttt{CriarInsumoDTO} — representa e valida a estrutura do corpo da requisição;
+  \item \texttt{Ingrediente} ou \texttt{HomemHora} — instanciada de acordo com o campo \texttt{tipo};
+  \item \texttt{RepositorioInsumo} — responsável por persistir o objeto criado.
+\end{itemize}
+
+Ao receber a requisição, o \texttt{InsumoController} delega a deserialização
+do JSON ao \texttt{CriarInsumoDTO}. Com base no campo \texttt{tipo}, o
+controlador instancia a classe de domínio correspondente e a repassa ao
+\texttt{RepositorioInsumo}, que atribui um identificador único incremental
+ao objeto e o armazena em disco. O objeto criado, incluindo o \texttt{id}
+gerado, é retornado ao cliente com status \texttt{201 Created}.
 
 \subsection{Implementação}
 Abaixo apresentamos o código implementado para a classe
@@ -67,10 +74,9 @@ Abaixo apresentamos o código implementado para a classe
 ]{../../src/projeto_1/dominio/base.py}
 
 \subsection{Saídas do sistema}
-Abaixo apresentamos evidências do funcionamento parcial do sistema
-através de logs de execução.
+Abaixo apresentamos evidências do funcionamento parcial do sistema através de logs de execução.
 
-Os payloads abaixo foram utilizados como entrada nas requisições à API.
+Os payloads abaixo foram utilizados como entrada nas requisições ao endpoint \texttt{/insumos}.
 Os dois primeiros são válidos; os dois últimos ilustram casos de erro.
 
 \lstinputlisting[
