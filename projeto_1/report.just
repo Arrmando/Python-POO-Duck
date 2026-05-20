@@ -10,12 +10,12 @@ parte-2:
         -v $(pwd):/workdir \
         -w /workdir/docs/relatorio-parte-2 \
         ghcr.io/xu-cheng/texlive-debian:latest \
-        pdflatex -interaction=nonstopmode _main.tex
+        lualatex -interaction=nonstopmode _main.tex
     docker run --rm \
         -v $(pwd):/workdir \
         -w /workdir/docs/relatorio-parte-2 \
         ghcr.io/xu-cheng/texlive-debian:latest \
-        pdflatex -interaction=nonstopmode _main.tex
+        lualatex -interaction=nonstopmode _main.tex
     cp docs/relatorio-parte-2/_main.pdf ./relatorio-parte-2.pdf
 
 # Limpa arquivos auxiliares do LaTeX

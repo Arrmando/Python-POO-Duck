@@ -1,0 +1,61 @@
+> curl http://localhost:8000/insumo | jq
+[]
+
+> curl -X POST http://localhost:8000/insumo \
+    -H 'Content-Type: application/json' \
+    -d @post_ingrediente.json | jq
+{
+  "id": 1,
+  "tipo": "Ingrediente",
+  "nome": "Farinha de trigo",
+  "unidade": "kg",
+  "quantidade": 5,
+  "preco_base": 4.5
+}
+
+> curl -X POST http://localhost:8000/insumo \
+    -H 'Content-Type: application/json' \
+    -d @post_homem_hora.json | jq
+{
+  "id": 2,
+  "tipo": "HomemHora",
+  "nome": "Cozinheiro",
+  "unidade": "h",
+  "quantidade": 8,
+  "preco_base": 45.0
+}
+
+> curl http://localhost:8000/insumo | jq
+[
+  {
+    "id": 1,
+    "tipo": "Ingrediente",
+    "nome": "Farinha de trigo",
+    "unidade": "kg",
+    "quantidade": 5,
+    "preco_base": 4.5
+  },
+  {
+    "id": 2,
+    "tipo": "HomemHora",
+    "nome": "Cozinheiro",
+    "unidade": "h",
+    "quantidade": 8,
+    "preco_base": 45.0
+  }
+]
+
+> curl -X POST http://localhost:8000/insumo \
+    -H 'Content-Type: application/json' \
+    -d @post_tipo_invalido.json | jq
+{
+  "detail": "Tipo desconhecido: Material"
+}
+
+> curl -X POST http://localhost:8000/insumo \
+    -H 'Content-Type: application/json' \
+    -d @post_quantidade_invalida.json | jq
+{
+  "detail": "A quantidade do ingrediente deve ser um inteiro não negativo."
+}
+
