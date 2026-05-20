@@ -70,6 +70,33 @@ Abaixo apresentamos o código implementado para a classe
 Abaixo apresentamos evidências do funcionamento parcial do sistema
 através de logs de execução.
 
+Os payloads abaixo foram utilizados como entrada nas requisições à API.
+Os dois primeiros são válidos; os dois últimos ilustram casos de erro.
+
+\lstinputlisting[
+  language={},
+  caption={Payload válido: criação de Ingrediente},
+  label={list:payload-ingrediente}
+]{../../examples/post_ingrediente.json}
+
+\lstinputlisting[
+  language={},
+  caption={Payload válido: criação de HomemHora},
+  label={list:payload-homem-hora}
+]{../../examples/post_homem_hora.json}
+
+\lstinputlisting[
+  language={},
+  caption={Payload inválido: tipo desconhecido},
+  label={list:payload-tipo-invalido}
+]{../../examples/post_tipo_invalido.json}
+
+\lstinputlisting[
+  language={},
+  caption={Payload inválido: quantidade zero},
+  label={list:payload-quantidade-invalida}
+]{../../examples/post_quantidade_invalida.json}
+
 \lstinputlisting[
   language={},
   caption={Saída do cliente: requisições e respostas da API},
