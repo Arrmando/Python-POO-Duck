@@ -1,0 +1,7 @@
+{
+  "tipo": "Material",
+  "nome": "Cimento",
+  "unidade": "saco",
+  "quantidade": 10,
+  "preco_base": 35.00
+}

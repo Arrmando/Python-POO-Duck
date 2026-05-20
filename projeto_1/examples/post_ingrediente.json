@@ -1,0 +1,7 @@
+{
+  "tipo": "Ingrediente",
+  "nome": "Farinha de trigo",
+  "unidade": "kg",
+  "quantidade": 5,
+  "preco_base": 4.50
+}
