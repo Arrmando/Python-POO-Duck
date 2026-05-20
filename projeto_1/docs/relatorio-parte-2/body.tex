@@ -63,6 +63,13 @@ controlador instancia a classe de domínio correspondente e a repassa ao
 ao objeto e o armazena em disco. O objeto criado, incluindo o \texttt{id}
 gerado, é retornado ao cliente com status \texttt{201 Created}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrama-atividade.png}
+    \caption{Diagrama de atividades: cadastro de insumo via \texttt{POST /insumo}}
+    \label{fig:diagrama-atividades}
+\end{figure}
+
 \subsection{Implementação}
 Abaixo apresentamos o código implementado para a classe
 \texttt{Ingrediente}, que é uma das classes principais do sistema.
@@ -129,4 +136,11 @@ breve descrição de cada uma.
 \end{itemize}
 
 \section{Extensabilidade}
-Uma possibilidade de expansão futura para este projeto é a adição de outros tipos de insumos, como por exemplo, equipamentos ou materiais consumíveis. Isso poderia ser feito criando novas classes que herdam de insumo, mas que apresentam características únicas em "receitas" ou "pedidos". O projeto se inspira muito em CPU(composição de preços unitários), que é uma técnica utilizada na construção civil para precificar serviços, portanto, a adição de outros tipos de insumos é uma extensão natural do projeto. Neste exemplo, equipamentos pode representar o uso e o custo de uso de máquinas como liquidificadores, fornos, etc. Já materiais consumíveis podem representar itens que não utilizados para preparar uma receita, mas sim as condições do pedido, como sabão, esponja, embalagens de entrega etc. A implementação dessas novas classes poderia seguir a mesma estrutura de herança e composição já utilizada para os insumos atuais, facilitando a integração com o sistema existente.
+Uma possibilidade de expansão futura para este projeto é a adição de outros tipos de insumos, como por exemplo, equipamentos ou materiais consumíveis.
+Isso poderia ser feito criando novas classes que herdam de insumo, mas que apresentam características únicas em "receitas" ou "pedidos".
+
+O projeto se inspira muito em CPU(composição de preços unitários), que é uma técnica utilizada na construção civil para precificar serviços, portanto, a adição de outros tipos de insumos é uma extensão natural do projeto.
+Neste exemplo, equipamentos pode representar o uso e o custo de uso de máquinas como liquidificadores, fornos, etc.
+
+Já materiais consumíveis podem representar itens que não utilizados para preparar uma receita, mas sim as condições do pedido, como sabão, esponja, embalagens de entrega etc.
+A implementação dessas novas classes poderia seguir a mesma estrutura de herança e composição já utilizada para os insumos atuais, facilitando a integração com o sistema existente.
