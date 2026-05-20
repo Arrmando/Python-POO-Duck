@@ -50,8 +50,8 @@ O cadastro de um novo insumo é iniciado pelo usuário ao enviar uma requisiçã
 As classes que participam deste processo são:
 
 \begin{itemize}
-  \item \texttt{InsumoController} — recebe a requisição e coordena o fluxo;
-  \item \texttt{CriarInsumoDTO} — representa e valida a estrutura do corpo da requisição;
+  \item \texttt{InsumoController} (classe do framework) — recebe a requisição e coordena o fluxo;
+  \item \texttt{CriarInsumoDTO} (classe do framework) — representa e valida a estrutura do corpo da requisição;
   \item \texttt{Ingrediente} ou \texttt{HomemHora} — instanciada de acordo com o campo \texttt{tipo};
   \item \texttt{RepositorioInsumo} — responsável por persistir o objeto criado.
 \end{itemize}
@@ -72,13 +72,19 @@ gerado, é retornado ao cliente com status \texttt{201 Created}.
 
 \subsection{Implementação}
 Abaixo apresentamos o código implementado para a classe
-\texttt{Ingrediente}, que é uma das classes principais do sistema.
+\texttt{Ingrediente} e \texttt{HomemHora} que fazem parte do workflow de criar insumos.
 
 \lstinputlisting[
   language=Python,
   caption={Implementação da classe Ingrediente},
   label={list:ingrediente}
-]{../../src/projeto_1/dominio/base.py}
+]{../../src/projeto_1/dominio/ingrediente.py}
+
+\lstinputlisting[
+  language=Python,
+  caption={Implementação da classe HomemHora},
+  label={list:homem-hora}
+]{../../src/projeto_1/dominio/homem_hora.py}
 
 \subsection{Saídas do sistema}
 Abaixo apresentamos evidências do funcionamento parcial do sistema através de logs de execução.
