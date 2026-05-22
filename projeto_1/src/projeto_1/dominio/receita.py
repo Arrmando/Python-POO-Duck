@@ -1,4 +1,4 @@
-from src.projeto_1.dominio.base import Insumo, Item
+from src.projeto_1.dominio.base import Insumo, Item, PrecoComposto
 
 
 class ItemReceita(Item):
@@ -24,20 +24,18 @@ class ItemReceita(Item):
 
     @property
     def coeficiente(self) -> float:
-        """Implementa a propriedade obrigatória da classe abstrata Item."""
         return self._coeficiente
 
     def calcular_total(self) -> float:
-        """Implementa o método obrigatório de PrecoComposto.
-
-        Calcula o custo do item multiplicando o preço base do insumo pelo
-        coeficiente usado.
-        """
+        """Calcula o custo do item (preço base do insumo * coeficiente)."""
         return self._insumo.preco_base * self._coeficiente
 
 
-class Receita:
-    """Representa uma receita do sistema, agregando múltiplos itens."""
+class Receita(PrecoComposto):
+    """Representa uma receita do sistema, que também possui um preço composto
+
+    baseado na soma dos seus itens.
+    """
 
     def __init__(self, nome: str, instrucoes: str, id: int | None = None) -> None:
         if not nome or not nome.strip():
@@ -62,7 +60,6 @@ class Receita:
 
     @property
     def itens(self) -> list[ItemReceita]:
-        # Retorna uma cópia da lista para proteger contra mutações externas diretas
         return list(self._itens)
 
     def adicionar_item(self, item: ItemReceita) -> None:
@@ -74,10 +71,14 @@ class Receita:
         self._itens.append(item)
 
     def remover_item(self, item: ItemReceita) -> None:
-        """Remove um item da receita.
-
-        Levanta ValueError se o item não existir.
-        """
+        """Remove um item da receita."""
         if item not in self._itens:
             raise ValueError("O item informado não pertence a esta receita.")
         self._itens.remove(item)
+
+    def calcular_total(self) -> float:
+        """Implementa o método obrigatório de PrecoComposto.
+
+        Calcula o preço total da receita somando o valor de cada item.
+        """
+        return sum(item.calcular_total() for item in self._itens)
