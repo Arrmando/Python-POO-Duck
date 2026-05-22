@@ -6,6 +6,12 @@ class PrecoComposto(ABC):
     def calcular_total(self) -> float: ...
 
 
+class Item(PrecoComposto):
+    @property
+    @abstractmethod
+    def coeficiente(self) -> float: ...
+
+
 class Insumo(PrecoComposto):
     @property
     @abstractmethod
