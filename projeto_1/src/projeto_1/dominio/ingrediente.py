@@ -29,8 +29,7 @@ class Ingrediente(Insumo):
     @nome.setter
     def nome(self, valor: str):
         if not valor or not isinstance(valor, str) or not valor.strip():
-            raise ValueError(
-                "O nome do ingrediente deve ser uma string não vazia.")
+            raise ValueError("O nome do ingrediente deve ser uma string não vazia.")
         self._nome = valor
 
     @property
@@ -40,8 +39,7 @@ class Ingrediente(Insumo):
     @unidade.setter
     def unidade(self, valor: str):
         if not valor or not isinstance(valor, str) or not valor.strip():
-            raise ValueError(
-                "A unidade do ingrediente deve ser uma string não vazia.")
+            raise ValueError("A unidade do ingrediente deve ser uma string não vazia.")
         self._unidade = valor
 
     @property

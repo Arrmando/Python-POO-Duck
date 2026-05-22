@@ -10,14 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Compile LaTeX
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v4
         with:
-          root_file: _main.tex
-          working_directory: projeto_1/docs/relatorio-parte-2/
+          root_file: main.tex
+          working_directory: projeto_1/docs/relatorio-final/
+          latexmk_use_lualatex: true
       - name: Rename PDF
-        run: cp projeto_1/docs/relatorio-parte-2/_main.pdf projeto_1/relatorio-parte-2.pdf
+        run: cp projeto_1/docs/relatorio-final/main.pdf projeto_1/relatorio-final.pdf
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: relatorio-parte-2
-          path: projeto_1/relatorio-parte-2.pdf
+          name: relatorio-final
+          path: projeto_1/relatorio-final.pdf

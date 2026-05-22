@@ -1,0 +1,25 @@
+> uv run litestar --app projeto_1.api.app:app run --reload
+Using Litestar app from env: 'projeto_1.api.app:app'
+Starting server process ───────────────────────────────────────────────────────────────────────────────────────────────────────
+┌──────────────────────────────┬──────────────────────┐
+│ Litestar version             │ 2.21.1               │
+│ Debug mode                   │ Disabled             │
+│ Python Debugger on exception │ Disabled             │
+│ CORS                         │ Disabled             │
+│ CSRF                         │ Disabled             │
+│ OpenAPI                      │ Enabled path=/schema │
+│ Compression                  │ Disabled             │
+└──────────────────────────────┴──────────────────────┘
+INFO:     Will watch for changes in these directories: ['/home/pbrochad/projects/ufmg-poo/projeto_1']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [389729] using WatchFiles
+INFO:     Started server process [389732]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:47058 - "GET /insumo HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47066 - "POST /insumo HTTP/1.1" 201 Created
+INFO:     127.0.0.1:47082 - "POST /insumo HTTP/1.1" 201 Created
+INFO:     127.0.0.1:47092 - "GET /insumo HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47096 - "POST /insumo HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:47104 - "POST /insumo HTTP/1.1" 400 Bad Request
+
