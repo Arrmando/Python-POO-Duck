@@ -45,3 +45,23 @@ def test_remover_item_inexistente_levanta_erro():
         ValueError, match="O item informado não pertence a esta receita"
     ):
         receita.remover_item(item_perdido)
+
+
+def test_criar_receita_com_campos_vazios_deve_levantar_erro():
+    # Testando nome vazio e com espaços
+    with pytest.raises(ValueError, match="O nome da receita não pode ser vazio"):
+        Receita(nome="", instrucoes="Misture tudo.")
+
+    with pytest.raises(ValueError, match="O nome da receita não pode ser vazio"):
+        Receita(nome="    ", instrucoes="Misture tudo.")
+
+    # Testando instruções vazias e com espaços
+    with pytest.raises(
+        ValueError, match="O campo de instruções da receita não pode ser vazio."
+    ):
+        Receita(nome="Bolo", instrucoes="")
+
+    with pytest.raises(
+        ValueError, match="O campo de instruções da receita não pode ser vazio."
+    ):
+        Receita(nome="Bolo", instrucoes="    ")

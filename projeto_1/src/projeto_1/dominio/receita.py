@@ -41,9 +41,12 @@ class Receita(PrecoComposto):
         if not nome or not nome.strip():
             raise ValueError("O nome da receita não pode ser vazio.")
 
+        if not instrucoes or not instrucoes.strip():
+            raise ValueError("O campo de instruções da receita não pode ser vazio.")
+
         self._id = id
         self._nome = nome.strip()
-        self._instrucoes = instrucoes
+        self._instrucoes = instrucoes.strip()
         self._itens: list[ItemReceita] = []
 
     @property
