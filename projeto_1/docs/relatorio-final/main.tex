@@ -1,24 +1,202 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first
+% footnote. If that is unneeded, please comment it out.
 
-% Configurações de pacotes e estilo (Configuração)
-\input{_configuration}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
 
-% Informações do documento como título e autor (Metadados)
-\input{_metadata}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% --- Configuração de Snippets de Código ---
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  commentstyle=\color{gray},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  backgroundcolor=\color{white},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  rulecolor=\color{black},
+  tabsize=4,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,
+  title=\lstname,
+}
 
 \begin{document}
+
+\title{Projeto 1: Entrega Final\\
+  {\footnotesize Disciplina de Análise, Projeto e Programação
+  Orientada a Objetos}
+}
+
+\author{
+  \IEEEauthorblockN{Guilherme Augusto}
+  \IEEEauthorblockA{\textit{Engenharia de Sistemas} \\
+    \textit{Universidade Federal de Minas Gerais}\\
+  Belo Horizonte, Brasil}
+  \and
+
+  \IEEEauthorblockN{Pedro Pessoa}
+  \IEEEauthorblockA{\textit{Engenharia de Sistemas} \\
+    \textit{Universidade Federal de Minas Gerais}\\
+  Belo Horizonte, Brasil}
+  \and
+
+  \IEEEauthorblockN{Pedro Armando}
+  \IEEEauthorblockA{\textit{Engenharia de Sistemas} \\
+    \textit{Universidade Federal de Minas Gerais}\\
+  Belo Horizonte, Brasil}
+}
 
 \maketitle
 
 \begin{abstract}
-  Este relatório documenta a entrega final do Projeto 1 para a disciplina
-  de Análise, Projeto e Programação Orientada a Objetos. Ele descreve a
-  modelagem, a implementação e as evidências de funcionamento do sistema.
+  Este relatório documenta a entrega final do Projeto 1 para a
+  disciplina de Análise, Projeto e Programação Orientada a Objetos.
+  Ele descreve a modelagem, a implementação e as evidências de
+  funcionamento do sistema.
 \end{abstract}
 
-\tableofcontents
-\newpage
+\begin{IEEEkeywords}
+  Programação Orientada a Objetos, UML, Python, API, Persistência.
+\end{IEEEkeywords}
 
-\input{body}
+\section{Introdução}
+\label{sec:introducao}
+Este capítulo contextualiza o problema abordado, os objetivos do
+projeto e a importância da aplicação desenvolvida.
+
+\subsection{Contextualização}
+\label{subsec:contextualizacao}
+Breve descrição do domínio do problema e do cenário em que o sistema se insere.
+
+\subsection{Objetivos}
+\label{subsec:objetivos}
+Definição clara do que se pretende alcançar com a implementação do sistema.
+
+\section{Desenvolvimento de Conceito}
+\label{sec:conceito}
+Esta etapa focou na definição do escopo e na compreensão das demandas
+do sistema, servindo como base para as fases subsequentes.
+
+\subsection{Análise de Necessidades}
+Identificação dos problemas a serem resolvidos e das lacunas que o
+sistema visa preencher.
+
+\subsection{Requisitos Funcionais}
+Definição das funcionalidades essenciais que o sistema deve oferecer
+para atender aos usuários.
+
+\section{Metodologia}
+\label{sec:metodologia}
+Este capítulo descreve os processos, ferramentas e padrões
+arquiteturais adotados no desenvolvimento do projeto.
+
+\subsection{Modelagem Orientada a Objetos}
+\label{subsec:modelagem}
+Detalhamento dos diagramas de classes, sequência e estados que
+guiaram a implementação. A notação utilizada baseia-se nos padrões da
+UML (Unified Modeling Language) \cite{b1}. Os diagramas completos das
+camadas de domínio, persistência e API podem ser consultados no
+Apêndice \ref{ap:diagramas}, especificamente nas Figuras
+\ref{fig:ap-uml-modelo}, \ref{fig:ap-uml-persistencia} e \ref{fig:ap-uml-api}.
+
+\subsection{Padrões de Projeto e Arquitetura}
+\label{subsec:padroes}
+Descrição do uso de padrões e da organização das camadas (API,
+Domínio, Persistência). A aplicação adota padrões consagrados para
+orientar sua arquitetura \cite{b2}, garantindo flexibilidade e
+separação de responsabilidades. O fluxo de cadastro de insumos,
+detalhado pelo diagrama de atividades da Figura
+\ref{fig:ap-diagrama-atividades}, ilustra a interação entre essas camadas.
+
+\subsection{Tecnologias e Ferramentas}
+\label{subsec:tecnologias}
+Lista das tecnologias utilizadas (Python, FastAPI, SQLModel, Docker,
+Just, etc.).
+
+\section{Resultados}
+\label{sec:resultados}
+Neste capítulo são apresentados os resultados obtidos, as evidências
+de funcionamento e a análise crítica do sistema entregue.
+
+\subsection{Funcionalidades Implementadas}
+\label{subsec:funcionalidades}
+Resumo das principais funcionalidades entregues e seu comportamento esperado.
+
+\subsection{Verificação e Testes}
+\label{subsec:testes}
+Apresentação dos resultados dos testes automatizados e cobertura de código.
+
+\subsection{Análise Crítica}
+\label{subsec:analise}
+Discussão sobre os desafios encontrados, limitações do sistema e
+possíveis melhorias futuras.
+
+\section*{Agradecimentos}
+Os autores agradecem aos professores e colegas da disciplina de POO
+pelas discussões e orientações valiosas durante o semestre.
+
+\begin{thebibliography}{00}
+  \bibitem{b1} G. Booch, J. Rumbaugh, and I. Jacobson, \textit{The
+  Unified Modeling Language User Guide}. Addison-Wesley, 1999.
+  \bibitem{b2} E. Gamma, R. Helm, R. Johnson, and J. Vlissides,
+  \textit{Design Patterns: Elements of Reusable Object-Oriented
+  Software}. Addison-Wesley, 1994.
+\end{thebibliography}
+
+\newpage
+\appendix
+\section{Diagramas UML}
+\label{ap:diagramas}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-modelo.png}
+  \caption{Diagrama de Classes: Camada de Domínio}
+  \label{fig:ap-uml-modelo}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-persistencia.png}
+  \caption{Diagrama de Classes: Camada de Persistência}
+  \label{fig:ap-uml-persistencia}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-api.png}
+  \caption{Diagrama de Classes: Camada de API}
+  \label{fig:ap-uml-api}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{diagrama-atividade.png}
+  \caption{Diagrama de Atividades: Cadastro de Insumo}
+  \label{fig:ap-diagrama-atividades}
+\end{figure}
 
 \end{document}

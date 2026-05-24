@@ -8,13 +8,19 @@ jobs:
     name: Build PDF
     runs-on: ubuntu-latest
     steps:
+      # Setup
       - uses: actions/checkout@v4
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+      - name: Setup just
+        uses: extractions/setup-just@v2
+
+      # Gera relatorio
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v4
         with:
           root_file: main.tex
           working_directory: projeto_1/docs/relatorio-final/
-          latexmk_use_lualatex: true
       - name: Rename PDF
         run: cp projeto_1/docs/relatorio-final/main.pdf projeto_1/relatorio-final.pdf
       - name: Upload Artifact
@@ -22,3 +28,9 @@ jobs:
         with:
           name: relatorio-final
           path: projeto_1/relatorio-final.pdf
+
+      # Checa numero de paginas
+      - name: Checa requisito de quantidade de paginas (Non-blocking)
+        run: just report check relatorio-final.pdf
+        working-directory: projeto_1
+        continue-on-error: true
