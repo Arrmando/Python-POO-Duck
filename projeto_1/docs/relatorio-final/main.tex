@@ -99,14 +99,21 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
   Programação Orientada a Objetos, UML, Python, API, Persistência.
 \end{IEEEkeywords}
 
-% TODO: Adicionar breve secao de apresentacao: Nessa introcucao
-% introducao, apresentarmos, ... No Desenvolvimento de Conceito, ...
-
 \section{Introdução}
 \label{sec:introducao}
-Este capítulo contextualiza o problema abordado, os objetivos do
-projeto e a importância da aplicação desenvolvida para o setor
-alimentício de pequeno porte.
+Este artigo relata o desenvolvimento de um sistema \textit{backend}
+focado na gestão de custos para microempreendedores do setor alimentício.
+
+O restante deste capítulo contextualiza o problema abordado, os objetivos do
+projeto e a importância da aplicação desenvolvida.
+No Desenvolvimento de Conceito (Seção \ref{sec:conceito}), definimos
+o escopo e os requisitos funcionais.
+Em Metodologia (Seção \ref{sec:metodologia}), detalhamos a
+arquitetura em camadas e a modelagem orientada a objetos,
+seguidos pelos Resultados (Seção \ref{sec:resultados}), que
+apresentam as evidências de funcionamento e a estratégia
+de testes. Por fim, as Conclusões (Seção \ref{sec:conclusoes})
+sintetizam as lições aprendidas e propostas de evolução do sistema.
 
 \subsection{Contextualização}
 \label{subsec:contextualizacao}
@@ -140,10 +147,10 @@ futuro sistema gráfico.
 
 \section{Desenvolvimento de Conceito}
 \label{sec:conceito}
-% TODO: citar system engineering principles and pratice
 Esta etapa focou na definição do escopo e na compreensão das demandas
 do sistema, servindo como base para as fases subsequentes de modelagem
-e implementação.
+e implementação, seguindo princípios fundamentais de engenharia de
+sistemas \cite{b3}.
 
 \subsection{Análise de Necessidades}
 A análise partiu da identificação de gargalos operacionais em pequenos
@@ -247,9 +254,7 @@ para preparar uma receita, mas sim as condições do pedido, como
 sabão, esponja, embalagens de entrega etc.
 
 \subsubsection{Camada de Persistência}
-% TODO: incluir referencia para
-% https://www.geeksforgeeks.org/system-design/repository-design-pattern/
-A modelagem da persistência utiliza o padrão \textit{Repository} para
+A modelagem da persistência utiliza o padrão \textit{Repository} \cite{b4} para
 isolar o domínio do armazenamento. Essa estratégia permitiu o desenvolvimento
 inicial de implementações mais simples, como uma implementação em memória e uma
 persistência por meio de arquivos estruturados \textit{JSON}.
@@ -340,7 +345,7 @@ receitas afetadas, ocorram de forma transparente para o futuro sistema gráfico.
 
 Os testes unitários e funcionais somados a facilidade de testar unidades
 bem isoladas e encapsuladas ajudaram a validar o comportamento esperado
-do sistema durante todo o ciclo de desenovlimento.
+do sistema durante todo o ciclo de desenvolvimento.
 Essa abordagem não apenas assegurou que os requisitos funcionais fossem
 atendidos, mas também serviu como documentação viva do comportamento
 esperado do sistema em cenários de erro e sucesso, garantindo uma
@@ -352,8 +357,8 @@ modularidade facilitou o trabalho paralelo da equipe e a rápida
 depuração de problemas. A escolha pela persistência em arquivos
 \textit{JSON}, embora simplificada, atendeu plenamente à necessidade de
 portabilidade e persistência de dados do protótipo, validando a eficácia
-do padrão \textit{Repository} em isolar a lógica de negócio das decisões
-de infraestrutura.
+do padrão \textit{Repository} \cite{b4} em isolar a lógica de negócio
+das decisões de infraestrutura.
 
 \section{Conclusões}
 \label{sec:conclusoes}
@@ -365,11 +370,13 @@ viável e benéfica mesmo em sistemas de menor escala, proporcionando
 um produto final robusto, testável e pronto para futuras expansões operacionais.
 
 \begin{thebibliography}{00}
-  \bibitem{b1} G. Booch, J. Rumbaugh, and I. Jacobson, \textit{The
-  Unified Modeling Language User Guide}. Addison-Wesley, 1999.
-  \bibitem{b2} E. Gamma, R. Helm, R. Johnson, and J. Vlissides,
-  \textit{Design Patterns: Elements of Reusable Object-Oriented
-  Software}. Addison-Wesley, 1994.
+  \bibitem{b3} A. Kossiakoff, W. N. Sweet, S. J. Seymour, and S. M.
+  Biemer, \textit{Systems Engineering Principles and Practice}.
+  Wiley-Interscience, 2011.
+  \bibitem{b4} GeeksforGeeks, \textit{Repository Design Pattern}.
+  [Online]. Available:
+  https://www.geeksforgeeks.org/system-design/repository-design-pattern/.
+  [Accessed: May 24, 2026].
 \end{thebibliography}
 
 \newpage
