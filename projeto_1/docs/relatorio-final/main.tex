@@ -99,6 +99,9 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
   Programação Orientada a Objetos, UML, Python, API, Persistência.
 \end{IEEEkeywords}
 
+% TODO: Adicionar breve secao de apresentacao: Nessa introcucao
+% introducao, apresentarmos, ... No Desenvolvimento de Conceito, ...
+
 \section{Introdução}
 \label{sec:introducao}
 Este capítulo contextualiza o problema abordado, os objetivos do
@@ -178,30 +181,122 @@ lacunas identificadas na análise de necessidades:
 \section{Metodologia}
 \label{sec:metodologia}
 Este capítulo descreve os processos, ferramentas e padrões
-arquiteturais adotados no desenvolvimento do projeto.
-
-\subsection{Modelagem Orientada a Objetos}
-\label{subsec:modelagem}
-Detalhamento dos diagramas de classes, sequência e estados que
-guiaram a implementação. A notação utilizada baseia-se nos padrões da
-UML (Unified Modeling Language) \cite{b1}. Os diagramas completos das
-camadas de domínio, persistência e API podem ser consultados no
-Apêndice \ref{ap:diagramas}, especificamente nas Figuras
-\ref{fig:ap-uml-modelo}, \ref{fig:ap-uml-persistencia} e \ref{fig:ap-uml-api}.
+arquiteturais adotados no desenvolvimento do projeto, enfatizando a
+aplicação dos princípios de Orientação a Objetos.
 
 \subsection{Padrões de Projeto e Arquitetura}
 \label{subsec:padroes}
-Descrição do uso de padrões e da organização das camadas (API,
-Domínio, Persistência). A aplicação adota padrões consagrados para
-orientar sua arquitetura \cite{b2}, garantindo flexibilidade e
-separação de responsabilidades. O fluxo de cadastro de insumos,
-detalhado pelo diagrama de atividades da Figura
-\ref{fig:ap-diagrama-atividades}, ilustra a interação entre essas camadas.
+A aplicação adota uma arquitetura em camadas para garantir a separação
+de responsabilidades:
+\begin{itemize}
+  \item \textbf{Camada de Domínio:} Contém a lógica de negócio e as
+    regras de cálculo de custos, independente de tecnologias externas.
+  \item \textbf{Camada de Persistência:} Responsável pelo armazenamento
+    duradouro dos dados, abstraindo o acesso ao banco de dados por meio
+    do padrão \textit{Repository}.
+  \item \textbf{Camada de API:} Provê a interface de comunicação
+    externa seguindo o estilo arquitetural REST.
+\end{itemize}
+Em linhas gerais, o cliente (por exemplo, uma futura interface gráfica) faz uma
+requisição para a camada de API, que faz o processamento principal.
+Essa camada utiliza a camada de domínio e a camada de persistência
+para realizar o processamento necessário, seja criar um novo recurso,
+recuperar um recurso existente ou atualizar um recurso.
+Depois do processamento, uma resposta é retornada ao cliente com o
+código de resposta adequado, dependendo se o processamento foi
+concluído com ou sem erros.
+
+O fluxo de cadastro de insumos e a interação entre essas camadas são
+ilustrados pelo diagrama de atividades da Figura
+\ref{fig:ap-diagrama-atividades}.
+
+\subsection{Modelagem Orientada a Objetos}
+\label{subsec:modelagem}
+
+Aqui apresentamos a modelagem por camada.
+Os diagramas de classes completos de cada camada podem ser consultados no
+Apêndice \ref{ap:diagramas}.
+
+\subsubsection{Camada de Domínio}
+No topo da hierarquia de domínio, definiu-se a classe abstrata
+\textit{PrecoComposto}, que estabelece o contrato para o método
+polimórfico \texttt{calcular\_total()}. Esta abstração é central para a
+lógica de CPU, permitindo que o sistema interaja de forma uniforme com
+qualquer entidade que possua um valor monetário associado.
+
+A partir de \textit{PrecoComposto}, derivam-se as classes abstratas
+\textit{Insumo} e \textit{Item}:
+\begin{itemize}
+  \item \textit{Insumo} serve como base para \textit{Ingrediente}
+    (materiais consumíveis) e \textit{HomemHora} (mão de obra).
+  \item \textit{Item} gerencia entidades quantizáveis, sendo
+    especializada em \textit{ItemReceita} e \textit{ItemPedido}.
+\end{itemize}
+Adicionalmente, a classe \textit{Receita} também herda diretamente de
+\textit{PrecoComposto}, consolidando a soma dos custos de seus itens
+integrantes.
+
+Vale notar a possibilidade de expansão futura que a classe abstrata
+\textit{Insumo} facilita.
+Como exemplo, poderiam ser adicionadas no futuro classes para
+equipamentos ou materiais consumíveis.
+\textit{Equipamentos} poderia representar o uso e o custo de uso de máquinas
+como liquidificadores, fornos, etc.
+\textit{Materiais consumíveis} poderia representar itens que não são utilizados
+para preparar uma receita, mas sim as condições do pedido, como
+sabão, esponja, embalagens de entrega etc.
+
+\subsubsection{Camada de Persistência}
+% TODO: incluir referencia para
+% https://www.geeksforgeeks.org/system-design/repository-design-pattern/
+A modelagem da persistência utiliza o padrão \textit{Repository} para
+isolar o domínio do armazenamento. Essa estratégia permitiu o desenvolvimento
+inicial de implementações mais simples, como uma implementação em memória e uma
+persistência por meio de arquivos estruturados \textit{JSON}.
+Por exemplo, a classe \textit{RepositorioInsumo} gerencia as
+operações de salvamento e recuperação em memória, enquanto a
+\textit{RepositorioInsumoDB} implementa a persistência no sistema de
+arquivos com \textit{JSON}.
+
+No futuro, poderiam ser utilizadas implementações mais sofisticadas,
+como um banco relacional \textit{SQLite} ou \textit{PostgreSQL} para garantir
+integridade e eficiência de operações.
+
+\subsubsection{Camada de API}
+A camada de API foi modelada para expor as funcionalidades de domínio via
+REST. As classes dessa camada provêm principalmente do framework
+\textit{Litestar}. Por exemplo, ele incentiva o padrão \textit{Data
+Transfer Object} (DTO) para validar e tipar os dados de entrada (como o
+\textit{CriarInsumoDTO}), desacoplando a estrutura das requisições HTTP
+das classes de negócio.
+
+O \textit{InsumoController} herda da classe \texttt{Controller}, que é provida
+pelo framework.
+Essa classe facilita a definição dos métodos que irão processar
+requisições \texttt{GET}, \texttt{POST}, \texttt{PUT} e \texttt{DELETE} para
+cada tipo de recurso (\textit{Insumo}, \textit{Receita}, etc.).
+Cada subclasse do \texttt{Controller} define um \textit{endpoint}
+para toda classe, e
+cada método irá processar um tipo de
+requisição HTTP diferente. Por exemplo, um \texttt{POST} para \textit{/insumo}
+deve receber os dados necessários para criar um novo \textit{Insumo} e
+utilizar um repositório de insumo para persistir esse novo recurso.
 
 \subsection{Tecnologias e Ferramentas}
 \label{subsec:tecnologias}
-Lista das tecnologias utilizadas (Python, Litestar, SQLModel, Docker,
-Just, etc.).
+Para viabilizar a implementação, foram selecionadas tecnologias que
+favorecem o desenvolvimento rápido e a manutenibilidade:
+\begin{itemize}
+  \item \textbf{Linguagem:} Python 3.13, explorando \textit{type hints}
+    e classes abstratas (\textit{abc}).
+  \item \textbf{Framework de API:} Litestar, escolhido por sua
+    API amigável e suporte nativo a validação de dados.
+  \item \textbf{Persistência:} SQLite para armazenamento local,
+    facilitando a portabilidade do projeto.
+  \item \textbf{Automação e Qualidade:} \textit{Just} para orquestração
+    de comandos, \textit{Pytest} para testes automatizados com cobertura
+    de código e \textit{Ruff} para \textit{linting} e formatação.
+\end{itemize}
 
 \section{Resultados}
 \label{sec:resultados}
