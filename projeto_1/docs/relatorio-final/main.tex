@@ -329,25 +329,40 @@ favorecem o desenvolvimento rápido e a manutenibilidade:
 
 \section{Resultados}
 \label{sec:resultados}
-Neste capítulo são apresentados os resultados obtidos, as evidências
-de funcionamento e a análise crítica do sistema entregue.
+A implementação final do sistema concretiza a proposta de automatizar a
+gestão de custos para pequenos empreendedores do setor alimentício. O
+backend desenvolvido é capaz de gerenciar o ciclo completo de insumos ---
+abrangendo tanto ingredientes físicos quanto o custo de mão de obra ---
+e consolidá-los em receitas com cálculos precisos de CPU. A interface
+REST, construída sobre o framework \textit{Litestar}, permite que
+operações complexas, como a atualização em cascata de preços em todas as
+receitas afetadas, ocorram de forma transparente para o futuro sistema gráfico.
 
-\subsection{Funcionalidades Implementadas}
-\label{subsec:funcionalidades}
-Resumo das principais funcionalidades entregues e seu comportamento esperado.
+Os testes unitários e funcionais somados a facilidade de testar unidades
+bem isoladas e encapsuladas ajudaram a validar o comportamento esperado
+do sistema durante todo o ciclo de desenovlimento.
+Essa abordagem não apenas assegurou que os requisitos funcionais fossem
+atendidos, mas também serviu como documentação viva do comportamento
+esperado do sistema em cenários de erro e sucesso, garantindo uma
+cobertura de código abrangente.
 
-\subsection{Verificação e Testes}
-\label{subsec:testes}
-Apresentação dos resultados dos testes automatizados e cobertura de código.
+A separação clara em camadas de Domínio, Persistência e API mostrou-se
+um dos pontos mais fortes do projeto. Durante a execução, essa
+modularidade facilitou o trabalho paralelo da equipe e a rápida
+depuração de problemas. A escolha pela persistência em arquivos
+\textit{JSON}, embora simplificada, atendeu plenamente à necessidade de
+portabilidade e persistência de dados do protótipo, validando a eficácia
+do padrão \textit{Repository} em isolar a lógica de negócio das decisões
+de infraestrutura.
 
-\subsection{Análise Crítica}
-\label{subsec:analise}
-Discussão sobre os desafios encontrados, limitações do sistema e
-possíveis melhorias futuras.
-
-\section*{Agradecimentos}
-Os autores agradecem aos professores e colegas da disciplina de POO
-pelas discussões e orientações valiosas durante o semestre.
+\section{Conclusões}
+\label{sec:conclusoes}
+O tempo investido nas etapas iniciais de modelagem UML e planejamento de
+arquitetura resultou em um desenvolvimento mais fluido e previsível.
+Os resultados obtidos demonstram que a aplicação rigorosa de princípios
+de Orientação a Objetos, como herança e polimorfismo, é perfeitamente
+viável e benéfica mesmo em sistemas de menor escala, proporcionando
+um produto final robusto, testável e pronto para futuras expansões operacionais.
 
 \begin{thebibliography}{00}
   \bibitem{b1} G. Booch, J. Rumbaugh, and I. Jacobson, \textit{The
