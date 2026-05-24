@@ -102,28 +102,78 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \section{Introdução}
 \label{sec:introducao}
 Este capítulo contextualiza o problema abordado, os objetivos do
-projeto e a importância da aplicação desenvolvida.
+projeto e a importância da aplicação desenvolvida para o setor
+alimentício de pequeno porte.
 
 \subsection{Contextualização}
 \label{subsec:contextualizacao}
-Breve descrição do domínio do problema e do cenário em que o sistema se insere.
+Pequenos empreendimentos no setor de alimentação por encomenda, como
+lojas de doces e salgados para festas, enfrentam desafios significativos
+na gestão operacional e financeira. Frequentemente, a operação é
+dividida entre o cozinheiro, responsável pela criação de receitas e
+definição de insumos, e o auxiliar, encarregado da recepção de pedidos
+e da compra de ingredientes.
+
+Atualmente, sistemas completos ERP (Enterprise resource planning) são
+desnecessariamente complexos para tal propósito, o que leva adoção de
+processo manuais de organização de compras e elaboração de orçamentos,
+que são ineficientes e propenso a erros.
+
+A ausência de uma ferramenta adequada dificulta a
+agilidade na resposta aos clientes e impede que o cozinheiro avalie com
+precisão o impacto financeiro de novas receitas ou modificações em
+preparos existentes, comprometendo a rentabilidade do negócio.
 
 \subsection{Objetivos}
 \label{subsec:objetivos}
-Definição clara do que se pretende alcançar com a implementação do sistema.
+O objetivo principal deste projeto é o desenvolvimento de um sistema
+backend robusto que aplique os conceitos de Composição de Preços Unitários
+(CPU) no contexto alimentício.
+De forma intencional, escolhemos não implementar o sistema de ponta a ponta
+que inclua a interface gráfica para o usuário final.
+Devido a restrições de tempo e recursos, preferimos priorizar apenas uma parte
+do sistema para poder garantir as funcionalidades essenciais para um
+futuro sistema gráfico.
 
 \section{Desenvolvimento de Conceito}
 \label{sec:conceito}
+% TODO: citar system engineering principles and pratice
 Esta etapa focou na definição do escopo e na compreensão das demandas
-do sistema, servindo como base para as fases subsequentes.
+do sistema, servindo como base para as fases subsequentes de modelagem
+e implementação.
 
 \subsection{Análise de Necessidades}
-Identificação dos problemas a serem resolvidos e das lacunas que o
-sistema visa preencher.
+A análise partiu da identificação de gargalos operacionais em pequenos
+negócios de alimentação por encomenda. Observou-se que a falta de
+precisão no cálculo de custos unitários leva a precificações muitas vezes
+arbitrárias, resultando em prejuízos não contabilizados. O auxiliar
+necessita de agilidade na conversão de pedidos em listas de compras
+precisas, enquanto o cozinheiro carece de uma ferramenta analítica para
+validar a viabilidade financeira de novas criações culinárias. A lacuna
+identificada foi a inexistência de um sistema focado em CPU que fosse
+mais robusto que planilhas manuais, porém mais acessível e focado que
+sistemas ERP genéricos.
 
 \subsection{Requisitos Funcionais}
-Definição das funcionalidades essenciais que o sistema deve oferecer
-para atender aos usuários.
+Os requisitos funcionais foram definidos para endereçar diretamente as
+lacunas identificadas na análise de necessidades:
+\begin{itemize}
+  \item \textbf{Gestão de Insumos:} O sistema deve permitir o cadastro de
+    ingredientes e mão de obra, mantendo registro de custos unitários e
+    unidades de medida.
+  \item \textbf{Composição de Receitas:} O cozinheiro deve ser capaz de
+    vincular múltiplos insumos a uma receita, definindo as quantidades
+    necessárias para a produção base.
+  \item \textbf{Cálculo Automático de Custos:} O sistema deve computar
+    automaticamente o custo total da receita somando os custos individuais
+    de cada item da composição.
+  \item \textbf{Geração de Relatórios de Produção:} A partir de um pedido,
+    o sistema deve gerar uma lista consolidada das quantidades exatas de
+    cada ingrediente necessárias para atender à demanda.
+  \item \textbf{Propagação de Atualizações:} Alterações no preço base de
+    um ingrediente efetuadas pelo auxiliar devem ser refletidas
+    automaticamente no custo de produção de todas as receitas afetadas.
+\end{itemize}
 
 \section{Metodologia}
 \label{sec:metodologia}
@@ -150,7 +200,7 @@ detalhado pelo diagrama de atividades da Figura
 
 \subsection{Tecnologias e Ferramentas}
 \label{subsec:tecnologias}
-Lista das tecnologias utilizadas (Python, FastAPI, SQLModel, Docker,
+Lista das tecnologias utilizadas (Python, Litestar, SQLModel, Docker,
 Just, etc.).
 
 \section{Resultados}
