@@ -282,6 +282,33 @@ requisição HTTP diferente. Por exemplo, um \texttt{POST} para \textit{/insumo}
 deve receber os dados necessários para criar um novo \textit{Insumo} e
 utilizar um repositório de insumo para persistir esse novo recurso.
 
+\subsection{Processo de Desenvolvimento}
+\label{subsec:processos}
+O desenvolvimento do projeto seguiu um fluxo de trabalho colaborativo e
+rigoroso, visando garantir a qualidade do código e a integridade das
+funcionalidades. Utilizou-se o sistema de controle de versões
+\textit{Git}, com o repositório hospedado no \textit{GitHub} e disponível
+publicamente em \url{https://github.com/Arrmando/Python-POO-Duck}.
+
+As principais práticas adotadas foram:
+\begin{itemize}
+  \item \textbf{Branching e Pull Requests:} Cada nova funcionalidade ou
+    correção foi desenvolvida em uma \textit{branch} isolada. A
+    integração com o código principal (\textit{main}) ocorreu
+    exclusivamente por meio de \textit{Pull Requests} (PRs).
+  \item \textbf{Revisão de Código:} A aprovação de um PR era condicionada
+    à revisão por pelo menos um outro membro do grupo, permitindo a
+    identificação precoce de erros e a disseminação do conhecimento técnico.
+  \item \textbf{Integração Contínua (CI):} Configurou-se um sistema simples
+    de CI que executava automaticamente os testes automatizados e o
+    \textit{linter} a cada nova submissão. PRs com falhas nos testes ou
+    violações de estilo eram impedidos de serem integrados.
+  \item \textbf{Desenvolvimento em Paralelo:} A clara divisão em camadas
+    (Domínio, API e Persistência) permitiu que os membros do grupo
+    trabalhassem simultaneamente em diferentes partes do sistema,
+    minimizando conflitos e acelerando a entrega.
+\end{itemize}
+
 \subsection{Tecnologias e Ferramentas}
 \label{subsec:tecnologias}
 Para viabilizar a implementação, foram selecionadas tecnologias que
@@ -289,13 +316,15 @@ favorecem o desenvolvimento rápido e a manutenibilidade:
 \begin{itemize}
   \item \textbf{Linguagem:} Python 3.13, explorando \textit{type hints}
     e classes abstratas (\textit{abc}).
-  \item \textbf{Framework de API:} Litestar, escolhido por sua
-    API amigável e suporte nativo a validação de dados.
-  \item \textbf{Persistência:} SQLite para armazenamento local,
-    facilitando a portabilidade do projeto.
+  \item \textbf{Framework de API:} \textit{Litestar}, escolhido por sua
+    performance e suporte nativo a validação de dados via DTOs.
+  \item \textbf{Persistência:} Arquivos estruturados em formato \textit{JSON},
+    adotados pela simplicidade na representação de objetos compostos e
+    facilidade de portabilidade sem dependências de servidores de
+    banco de dados.
   \item \textbf{Automação e Qualidade:} \textit{Just} para orquestração
-    de comandos, \textit{Pytest} para testes automatizados com cobertura
-    de código e \textit{Ruff} para \textit{linting} e formatação.
+    de comandos, \textit{Pytest} para a execução de testes automatizados
+    e \textit{Ruff} para \textit{linting} e formatação de código.
 \end{itemize}
 
 \section{Resultados}
