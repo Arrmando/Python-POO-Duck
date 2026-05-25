@@ -215,14 +215,19 @@ concluído com ou sem erros.
 
 O fluxo de cadastro de insumos e a interação entre essas camadas são
 ilustrados pelo diagrama de atividades da Figura
-\ref{fig:ap-diagrama-atividades}.
+\ref{fig:diagrama-atividades}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{diagrama-atividade.png}
+  \caption{Diagrama de Atividades: Cadastro de Insumo}
+  \label{fig:diagrama-atividades}
+\end{figure}
 
 \subsection{Modelagem Orientada a Objetos}
 \label{subsec:modelagem}
 
 Aqui apresentamos a modelagem por camada.
-Os diagramas de classes completos de cada camada podem ser consultados no
-Apêndice \ref{ap:diagramas}.
 
 \subsubsection{Camada de Domínio}
 No topo da hierarquia de domínio, definiu-se a classe abstrata
@@ -241,7 +246,15 @@ A partir de \textit{PrecoComposto}, derivam-se as classes abstratas
 \end{itemize}
 Adicionalmente, a classe \textit{Receita} também herda diretamente de
 \textit{PrecoComposto}, consolidando a soma dos custos de seus itens
-integrantes.
+integrantes. A Figura \ref{fig:uml-modelo} detalha as classes de
+domínio e suas relações.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-modelo.png}
+  \caption{Diagrama de Classes: Camada de Domínio}
+  \label{fig:uml-modelo}
+\end{figure}
 
 Vale notar a possibilidade de expansão futura que a classe abstrata
 \textit{Insumo} facilita.
@@ -261,7 +274,15 @@ persistência por meio de arquivos estruturados \textit{JSON}.
 Por exemplo, a classe \textit{RepositorioInsumo} gerencia as
 operações de salvamento e recuperação em memória, enquanto a
 \textit{RepositorioInsumoDB} implementa a persistência no sistema de
-arquivos com \textit{JSON}.
+arquivos com \textit{JSON}. A Figura \ref{fig:uml-persistencia} ilustra
+a estrutura da camada de persistência.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-persistencia.png}
+  \caption{Diagrama de Classes: Camada de Persistência}
+  \label{fig:uml-persistencia}
+\end{figure}
 
 No futuro, poderiam ser utilizadas implementações mais sofisticadas,
 como um banco relacional \textit{SQLite} ou \textit{PostgreSQL} para garantir
@@ -285,7 +306,16 @@ para toda classe, e
 cada método irá processar um tipo de
 requisição HTTP diferente. Por exemplo, um \texttt{POST} para \textit{/insumo}
 deve receber os dados necessários para criar um novo \textit{Insumo} e
-utilizar um repositório de insumo para persistir esse novo recurso.
+utilizar um repositório de insumo para persistir esse novo recurso. A
+Figura \ref{fig:uml-api} apresenta o diagrama de classes da camada de
+API.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-api.png}
+  \caption{Diagrama de Classes: Camada de API}
+  \label{fig:uml-api}
+\end{figure}
 
 \subsection{Processo de Desenvolvimento}
 \label{subsec:processos}
@@ -321,7 +351,8 @@ favorecem o desenvolvimento rápido e a manutenibilidade:
 \begin{itemize}
   \item \textbf{Linguagem:} Python 3.13, explorando \textit{type hints}
     e classes abstratas (\textit{abc}).
-  \item \textbf{Framework de API:} \textit{Litestar}, escolhido por sua
+  \item \textbf{Framework de API:} \textit{Litestar}
+    (\url{https://docs.litestar.dev/latest/}), escolhido por sua
     performance e suporte nativo a validação de dados via DTOs.
   \item \textbf{Persistência:} Arquivos estruturados em formato \textit{JSON},
     adotados pela simplicidade na representação de objetos compostos e
@@ -342,6 +373,7 @@ e consolidá-los em receitas com cálculos precisos de CPU. A interface
 REST, construída sobre o framework \textit{Litestar}, permite que
 operações complexas, como a atualização em cascata de preços em todas as
 receitas afetadas, ocorram de forma transparente para o futuro sistema gráfico.
+% TODO: incluir um print da documentacao automatica da API (redocly)
 
 Os testes unitários e funcionais somados a facilidade de testar unidades
 bem isoladas e encapsuladas ajudaram a validar o comportamento esperado
@@ -386,38 +418,5 @@ alcançarem maior sustentabilidade financeira por meio da precisão nos custos.
   https://www.geeksforgeeks.org/system-design/repository-design-pattern/.
   [Accessed: May 24, 2026].
 \end{thebibliography}
-
-\newpage
-\appendix
-\section{Diagramas UML}
-\label{ap:diagramas}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-modelo.png}
-  \caption{Diagrama de Classes: Camada de Domínio}
-  \label{fig:ap-uml-modelo}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-persistencia.png}
-  \caption{Diagrama de Classes: Camada de Persistência}
-  \label{fig:ap-uml-persistencia}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-api.png}
-  \caption{Diagrama de Classes: Camada de API}
-  \label{fig:ap-uml-api}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{diagrama-atividade.png}
-  \caption{Diagrama de Atividades: Cadastro de Insumo}
-  \label{fig:ap-diagrama-atividades}
-\end{figure}
 
 \end{document}
