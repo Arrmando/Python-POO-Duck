@@ -101,119 +101,326 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \section{Introdução}
 \label{sec:introducao}
-Este capítulo contextualiza o problema abordado, os objetivos do
+Este artigo relata o desenvolvimento de um sistema \textit{backend}
+focado na gestão de custos para microempreendedores do setor alimentício.
+
+O restante deste capítulo contextualiza o problema abordado, os objetivos do
 projeto e a importância da aplicação desenvolvida.
+No Desenvolvimento de Conceito (Seção \ref{sec:conceito}), definimos
+o escopo e os requisitos funcionais.
+Em Metodologia (Seção \ref{sec:metodologia}), detalhamos a
+arquitetura em camadas e a modelagem orientada a objetos,
+seguidos pelos Resultados (Seção \ref{sec:resultados}), que
+apresentam as evidências de funcionamento e a estratégia
+de testes. Por fim, as Conclusões (Seção \ref{sec:conclusoes})
+sintetizam as lições aprendidas e propostas de evolução do sistema.
 
 \subsection{Contextualização}
 \label{subsec:contextualizacao}
-Breve descrição do domínio do problema e do cenário em que o sistema se insere.
+Pequenos empreendimentos no setor de alimentação por encomenda, como
+lojas de doces e salgados para festas, enfrentam desafios significativos
+na gestão operacional e financeira. Frequentemente, a operação é
+dividida entre o cozinheiro, responsável pela criação de receitas e
+definição de insumos, e o auxiliar, encarregado da recepção de pedidos
+e da compra de ingredientes.
+
+Atualmente, sistemas completos ERP (Enterprise resource planning) são
+desnecessariamente complexos para tal propósito, o que leva adoção de
+processo manuais de organização de compras e elaboração de orçamentos,
+que são ineficientes e propenso a erros.
+
+A ausência de uma ferramenta adequada dificulta a
+agilidade na resposta aos clientes e impede que o cozinheiro avalie com
+precisão o impacto financeiro de novas receitas ou modificações em
+preparos existentes, comprometendo a rentabilidade do negócio.
 
 \subsection{Objetivos}
 \label{subsec:objetivos}
-Definição clara do que se pretende alcançar com a implementação do sistema.
+O objetivo principal deste projeto é o desenvolvimento de um sistema
+backend robusto que aplique os conceitos de Composição de Preços Unitários
+(CPU) no contexto alimentício.
+De forma intencional, escolhemos não implementar o sistema de ponta a ponta
+que inclua a interface gráfica para o usuário final.
+Devido a restrições de tempo e recursos, preferimos priorizar apenas uma parte
+do sistema para poder garantir as funcionalidades essenciais para um
+futuro sistema gráfico.
 
 \section{Desenvolvimento de Conceito}
 \label{sec:conceito}
 Esta etapa focou na definição do escopo e na compreensão das demandas
-do sistema, servindo como base para as fases subsequentes.
+do sistema, servindo como base para as fases subsequentes de modelagem
+e implementação, seguindo princípios fundamentais de engenharia de
+sistemas \cite{b3}.
 
 \subsection{Análise de Necessidades}
-Identificação dos problemas a serem resolvidos e das lacunas que o
-sistema visa preencher.
+A análise partiu da identificação de gargalos operacionais em pequenos
+negócios de alimentação por encomenda. Observou-se que a falta de
+precisão no cálculo de custos unitários leva a precificações muitas vezes
+arbitrárias, resultando em prejuízos não contabilizados. O auxiliar
+necessita de agilidade na conversão de pedidos em listas de compras
+precisas, enquanto o cozinheiro carece de uma ferramenta analítica para
+validar a viabilidade financeira de novas criações culinárias. A lacuna
+identificada foi a inexistência de um sistema focado em CPU que fosse
+mais robusto que planilhas manuais, porém mais acessível e focado que
+sistemas ERP genéricos.
 
 \subsection{Requisitos Funcionais}
-Definição das funcionalidades essenciais que o sistema deve oferecer
-para atender aos usuários.
+Os requisitos funcionais foram definidos para endereçar diretamente as
+lacunas identificadas na análise de necessidades:
+\begin{itemize}
+  \item \textbf{Gestão de Insumos:} O sistema deve permitir o cadastro de
+    ingredientes e mão de obra, mantendo registro de custos unitários e
+    unidades de medida.
+  \item \textbf{Composição de Receitas:} O cozinheiro deve ser capaz de
+    vincular múltiplos insumos a uma receita, definindo as quantidades
+    necessárias para a produção base.
+  \item \textbf{Cálculo Automático de Custos:} O sistema deve computar
+    automaticamente o custo total da receita somando os custos individuais
+    de cada item da composição.
+  \item \textbf{Geração de Relatórios de Produção:} A partir de um pedido,
+    o sistema deve gerar uma lista consolidada das quantidades exatas de
+    cada ingrediente necessárias para atender à demanda.
+  \item \textbf{Propagação de Atualizações:} Alterações no preço base de
+    um ingrediente efetuadas pelo auxiliar devem ser refletidas
+    automaticamente no custo de produção de todas as receitas afetadas.
+\end{itemize}
 
 \section{Metodologia}
 \label{sec:metodologia}
 Este capítulo descreve os processos, ferramentas e padrões
-arquiteturais adotados no desenvolvimento do projeto.
-
-\subsection{Modelagem Orientada a Objetos}
-\label{subsec:modelagem}
-Detalhamento dos diagramas de classes, sequência e estados que
-guiaram a implementação. A notação utilizada baseia-se nos padrões da
-UML (Unified Modeling Language) \cite{b1}. Os diagramas completos das
-camadas de domínio, persistência e API podem ser consultados no
-Apêndice \ref{ap:diagramas}, especificamente nas Figuras
-\ref{fig:ap-uml-modelo}, \ref{fig:ap-uml-persistencia} e \ref{fig:ap-uml-api}.
+arquiteturais adotados no desenvolvimento do projeto, enfatizando a
+aplicação dos princípios de Orientação a Objetos.
 
 \subsection{Padrões de Projeto e Arquitetura}
 \label{subsec:padroes}
-Descrição do uso de padrões e da organização das camadas (API,
-Domínio, Persistência). A aplicação adota padrões consagrados para
-orientar sua arquitetura \cite{b2}, garantindo flexibilidade e
-separação de responsabilidades. O fluxo de cadastro de insumos,
-detalhado pelo diagrama de atividades da Figura
-\ref{fig:ap-diagrama-atividades}, ilustra a interação entre essas camadas.
+A aplicação adota uma arquitetura em camadas para garantir a separação
+de responsabilidades:
+\begin{itemize}
+  \item \textbf{Camada de Domínio:} Contém a lógica de negócio e as
+    regras de cálculo de custos, independente de tecnologias externas.
+  \item \textbf{Camada de Persistência:} Responsável pelo armazenamento
+    duradouro dos dados, abstraindo o acesso ao banco de dados por meio
+    do padrão \textit{Repository}.
+  \item \textbf{Camada de API:} Provê a interface de comunicação
+    externa seguindo o estilo arquitetural REST.
+\end{itemize}
+Em linhas gerais, o cliente (por exemplo, uma futura interface gráfica) faz uma
+requisição para a camada de API, que faz o processamento principal.
+Essa camada utiliza a camada de domínio e a camada de persistência
+para realizar o processamento necessário, seja criar um novo recurso,
+recuperar um recurso existente ou atualizar um recurso.
+Depois do processamento, uma resposta é retornada ao cliente com o
+código de resposta adequado, dependendo se o processamento foi
+concluído com ou sem erros.
 
-\subsection{Tecnologias e Ferramentas}
-\label{subsec:tecnologias}
-Lista das tecnologias utilizadas (Python, FastAPI, SQLModel, Docker,
-Just, etc.).
-
-\section{Resultados}
-\label{sec:resultados}
-Neste capítulo são apresentados os resultados obtidos, as evidências
-de funcionamento e a análise crítica do sistema entregue.
-
-\subsection{Funcionalidades Implementadas}
-\label{subsec:funcionalidades}
-Resumo das principais funcionalidades entregues e seu comportamento esperado.
-
-\subsection{Verificação e Testes}
-\label{subsec:testes}
-Apresentação dos resultados dos testes automatizados e cobertura de código.
-
-\subsection{Análise Crítica}
-\label{subsec:analise}
-Discussão sobre os desafios encontrados, limitações do sistema e
-possíveis melhorias futuras.
-
-\section*{Agradecimentos}
-Os autores agradecem aos professores e colegas da disciplina de POO
-pelas discussões e orientações valiosas durante o semestre.
-
-\begin{thebibliography}{00}
-  \bibitem{b1} G. Booch, J. Rumbaugh, and I. Jacobson, \textit{The
-  Unified Modeling Language User Guide}. Addison-Wesley, 1999.
-  \bibitem{b2} E. Gamma, R. Helm, R. Johnson, and J. Vlissides,
-  \textit{Design Patterns: Elements of Reusable Object-Oriented
-  Software}. Addison-Wesley, 1994.
-\end{thebibliography}
-
-\newpage
-\appendix
-\section{Diagramas UML}
-\label{ap:diagramas}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-modelo.png}
-  \caption{Diagrama de Classes: Camada de Domínio}
-  \label{fig:ap-uml-modelo}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-persistencia.png}
-  \caption{Diagrama de Classes: Camada de Persistência}
-  \label{fig:ap-uml-persistencia}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.48\textwidth]{uml-camada-api.png}
-  \caption{Diagrama de Classes: Camada de API}
-  \label{fig:ap-uml-api}
-\end{figure}
+O fluxo de cadastro de insumos e a interação entre essas camadas são
+ilustrados pelo diagrama de atividades da Figura
+\ref{fig:diagrama-atividades}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.48\textwidth]{diagrama-atividade.png}
   \caption{Diagrama de Atividades: Cadastro de Insumo}
-  \label{fig:ap-diagrama-atividades}
+  \label{fig:diagrama-atividades}
 \end{figure}
+
+\subsection{Modelagem Orientada a Objetos}
+\label{subsec:modelagem}
+
+Aqui apresentamos a modelagem por camada.
+
+\subsubsection{Camada de Domínio}
+No topo da hierarquia de domínio, definiu-se a classe abstrata
+\textit{PrecoComposto}, que estabelece o contrato para o método
+polimórfico \texttt{calcular\_total()}. Esta abstração é central para a
+lógica de CPU, permitindo que o sistema interaja de forma uniforme com
+qualquer entidade que possua um valor monetário associado.
+
+A partir de \textit{PrecoComposto}, derivam-se as classes abstratas
+\textit{Insumo} e \textit{Item}:
+\begin{itemize}
+  \item \textit{Insumo} serve como base para \textit{Ingrediente}
+    (materiais consumíveis) e \textit{HomemHora} (mão de obra).
+  \item \textit{Item} gerencia entidades quantizáveis, sendo
+    especializada em \textit{ItemReceita} e \textit{ItemPedido}.
+\end{itemize}
+Adicionalmente, a classe \textit{Receita} também herda diretamente de
+\textit{PrecoComposto}, consolidando a soma dos custos de seus itens
+integrantes. A Figura \ref{fig:uml-modelo} detalha as classes de
+domínio e suas relações.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-modelo.png}
+  \caption{Diagrama de Classes: Camada de Domínio}
+  \label{fig:uml-modelo}
+\end{figure}
+
+Vale notar a possibilidade de expansão futura que a classe abstrata
+\textit{Insumo} facilita.
+Como exemplo, poderiam ser adicionadas no futuro classes para
+equipamentos ou materiais consumíveis.
+\textit{Equipamentos} poderia representar o uso e o custo de uso de máquinas
+como liquidificadores, fornos, etc.
+\textit{Materiais consumíveis} poderia representar itens que não são utilizados
+para preparar uma receita, mas sim as condições do pedido, como
+sabão, esponja, embalagens de entrega etc.
+
+\subsubsection{Camada de Persistência}
+A modelagem da persistência utiliza o padrão \textit{Repository} \cite{b4} para
+isolar o domínio do armazenamento. Essa estratégia permitiu o desenvolvimento
+inicial de implementações mais simples, como uma implementação em memória e uma
+persistência por meio de arquivos estruturados \textit{JSON}.
+Por exemplo, a classe \textit{RepositorioInsumo} gerencia as
+operações de salvamento e recuperação em memória, enquanto a
+\textit{RepositorioInsumoDB} implementa a persistência no sistema de
+arquivos com \textit{JSON}. A Figura \ref{fig:uml-persistencia} ilustra
+a estrutura da camada de persistência.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-persistencia.png}
+  \caption{Diagrama de Classes: Camada de Persistência}
+  \label{fig:uml-persistencia}
+\end{figure}
+
+No futuro, poderiam ser utilizadas implementações mais sofisticadas,
+como um banco relacional \textit{SQLite} ou \textit{PostgreSQL} para garantir
+integridade e eficiência de operações.
+
+\subsubsection{Camada de API}
+A camada de API foi modelada para expor as funcionalidades de domínio via
+REST. As classes dessa camada provêm principalmente do framework
+\textit{Litestar}. Por exemplo, ele incentiva o padrão \textit{Data
+Transfer Object} (DTO) para validar e tipar os dados de entrada (como o
+\textit{CriarInsumoDTO}), desacoplando a estrutura das requisições HTTP
+das classes de negócio.
+
+O \textit{InsumoController} herda da classe \texttt{Controller}, que é provida
+pelo framework.
+Essa classe facilita a definição dos métodos que irão processar
+requisições \texttt{GET}, \texttt{POST}, \texttt{PUT} e \texttt{DELETE} para
+cada tipo de recurso (\textit{Insumo}, \textit{Receita}, etc.).
+Cada subclasse do \texttt{Controller} define um \textit{endpoint}
+para toda classe, e
+cada método irá processar um tipo de
+requisição HTTP diferente. Por exemplo, um \texttt{POST} para \textit{/insumo}
+deve receber os dados necessários para criar um novo \textit{Insumo} e
+utilizar um repositório de insumo para persistir esse novo recurso. A
+Figura \ref{fig:uml-api} apresenta o diagrama de classes da camada de
+API.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.48\textwidth]{uml-camada-api.png}
+  \caption{Diagrama de Classes: Camada de API}
+  \label{fig:uml-api}
+\end{figure}
+
+\subsection{Processo de Desenvolvimento}
+\label{subsec:processos}
+O desenvolvimento do projeto seguiu um fluxo de trabalho colaborativo e
+rigoroso, visando garantir a qualidade do código e a integridade das
+funcionalidades. Utilizou-se o sistema de controle de versões
+\textit{Git}, com o repositório hospedado no \textit{GitHub} e disponível
+publicamente em \url{https://github.com/Arrmando/Python-POO-Duck}.
+
+As principais práticas adotadas foram:
+\begin{itemize}
+  \item \textbf{Branching e Pull Requests:} Cada nova funcionalidade ou
+    correção foi desenvolvida em uma \textit{branch} isolada. A
+    integração com o código principal (\textit{main}) ocorreu
+    exclusivamente por meio de \textit{Pull Requests} (PRs).
+  \item \textbf{Revisão de Código:} A aprovação de um PR era condicionada
+    à revisão por pelo menos um outro membro do grupo, permitindo a
+    identificação precoce de erros e a disseminação do conhecimento técnico.
+  \item \textbf{Integração Contínua (CI):} Configurou-se um sistema simples
+    de CI que executava automaticamente os testes automatizados e o
+    \textit{linter} a cada nova submissão. PRs com falhas nos testes ou
+    violações de estilo eram impedidos de serem integrados.
+  \item \textbf{Desenvolvimento em Paralelo:} A clara divisão em camadas
+    (Domínio, API e Persistência) permitiu que os membros do grupo
+    trabalhassem simultaneamente em diferentes partes do sistema,
+    minimizando conflitos e acelerando a entrega.
+\end{itemize}
+
+\subsection{Tecnologias e Ferramentas}
+\label{subsec:tecnologias}
+Para viabilizar a implementação, foram selecionadas tecnologias que
+favorecem o desenvolvimento rápido e a manutenibilidade:
+\begin{itemize}
+  \item \textbf{Linguagem:} Python 3.13, explorando \textit{type hints}
+    e classes abstratas (\textit{abc}).
+  \item \textbf{Framework de API:} \textit{Litestar}
+    (\url{https://docs.litestar.dev/latest/}), escolhido por sua
+    performance e suporte nativo a validação de dados via DTOs.
+  \item \textbf{Persistência:} Arquivos estruturados em formato \textit{JSON},
+    adotados pela simplicidade na representação de objetos compostos e
+    facilidade de portabilidade sem dependências de servidores de
+    banco de dados.
+  \item \textbf{Automação e Qualidade:} \textit{Just}
+    (\url{https://just.systems/})
+    para orquestração de comandos, \textit{Pytest}
+    (\url{https://docs.pytest.org/})
+    para a execução de testes automatizados e \textit{Ruff}
+    (\url{https://docs.astral.sh/ruff/}) para \textit{linting} e
+    formatação de código.
+\end{itemize}
+
+\section{Resultados}
+\label{sec:resultados}
+A implementação final do sistema concretiza a proposta de automatizar a
+gestão de custos para pequenos empreendedores do setor alimentício. O
+backend desenvolvido é capaz de gerenciar o ciclo completo de insumos ---
+abrangendo tanto ingredientes físicos quanto o custo de mão de obra ---
+e consolidá-los em receitas com cálculos precisos de CPU. A interface
+REST, construída sobre o framework \textit{Litestar}, permite que
+operações complexas, como a atualização em cascata de preços em todas as
+receitas afetadas, ocorram de forma transparente para o futuro sistema gráfico.
+% TODO: incluir um print da documentacao automatica da API (redocly)
+
+Os testes unitários e funcionais somados a facilidade de testar unidades
+bem isoladas e encapsuladas ajudaram a validar o comportamento esperado
+do sistema durante todo o ciclo de desenvolvimento.
+Essa abordagem não apenas assegurou que os requisitos funcionais fossem
+atendidos, mas também serviu como documentação viva do comportamento
+esperado do sistema em cenários de erro e sucesso, garantindo uma
+cobertura de código abrangente.
+
+A separação clara em camadas de Domínio, Persistência e API mostrou-se
+um dos pontos mais fortes do projeto. Durante a execução, essa
+modularidade facilitou o trabalho paralelo da equipe e a rápida
+depuração de problemas. A escolha pela persistência em arquivos
+\textit{JSON}, embora simplificada, atendeu plenamente à necessidade de
+portabilidade e persistência de dados do protótipo, validando a eficácia
+do padrão \textit{Repository} \cite{b4} em isolar a lógica de negócio
+das decisões de infraestrutura.
+
+\section{Conclusões}
+\label{sec:conclusoes}
+O tempo investido nas etapas iniciais de modelagem UML e planejamento de
+arquitetura resultou em um desenvolvimento mais fluido e previsível.
+Os resultados obtidos demonstram que a aplicação rigorosa de princípios
+de Orientação a Objetos, como herança e polimorfismo, é perfeitamente
+viável e benéfica mesmo em sistemas de menor escala, proporcionando
+um produto final robusto e testável.
+
+Como perspectivas de evolução, a arquitetura permite a inclusão imediata
+de novos tipos de insumos, como custos de depreciação de equipamentos ou
+materiais indiretos de entrega. Além disso, a substituição da camada de
+persistência por um banco de dados relacional e o desenvolvimento de uma
+interface gráfica são os passos naturais para transformar este protótipo
+em uma ferramenta comercial completa, auxiliando microempreendedores a
+alcançarem maior sustentabilidade financeira por meio da precisão nos custos.
+
+\begin{thebibliography}{00}
+  \bibitem{b3} A. Kossiakoff, W. N. Sweet, S. J. Seymour, and S. M.
+  Biemer, \textit{Systems Engineering Principles and Practice}.
+  Wiley-Interscience, 2011.
+  \bibitem{b4} GeeksforGeeks, \textit{Repository Design Pattern}.
+  [Online]. Available:
+  https://www.geeksforgeeks.org/system-design/repository-design-pattern/.
+  [Accessed: May 24, 2026].
+\end{thebibliography}
 
 \end{document}
