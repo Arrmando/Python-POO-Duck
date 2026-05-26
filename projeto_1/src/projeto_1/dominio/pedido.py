@@ -45,7 +45,6 @@ class Pedido(PrecoComposto):
     def __init__(
         self,
         cliente: str,
-        prazo_pedido: datetime | None = None,
         id: int | None = None,
     ) -> None:
         if not cliente or not cliente.strip():
@@ -54,7 +53,6 @@ class Pedido(PrecoComposto):
         self._id = id
         self._cliente = cliente.strip()
         self._data_pedido = datetime.now()
-        self._prazo_pedido = prazo_pedido
         self._itens: list[ItemPedido] = []
 
     @property
@@ -68,10 +66,6 @@ class Pedido(PrecoComposto):
     @property
     def data_pedido(self) -> datetime:
         return self._data_pedido
-
-    @property
-    def prazo_pedido(self) -> datetime | None:
-        return self._prazo_pedido
 
     @property
     def itens(self) -> list[ItemPedido]:

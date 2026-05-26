@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
@@ -8,11 +8,9 @@ from projeto_1.dominio.receita import Receita
 
 
 def test_pedido_datas():
-    prazo = datetime.now() + timedelta(days=7)
-    pedido = Pedido(cliente="Carlos", prazo_pedido=prazo)
+    pedido = Pedido(cliente="Carlos")
 
     assert isinstance(pedido.data_pedido, datetime)
-    assert pedido.prazo_pedido == prazo
     # Verifica se a data do pedido é recente (criada no construtor)
     assert (datetime.now() - pedido.data_pedido).total_seconds() < 1
 
