@@ -109,7 +109,7 @@ class Relatorio:
                     if isinstance(item_receita.insumo, HomemHora):
                         total_horas += (
                             item_receita.coeficiente * item_pedido.coeficiente
-                        )+ 16
+                        )
 
         if data_inicio is None:
             data_inicio = datetime.now()
