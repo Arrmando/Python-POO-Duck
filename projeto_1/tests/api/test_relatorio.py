@@ -30,7 +30,7 @@ def test_gerar_relatorio_sucesso(populated_client):
     payload = {"cliente": "Pedro", "itens": [{"receita_id": 1, "quantidade": 2}]}
     r = populated_client.post("/relatorio", json=payload)
 
-    assert r.status_code == 201
+    assert r.status_code == 200
     data = r.json()
     assert data["total_geral"] == 5.0
     assert len(data["lista_compras"]) == 1
@@ -41,5 +41,5 @@ def test_gerar_relatorio_sucesso(populated_client):
 def test_gerar_relatorio_receita_inexistente(populated_client):
     payload = {"cliente": "Pedro", "itens": [{"receita_id": 999, "quantidade": 1}]}
     r = populated_client.post("/relatorio", json=payload)
-    assert r.status_code == 400
+    assert r.status_code == 404
     assert "Receita com ID 999 não encontrada" in r.json()["detail"]

@@ -1,5 +1,6 @@
 from litestar import Litestar, Request, Response
 from litestar.di import Provide
+from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_400_BAD_REQUEST
 
 from projeto_1.api.insumo import InsumoController
@@ -28,7 +29,12 @@ def make_app(
             "repositorio": Provide(lambda: repositorio_insumo, sync_to_thread=False),
             "repo_receita": Provide(lambda: repositorio_receita, sync_to_thread=False),
         },
-        exception_handlers={ValueError: _value_error_handler},
+        exception_handlers={
+            HTTPException: lambda _, exc: Response(
+                {"detail": exc.detail}, status_code=exc.status_code
+            ),
+            ValueError: _value_error_handler,
+        },
     )
 
 

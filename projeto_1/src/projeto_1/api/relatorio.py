@@ -3,6 +3,7 @@ from datetime import datetime
 
 from litestar import post
 from litestar.controller import Controller
+from litestar.exceptions import NotFoundException
 
 from projeto_1.dominio.pedido import ItemPedido, Pedido
 from projeto_1.dominio.relatorio import Relatorio
@@ -56,7 +57,7 @@ class RelatorioDTO:
 class RelatorioController(Controller):
     path = "/relatorio"
 
-    @post()
+    @post(status_code=200)
     async def gerar_relatorio(
         self, data: PedidoDTO, repo_receita: RepositorioReceita
     ) -> RelatorioDTO:
@@ -65,8 +66,8 @@ class RelatorioController(Controller):
         for item_dto in data.itens:
             receita = repo_receita.get(item_dto.receita_id)
             if not receita:
-                raise ValueError(
-                    f"Receita com ID {item_dto.receita_id} não encontrada."
+                raise NotFoundException(
+                    detail=f"Receita com ID {item_dto.receita_id} não encontrada."
                 )
 
             item_pedido = ItemPedido(receita=receita, coeficiente=item_dto.quantidade)
