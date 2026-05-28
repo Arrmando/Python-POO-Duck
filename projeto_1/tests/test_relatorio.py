@@ -59,7 +59,6 @@ def test_relatorio_remover_pedido_inexistente():
         relatorio.remover_pedido(mock_pedido)
 
 
-
 def test_relatorio_calcular_total_geral():
     mock_pedido1 = MagicMock(spec=Pedido)
     mock_pedido1.calcular_total.return_value = 100.0
