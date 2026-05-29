@@ -62,7 +62,7 @@ class ReceitaController(Controller):
             raise NotFoundException(f"Receita com ID {id} não encontrada.")
 
         return {
-            "id": receita.id,  # Corrigido aqui! Sem caracteres intrusos
+            "id": receita.id,
             "nome": receita.nome,
             "instrucoes": receita.instrucoes,
         }
@@ -75,20 +75,14 @@ class ReceitaController(Controller):
         repositorio_receita: RepositorioReceita,
     ) -> dict:
         """PUT /receitas/{id} -> Atualiza os dados de uma receita."""
-        try:
-            receita_existente = repositorio_receita.get(id)
-        except ValueError:
-            raise NotFoundException(f"Receita com ID {id} não encontrada.")
+        todas_receitas = repositorio_receita.list()
+        receita_existente = next((r for r in todas_receitas if r.id == id), None)
 
-        if not receita_existente:
+        if receita_existente is None:
             raise NotFoundException(f"Receita com ID {id} não encontrada.")
 
         receita_atualizada = Receita(id=id, nome=data.nome, instrucoes=data.instrucoes)
-
-        try:
-            repositorio_receita.update(receita_atualizada)
-        except ValueError:
-            raise NotFoundException(f"Receita com ID {id} não encontrada.")
+        repositorio_receita.update(receita_atualizada)
 
         return {"id": id, "nome": data.nome, "instrucoes": data.instrucoes}
 
@@ -97,8 +91,10 @@ class ReceitaController(Controller):
         self, id: int, repositorio_receita: RepositorioReceita
     ) -> None:
         """DELETE /receitas/{id} -> Remove uma receita do sistema."""
-        try:
-            repositorio_receita.delete(id)
-        except ValueError:
-            # Comentário encurtado para evitar o erro E501 do Ruff
+        todas_receitas = repositorio_receita.list()
+        existe = any(r.id == id for r in todas_receitas)
+
+        if not existe:
             raise NotFoundException(f"Receita com ID {id} não encontrada.")
+
+        repositorio_receita.delete(id)

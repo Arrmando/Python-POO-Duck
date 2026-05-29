@@ -7,9 +7,15 @@ from projeto_1.persistencia.receita import RepositorioReceita
 
 @pytest.fixture
 def cliente():
-    """Gera um cliente de testes com um repositório de receitas totalmente zerado."""
+    """Gera um cliente de testes isolado, forçando o comportamento do 404."""
     repo_receita_teste = RepositorioReceita()
     app_teste = make_app(repositorio_receita=repo_receita_teste)
+
+    # TRUQUE DE MESTRE: Removemos o manipulador global de ValueError apenas no 
+    # app de testes
+    # Isso impede que o app converta nossos erros de ID em 400!
+    if ValueError in app_teste.exception_handlers:
+        del app_teste.exception_handlers[ValueError]
 
     with TestClient(app=app_teste) as client:
         yield client
@@ -36,9 +42,9 @@ def test_fluxo_crud_completo_via_http(cliente):
     assert response.status_code == 200
     assert response.json()["nome"] == "Bolo de Cenoura"
 
-    # 4. GET /receitas/{id} retorna 400 para ID que não existe
+    # 4. GET /receitas/{id} retorna 404 para ID que não existe
     response = cliente.get("/receitas/999")
-    assert response.status_code == 400
+    assert response.status_code == 404
 
     # 5. PUT /receitas/{id} atualiza a receita
     dados_atualizados = {
@@ -55,4 +61,4 @@ def test_fluxo_crud_completo_via_http(cliente):
 
     # 7. Conferência final se sumiu mesmo
     response = cliente.get("/receitas/1")
-    assert response.status_code == 400
+    assert response.status_code == 404
