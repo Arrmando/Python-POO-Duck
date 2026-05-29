@@ -43,12 +43,16 @@ class InsumoController(Controller):
     path = "/insumo"
 
     @get()
-    async def get_insumos(self, repositorio: RepositorioInsumo) -> list[InsumoDTO]:
-        return [InsumoDTO.from_insumo(i) for i in repositorio.list()]
+    # MUDANÇA AQUI: de 'repositorio' para 'repositorio_insumo'
+    async def get_insumos(
+        self, repositorio_insumo: RepositorioInsumo
+    ) -> list[InsumoDTO]:
+        return [InsumoDTO.from_insumo(i) for i in repositorio_insumo.list()]
 
     @post(status_code=201)
+    # MUDANÇA AQUI: de 'repositorio' para 'repositorio_insumo'
     async def post_insumo(
-        self, data: CriarInsumoDTO, repositorio: RepositorioInsumo
+        self, data: CriarInsumoDTO, repositorio_insumo: RepositorioInsumo
     ) -> InsumoDTO:
         if data.tipo == "Ingrediente":
             insumo = Ingrediente(
@@ -58,5 +62,6 @@ class InsumoController(Controller):
             insumo = HomemHora(data.nome, data.quantidade, data.preco_base)
         else:
             raise ValueError(f"Tipo desconhecido: {data.tipo}")
-        repositorio.save(insumo)
+
+        repositorio_insumo.save(insumo)
         return InsumoDTO.from_insumo(insumo)
