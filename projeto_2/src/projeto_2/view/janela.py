@@ -28,8 +28,9 @@ def criar_janela():
         
         # Desenha um círculo no centro apenas para ter algo visual
         pygame.draw.circle(tela, COR_CIRCULO, (largura // 2, altura // 2), 50)
-        pygame.draw.rect(tela, (255, 0, 0), ((largura - (largura// 4)) , 0 , (largura // 4), altura)) # Desenha um retângulo vermelho no lado direito da tela Para representar a área de informações do jogo
-
+        pygame.draw.rect(tela, (255, 0, 0), ((largura - (largura// 4)) , 0 , (largura // 4), altura)) # Desenha um retângulo vermelho no lado direito da tela Para representar a área de informações 
+        pygame.draw.rect(tela, (0, 0, 255), ((largura - (largura// 4)), 0, (largura - (largura// 4)), (altura// 6))) # Desenha um retângulo ciano no canto superior esquerdo da tela para representar a
+      
         # Atualiza a tela
         pygame.display.flip()
     # Encerra o Pygame
