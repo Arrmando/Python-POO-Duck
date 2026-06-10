@@ -1,10 +1,12 @@
+import pygame
 from projeto_2.model.mapa_quadrado import MapaQuadrado
 from projeto_2.model.bandeira import Bandeira
 from projeto_2.model.bomba import Bomba
 
 
 class HandleMapa:
-    def __init__(self, mapa_quadrado=None):
+    def __init__(self, controller=None, mapa_quadrado=None):
+        self._controller = controller
         self._mapa = mapa_quadrado
         self._primeiro_clique = True
         self._qtd_bombas = 40  # Valor padrão
@@ -15,7 +17,14 @@ class HandleMapa:
         self._mapa = MapaQuadrado(colunas, linhas)
         self._primeiro_clique = True
         self._jogo_finalizado = False
+        # Notifica o placar para resetar o relógio
+        if self._controller:
+            self._controller.handle_placar.reiniciar()
         return self._mapa
+
+    def set_qtd_bombas(self, qtd: int):
+        """Define a quantidade de bombas para o próximo jogo."""
+        self._qtd_bombas = qtd
 
     def obter_endereco_pela_posicao(
         self, pos_x: int, pos_y: int, offset_x: int = 0, offset_y: int = 0, tamanho_celula: int = 32
@@ -88,11 +97,17 @@ class HandleMapa:
                 self._mapa.distribuir_bombas(x, y, self._qtd_bombas)
                 self._primeiro_clique = False
                 print("Bombas distribuídas.")
+                # Inicia o relógio no primeiro clique
+                if self._controller:
+                    self._controller.handle_placar.iniciar()
 
             if self._mapa.revelar(x, y):
                 # Game Over
                 self._jogo_finalizado = True
-
+                # Para o relógio
+                if self._controller:
+                    self._controller.handle_placar.parar()
+                
                 # Executa explodir apenas na bomba que foi clicada
                 bomba_clicada = celula.obter_entidade(Bomba)
                 if bomba_clicada:
@@ -115,8 +130,8 @@ class HandleMapa:
                     celula.adicionar_bandeira(nova_bandeira)
 
     def processar_evento(self, evento, offset_x: int = 0, offset_y: int = 0):
-        """Trata eventos de mouse específicos para o mapa, considerando o deslocamento."""
-        if hasattr(evento, "pos") and hasattr(evento, "button"):
+        """Trata apenas eventos de clique do mouse (MOUSEBUTTONDOWN)."""
+        if evento.type == pygame.MOUSEBUTTONDOWN:
             grid_pos = self.obter_endereco_pela_posicao(
                 evento.pos[0], evento.pos[1], offset_x, offset_y
             )
