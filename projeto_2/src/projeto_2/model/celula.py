@@ -47,6 +47,7 @@ class Celula:
         """
         if self._status:
             self._status = False
+            # Define o sprite base como 'aberto' (index 1)
             self._sprite = 32 * 1
 
     def _tem_entidade_do_tipo(self, tipo: Type[Entidade]) -> bool:

@@ -1,3 +1,4 @@
+import random
 from .celula import Celula
 from .bomba import Bomba
 from typing import List
@@ -37,14 +38,46 @@ class MapaQuadrado:
             return self._mapa[y][x]
         return None
 
+    def distribuir_bombas(self, x_inicial: int, y_inicial: int, quantidade: int):
+        """
+        Distribui bombas aleatoriamente no mapa, garantindo que a posição inicial
+        (e seus vizinhos imediatos para uma experiência melhor) não contenha bomba.
+        """
+        posicoes_possiveis = []
+        for y in range(self._linhas):
+            for x in range(self._colunas):
+                # Evita a célula clicada
+                if abs(x - x_inicial) <= 1 and abs(y - y_inicial) <= 1:
+                    continue
+                posicoes_possiveis.append((x, y))
+
+        if quantidade > len(posicoes_possiveis):
+            quantidade = len(posicoes_possiveis)
+
+        bombas_pos = random.sample(posicoes_possiveis, quantidade)
+
+        for i, (bx, by) in enumerate(bombas_pos):
+            celula = self.obter_celula(bx, by)
+            if celula:
+                celula.adicionar_bomba(Bomba(id=i, status=False, sprite=0))
+        
+        # Após distribuir, atualiza os valores de vizinhança
+        self.contar_bombas_vizinhas()
+
     def contar_bombas_vizinhas(self):
         """
         Calcula a quantidade de bombas vizinhas para cada célula do mapa.
+        Se a própria célula for uma bomba, seu valor de exibição será 0.
         """
         for y in range(self._linhas):
             for x in range(self._colunas):
                 celula = self.obter_celula(x, y)
                 if celula:
+                    # Se a célula for uma bomba, não calculamos vizinhança para ela
+                    if celula.obter_entidade(Bomba):
+                        celula.valor = 0
+                        continue
+
                     bombas = 0
                     for dy in [-1, 0, 1]:
                         for dx in [-1, 0, 1]:
@@ -70,7 +103,7 @@ class MapaQuadrado:
             
         celula.cavar() # Define status como False
         
-        # Se encontrou uma bomba, retorna True imediatamente
+        # Se encontrou uma bomba, retorna True
         if celula.obter_entidade(Bomba):
             return True
             
@@ -83,3 +116,15 @@ class MapaQuadrado:
                     self.revelar(x + dx, y + dy)
         
         return False
+
+    def __str__(self) -> str:
+        res = ""
+        for y in range(self._linhas):
+            for x in range(self._colunas):
+                celula = self._mapa[y][x]
+                if celula.obter_entidade(Bomba):
+                    res += "B "
+                else:
+                    res += f"{celula.valor} "
+            res += "\n"
+        return res

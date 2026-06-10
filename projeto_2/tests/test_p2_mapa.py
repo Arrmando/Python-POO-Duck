@@ -78,10 +78,6 @@ def test_mapa_quadrado_revelar_seguro():
 
 def test_mapa_quadrado_revelar_recursivo():
     """Garante que revelar uma célula com valor 0 revela os vizinhos recursivamente."""
-    # Mapa 3x3:
-    # B 0 0
-    # 0 0 0
-    # 0 0 0
     mapa_obj = MapaQuadrado(3, 3)
     mapa_obj.obter_celula(0, 0).adicionar_bomba(Bomba(1, False, 0))
     mapa_obj.contar_bombas_vizinhas()
@@ -90,7 +86,6 @@ def test_mapa_quadrado_revelar_recursivo():
     resultado = mapa_obj.revelar(2, 2)
     
     assert resultado is False
-    # Na lógica invertida: status False significa revelado (cavado)
     assert mapa_obj.obter_celula(2, 2).status is False
     assert mapa_obj.obter_celula(0, 0).status is True  # Bomba continua escondida
     assert mapa_obj.obter_celula(1, 0).status is False # Vizinho de 0 revelado
@@ -102,3 +97,32 @@ def test_mapa_quadrado_obter_celula_fora_limite():
     mapa_obj = MapaQuadrado(3, 3)
     assert mapa_obj.obter_celula(3, 3) is None
     assert mapa_obj.obter_celula(-1, 0) is None
+
+
+def test_celula_com_bomba_nao_tem_valor():
+    """Garante que células que contêm bombas não possuem valor numérico (valor = 0)."""
+    mapa_obj = MapaQuadrado(3, 3)
+    mapa_obj.obter_celula(0, 0).adicionar_bomba(Bomba(1, False, 0))
+    mapa_obj.obter_celula(1, 0).adicionar_bomba(Bomba(2, False, 0))
+    
+    mapa_obj.contar_bombas_vizinhas()
+    
+    assert mapa_obj.obter_celula(0, 0).valor == 0
+    assert mapa_obj.obter_celula(1, 0).valor == 0
+    assert mapa_obj.obter_celula(0, 1).valor == 2
+
+
+def test_mapa_quadrado_distribuir_bombas_seguro():
+    """Garante que a distribuição de bombas respeita a área segura do primeiro clique."""
+    col, lin = 10, 10
+    mapa_obj = MapaQuadrado(col, lin)
+    
+    # Clique em (5,5). A área (4-6, 4-6) deve estar limpa.
+    cx, cy = 5, 5
+    mapa_obj.distribuir_bombas(cx, cy, quantidade=80) # Muitas bombas para testar o limite
+    
+    # Verifica área 3x3 ao redor do clique
+    for dy in [-1, 0, 1]:
+        for dx in [-1, 0, 1]:
+            celula = mapa_obj.obter_celula(cx + dx, cy + dy)
+            assert celula.obter_entidade(Bomba) is None, f"Bomba encontrada em área segura ({cx+dx}, {cy+dy})"
