@@ -4,8 +4,6 @@ import pygame
 
 from .handle_audio_events import HandleAudio
 from .handle_mapa_events import HandleMapa
-from .handle_menu_events import HandleMenu
-from .handle_placar_events import HandlePlacar
 from projeto_2.constants import (
     CELULA_CLICK,
     DIFICULDADE_ALTERADA,
@@ -24,27 +22,18 @@ class GameController:
         self.largura_info = self.largura // 4
 
         # Definição das áreas (Lógica de layout de alto nível)
-        self.area_mapa = (0, 0, self.largura - self.largura_info, self.altura)
         self.area_placar = (
             self.largura - self.largura_info,
             0,
             self.largura_info,
             self.altura // 10,
         )
-        self.area_menu = (
-            self.largura - self.largura_info,
-            self.altura // 10,
-            self.largura_info,
-            self.altura - (self.altura // 10),
-        )
 
         # Instanciação dos handlers
-        self.handle_audio = HandleAudio()
+        self.handle_audio = HandleAudio(model.game_state)
         self.handle_mapa = HandleMapa(
             model.game_state, mapa_quadrado=model.mapa
         )
-        self.handle_menu = HandleMenu(model.game_state)
-        self.handle_placar = HandlePlacar(model.game_state)
 
     def inicializar_mapa(self, colunas: int, linhas: int):
         mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
@@ -75,7 +64,7 @@ class GameController:
             nome = evento.nome
             bombas = evento.bombas
             print(f"Mudando dificuldade para: {nome} ({bombas} bombas)")
-            self.handle_mapa.set_qtd_bombas(bombas)
+            self.model.game_state.qtd_bombas = bombas
             self.model.game_state.dificuldade = nome
             self.inicializar_mapa(18, 18)
             
@@ -98,16 +87,12 @@ class GameController:
 
         rodando = True
         while rodando:
-            # Primeiro, processamos todos os eventos na fila
             eventos = pygame.event.get()
             for evento in eventos:
                 if evento.type == pygame.QUIT:
                     rodando = False
                 
-                # Trata eventos brutos (sistema/mouse/teclado)
                 self.tratar_evento_bruto(evento)
-                
-                # Trata eventos de lógica de jogo (customizados)
                 self.processar_evento_jogo(evento)
 
             estado = self._obter_estado_atual()

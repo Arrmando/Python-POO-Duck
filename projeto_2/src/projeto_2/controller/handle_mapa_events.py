@@ -16,10 +16,6 @@ class HandleMapa:
         self._game_state.reiniciar_timer()
         return self._mapa
 
-    def set_qtd_bombas(self, qtd: int):
-        """Define a quantidade de bombas para o próximo jogo."""
-        self._game_state.qtd_bombas = qtd
-
     def executar_acao_clique(self, x: int, y: int, botao: int):
         """
         Executa a ação correspondente ao botão do mouse.
@@ -55,7 +51,7 @@ class HandleMapa:
                 if bomba_clicada:
                     bomba_clicada.explodir()
 
-                # Revela todas as células do mapa (sem recursão redundante)
+                # Revela todas as células do mapa
                 print("GAME OVER! Revelando tabuleiro...")
                 for ry in range(self._mapa.linhas):
                     for rx in range(self._mapa.colunas):
