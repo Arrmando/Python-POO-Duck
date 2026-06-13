@@ -6,8 +6,7 @@ from projeto_2.model.mapa_quadrado import MapaQuadrado
 
 
 class HandleMapa:
-    def __init__(self, game_state, controller=None, mapa_quadrado=None):
-        self._controller = controller
+    def __init__(self, game_state, mapa_quadrado=None):
         self._mapa = mapa_quadrado
         self._game_state = game_state
 

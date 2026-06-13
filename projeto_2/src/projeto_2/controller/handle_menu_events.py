@@ -2,8 +2,7 @@ import pygame
 
 
 class HandleMenu:
-    def __init__(self, game_state, controller=None):
-        self._controller = controller
+    def __init__(self, game_state):
         self._game_state = game_state
         self._arrastando_volume = False
 
@@ -29,23 +28,26 @@ class HandleMenu:
         return int(slider_x_inicio + (self.volume * largura_total))
 
     def processar_evento(self, evento, view_geometry=None):
-        """Trata cliques e arraste no menu."""
+        """
+        Trata cliques e arraste no menu.
+        Retorna um dicionário com ações solicitadas (ex: {'acao': 'reiniciar'}).
+        """
         if not view_geometry:
-            return
+            return None
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
             pos = evento.pos
             # Botões normais
             if view_geometry["btn_reiniciar"].collidepoint(pos):
-                self.reiniciar_jogo()
+                return {"acao": "reiniciar"}
             elif view_geometry["btn_placar"].collidepoint(pos):
-                self.abrir_placar()
+                return {"acao": "abrir_placar"}
             elif view_geometry["btn_facil"].collidepoint(pos):
-                self.mudar_dificuldade("Facil", 10)
+                return {"acao": "mudar_dificuldade", "nome": "Facil", "bombas": 10}
             elif view_geometry["btn_medio"].collidepoint(pos):
-                self.mudar_dificuldade("Medio", 40)
+                return {"acao": "mudar_dificuldade", "nome": "Medio", "bombas": 40}
             elif view_geometry["btn_dificil"].collidepoint(pos):
-                self.mudar_dificuldade("Dificil", 99)
+                return {"acao": "mudar_dificuldade", "nome": "Dificil", "bombas": 99}
 
             # Verifica clique no knob do volume
             slider = view_geometry["slider"]
@@ -69,25 +71,7 @@ class HandleMenu:
                 # Atualiza o valor do volume
                 largura_total = slider["x_fim"] - slider["x_inicio"]
                 self.volume = (pos_x - slider["x_inicio"]) / largura_total
+                
+                return {"acao": "ajustar_volume", "volume": self.volume}
 
-                # Sincroniza o volume com o Handler de Áudio
-                if self._controller:
-                    self._controller.handle_audio.ajustar_volume(self.volume)
-
-    def reiniciar_jogo(self):
-        """Pede ao controlador principal para reiniciar o mapa."""
-        if self._controller:
-            print("Reiniciando jogo...")
-            self._controller.inicializar_mapa(18, 18)
-
-    def abrir_placar(self):
-        """Lógica para abrir a visualização do placar."""
-        print("Abrindo Placar...")
-
-    def mudar_dificuldade(self, nome: str, bombas: int):
-        """Altera a dificuldade e reinicia o jogo imediatamente."""
-        self.dificuldade_atual = nome
-        if self._controller:
-            print(f"Mudando dificuldade para: {nome} ({bombas} bombas)")
-            self._controller.handle_mapa.set_qtd_bombas(bombas)
-            self.reiniciar_jogo()
+        return None

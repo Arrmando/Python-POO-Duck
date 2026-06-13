@@ -34,9 +34,9 @@ class GameController:
         # Instanciação dos handlers
         self.handle_audio = HandleAudio()
         self.handle_mapa = HandleMapa(
-            model.game_state, controller=self, mapa_quadrado=model.mapa
+            model.game_state, mapa_quadrado=model.mapa
         )
-        self.handle_menu = HandleMenu(model.game_state, controller=self)
+        self.handle_menu = HandleMenu(model.game_state)
         self.handle_placar = HandlePlacar(model.game_state)
 
     def inicializar_mapa(self, colunas: int, linhas: int):
@@ -64,7 +64,26 @@ class GameController:
                 self.handle_placar.processar_evento(evento)
             elif self._esta_dentro(pos, self.area_menu):
                 view_geometry = self.view.obter_geometria()
-                self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
+                resultado = self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
+                if resultado:
+                    self._processar_resultado_menu(resultado)
+
+    def _processar_resultado_menu(self, resultado):
+        acao = resultado.get("acao")
+        if acao == "reiniciar":
+            print("Reiniciando jogo...")
+            self.inicializar_mapa(18, 18)
+        elif acao == "abrir_placar":
+            print("Abrindo Placar...")
+        elif acao == "mudar_dificuldade":
+            nome = resultado.get("nome")
+            bombas = resultado.get("bombas")
+            print(f"Mudando dificuldade para: {nome} ({bombas} bombas)")
+            self.handle_mapa.set_qtd_bombas(bombas)
+            self.inicializar_mapa(18, 18)
+        elif acao == "ajustar_volume":
+            volume = resultado.get("volume")
+            self.handle_audio.ajustar_volume(volume)
 
     def _obter_estado_atual(self):
         """Captura um snapshot do estado atual para a View."""
