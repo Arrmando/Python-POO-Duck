@@ -27,29 +27,6 @@ class HandleMapa:
         """Define a quantidade de bombas para o próximo jogo."""
         self._qtd_bombas = qtd
 
-    def obter_endereco_pela_posicao(
-        self,
-        pos_x: int,
-        pos_y: int,
-        offset_x: int = 0,
-        offset_y: int = 0,
-        tamanho_celula: int = 32,
-    ):
-        """
-        Converte coordenadas de pixels da tela para coordenadas (x, y) da grade,
-        considerando os deslocamentos (offsets) de centralização.
-        """
-        if not self._mapa:
-            return None
-
-        grid_x = (pos_x - offset_x) // tamanho_celula
-        grid_y = (pos_y - offset_y) // tamanho_celula
-
-        if 0 <= grid_x < self._mapa.colunas and 0 <= grid_y < self._mapa.linhas:
-            return (grid_x, grid_y)
-
-        return None
-
     def obter_sprite_numero(self, valor: int) -> int:
         """
         Retorna a posição X do sprite para um determinado valor numérico.
@@ -135,11 +112,7 @@ class HandleMapa:
                     nova_bandeira = Bandeira(id=celula.address, status=True, sprite=0)
                     celula.adicionar_bandeira(nova_bandeira)
 
-    def processar_evento(self, evento, offset_x: int = 0, offset_y: int = 0):
+    def processar_evento(self, evento, grid_pos=None):
         """Trata apenas eventos de clique do mouse (MOUSEBUTTONDOWN)."""
-        if evento.type == pygame.MOUSEBUTTONDOWN:
-            grid_pos = self.obter_endereco_pela_posicao(
-                evento.pos[0], evento.pos[1], offset_x, offset_y
-            )
-            if grid_pos:
-                self.executar_acao_clique(grid_pos[0], grid_pos[1], evento.button)
+        if evento.type == pygame.MOUSEBUTTONDOWN and grid_pos:
+            self.executar_acao_clique(grid_pos[0], grid_pos[1], evento.button)

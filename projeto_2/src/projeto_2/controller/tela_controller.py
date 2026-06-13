@@ -43,53 +43,46 @@ class TelaController:
         ax, ay, aw, ah = area
         return ax <= px < ax + aw and ay <= py < ay + ah
 
-    def tratar_evento(
-        self, evento, offset_x: int = 0, offset_y: int = 0, view_geometry=None
-    ):
+    def tratar_evento(self, evento, janela):
         # O Handler de áudio pode escutar eventos globais (teclado, etc)
         self.handle_audio.processar_evento(evento)
 
         if hasattr(evento, "pos"):
             pos = evento.pos
             if self._esta_dentro(pos, self.area_mapa):
-                self.handle_mapa.processar_evento(evento, offset_x, offset_y)
+                grid_pos = janela.converter_tela_para_grade(pos)
+                self.handle_mapa.processar_evento(evento, grid_pos=grid_pos)
             elif self._esta_dentro(pos, self.area_placar):
                 self.handle_placar.processar_evento(evento)
             elif self._esta_dentro(pos, self.area_menu):
+                view_geometry = janela.obter_geometria()
                 self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
 
     def run(self, janela):
         """Orquestra o loop principal do jogo."""
         mapa = self.handle_mapa._mapa
         if not mapa:
-            mapa = self.inicializar_mapa(18, 18)
+            mapa = self.inicializar_mapa(10, 10)
 
         self.handle_audio.iniciar_musica_fundo()
 
-        # Cálculo de offsets (ainda dependente do tamanho da célula da View)
-        offset_x = (
-            (self.largura - self.largura_info) - (mapa.colunas * janela.tamanho_celula)
-        ) // 2
-        offset_y = (self.altura - (mapa.linhas * janela.tamanho_celula)) // 2
+        # Cálculo de offsets centralizado na View
+        janela.calcular_offsets(mapa.colunas, mapa.linhas)
 
         rodando = True
         while rodando:
             # O mapa pode mudar se for reiniciado via menu
             mapa = self.handle_mapa._mapa
-            view_geometry = janela.obter_geometria()
 
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     rodando = False
-                self.tratar_evento(
-                    evento,
-                    offset_x=offset_x,
-                    offset_y=offset_y,
-                    view_geometry=view_geometry,
-                )
+                self.tratar_evento(evento, janela)
 
             janela.limpar_tela()
-            janela.desenhar_celulas(mapa, self.handle_mapa, offset_x, offset_y)
+            janela.desenhar_celulas(
+                mapa, self.handle_mapa, janela.offset_x, janela.offset_y
+            )
             janela.desenhar_layout_base(self.largura_info)
             janela.desenhar_placar(
                 self.area_placar, self.handle_placar.obter_tempo_formatado()

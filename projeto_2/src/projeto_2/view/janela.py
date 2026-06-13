@@ -32,6 +32,25 @@ class JanelaView:
         self.slider_y = 400
         self.knob_radius = 8
 
+        self.offset_x = 0
+        self.offset_y = 0
+
+    def calcular_offsets(self, colunas, linhas):
+        """Calcula a centralização do mapa baseado na grade."""
+        largura_mapa = self.largura - self.largura_info
+        self.offset_x = (largura_mapa - (colunas * self.tamanho_celula)) // 2
+        self.offset_y = (self.altura - (linhas * self.tamanho_celula)) // 2
+        print(f"{self.offset_x}")
+        print(f"{self.offset_y}")
+        return self.offset_x, self.offset_y
+
+    def converter_tela_para_grade(self, pos):
+        """Converte coordenadas da tela para (x, y) da grade."""
+        px, py = pos
+        gx = (px - self.offset_x) // self.tamanho_celula
+        gy = (py - self.offset_y) // self.tamanho_celula
+        return int(gx), int(gy)
+
     def obter_geometria(self):
         """Retorna os Rects e dimensões para o Controller processar eventos."""
         return {
