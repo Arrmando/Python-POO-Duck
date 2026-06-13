@@ -5,8 +5,8 @@ from projeto_2.view.janela import JanelaView
 
 def run():
     largura, altura = 800, 600
-    janela = JanelaView(largura, altura)
     mapa = MapaQuadrado(18, 18)
+    janela = JanelaView(mapa, largura, altura)
     controller = TelaController(janela, mapa)
     controller.run()
 

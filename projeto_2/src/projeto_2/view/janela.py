@@ -7,7 +7,7 @@ from .menu_view import MenuView
 
 
 class JanelaView:
-    def __init__(self, largura: int = 800, altura: int = 600):
+    def __init__(self, mapa_ro, largura: int = 800, altura: int = 600):
         pygame.init()
         self.largura = largura
         self.altura = altura
@@ -19,7 +19,7 @@ class JanelaView:
 
         # Sub-views
         largura_info = largura // 4
-        self.mapa_view = MapaView(tamanho_celula=32)
+        self.mapa_view = MapaView(mapa_ro, tamanho_celula=32)
         self.menu_view = MenuView(largura, altura, largura_info)
 
     @property
@@ -38,11 +38,11 @@ class JanelaView:
     def offset_y(self):
         return self.mapa_view.offset_y
 
-    def calcular_offsets(self, colunas, linhas):
+    def calcular_offsets(self):
         """Delega o cálculo de offsets para a MapaView."""
         largura_area_mapa = self.largura - self.largura_info
         return self.mapa_view.calcular_offsets(
-            largura_area_mapa, self.altura, colunas, linhas
+            largura_area_mapa, self.altura
         )
 
     def converter_tela_para_grade(self, pos):
@@ -58,9 +58,7 @@ class JanelaView:
         Renderiza o quadro completo baseado no snapshot de estado fornecido.
         """
         self.limpar_tela()
-        self.mapa_view.desenhar(
-            self.tela, self.spritesheet, estado["mapa"], estado["mapa_handler"]
-        )
+        self.mapa_view.desenhar(self.tela, self.spritesheet)
         self.menu_view.desenhar_layout_base(self.tela)
         self.menu_view.desenhar_placar(
             self.tela, estado["area_placar"], estado["tempo_formatado"]

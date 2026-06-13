@@ -37,7 +37,10 @@ class TelaController:
         self.handle_placar = HandlePlacar()
 
     def inicializar_mapa(self, colunas: int, linhas: int):
-        return self.handle_mapa.inicializar_mapa(colunas, linhas)
+        mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
+        self.janela.mapa_view.mapa_ro = mapa
+        self.janela.calcular_offsets()
+        return mapa
 
     def _esta_dentro(self, pos, area):
         px, py = pos
@@ -63,7 +66,6 @@ class TelaController:
         """Captura um snapshot do estado atual para a View."""
         return {
             "mapa": self.handle_mapa._mapa,
-            "mapa_handler": self.handle_mapa,
             "tempo_formatado": self.handle_placar.obter_tempo_formatado(),
             "area_placar": self.area_placar,
             "menu_handler": self.handle_menu,
@@ -74,8 +76,7 @@ class TelaController:
         self.handle_audio.iniciar_musica_fundo()
 
         # O mapa inicial já foi passado no construtor e está no handle_mapa
-        mapa = self.handle_mapa._mapa
-        self.janela.calcular_offsets(mapa.colunas, mapa.linhas)
+        self.janela.calcular_offsets()
 
         rodando = True
         while rodando:
