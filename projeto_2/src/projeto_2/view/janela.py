@@ -148,15 +148,11 @@ class JanelaView:
         # Botões REINICIAR e PLACAR
         pygame.draw.rect(self.tela, COR_BTN, self.btn_reiniciar_rect, border_radius=5)
         texto_r = fonte_p.render("REINICIAR", True, COR_TEXTO)
-        self.tela.blit(
-            texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center)
-        )
+        self.tela.blit(texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center))
 
         pygame.draw.rect(self.tela, COR_BTN, self.btn_placar_rect, border_radius=5)
         texto_p = fonte_p.render("PLACAR", True, COR_TEXTO)
-        self.tela.blit(
-            texto_p, texto_p.get_rect(center=self.btn_placar_rect.center)
-        )
+        self.tela.blit(texto_p, texto_p.get_rect(center=self.btn_placar_rect.center))
 
         # Dificuldade
         label_fonte = pygame.font.SysFont("Arial", 20, bold=True)
