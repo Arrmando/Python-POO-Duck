@@ -21,7 +21,9 @@ class GameView:
         # Sub-views
         largura_info = largura // 4
         self.mapa_view = MapaView(game_model_ro.mapa, tamanho_celula=32)
-        self.menu_view = MenuView(game_model_ro.game_state, largura, altura, largura_info)
+        self.menu_view = MenuView(
+            game_model_ro.game_state, largura, altura, largura_info
+        )
 
     @property
     def largura_info(self):
@@ -42,9 +44,7 @@ class GameView:
     def calcular_offsets(self):
         """Delega o cálculo de offsets para a MapaView."""
         largura_area_mapa = self.largura - self.largura_info
-        return self.mapa_view.calcular_offsets(
-            largura_area_mapa, self.altura
-        )
+        return self.mapa_view.calcular_offsets(largura_area_mapa, self.altura)
 
     def converter_tela_para_grade(self, pos):
         """Delega a conversão de coordenadas para a MapaView."""

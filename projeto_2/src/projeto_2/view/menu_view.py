@@ -30,7 +30,7 @@ class MenuView:
 
         self.cor_painel = (50, 50, 50)
         self.cor_borda = (100, 100, 100)
-        
+
         # Estado interno da View para interação
         self._arrastando_volume = False
 
@@ -107,12 +107,12 @@ class MenuView:
             elif self.btn_placar_rect.collidepoint(pos):
                 post_evento(PLACAR_CLICK)
             elif self.btn_facil_rect.collidepoint(pos):
-                post_evento(DIFICULDADE_ALTERADA, nome='Facil', bombas=10)
+                post_evento(DIFICULDADE_ALTERADA, nome="Facil", bombas=10)
             elif self.btn_medio_rect.collidepoint(pos):
-                post_evento(DIFICULDADE_ALTERADA, nome='Medio', bombas=40)
+                post_evento(DIFICULDADE_ALTERADA, nome="Medio", bombas=40)
             elif self.btn_dificil_rect.collidepoint(pos):
-                post_evento(DIFICULDADE_ALTERADA, nome='Dificil', bombas=99)
-            
+                post_evento(DIFICULDADE_ALTERADA, nome="Dificil", bombas=99)
+
             # Knob do Volume
             knob_x = self.obter_knob_pos()
             distancia = ((pos[0] - knob_x) ** 2 + (pos[1] - self.slider_y) ** 2) ** 0.5

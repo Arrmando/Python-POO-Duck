@@ -10,7 +10,7 @@ def run():
     mapa = MapaQuadrado(18, 18)
     game_state = GameState()
     game_model = GameModel(mapa, game_state)
-    
+
     view = GameView(game_model, largura, altura)
     controller = GameController(view, game_model)
     controller.run()

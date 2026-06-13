@@ -13,11 +13,11 @@ class MapaView:
         self.offset_x = 0
         self.offset_y = 0
 
-    def calcular_offsets(
-        self, largura_area: int, altura_area: int
-    ):
+    def calcular_offsets(self, largura_area: int, altura_area: int):
         """Calcula a centralização do mapa baseado na grade e na área disponível."""
-        self.offset_x = (largura_area - (self.mapa_ro.colunas * self.tamanho_celula)) // 2
+        self.offset_x = (
+            largura_area - (self.mapa_ro.colunas * self.tamanho_celula)
+        ) // 2
         self.offset_y = (altura_area - (self.mapa_ro.linhas * self.tamanho_celula)) // 2
         return self.offset_x, self.offset_y
 

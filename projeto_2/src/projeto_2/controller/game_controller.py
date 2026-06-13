@@ -2,8 +2,6 @@ import sys
 
 import pygame
 
-from .handle_audio_events import HandleAudio
-from .handle_mapa_events import HandleMapa
 from projeto_2.constants import (
     CELULA_CLICK,
     DIFICULDADE_ALTERADA,
@@ -11,6 +9,9 @@ from projeto_2.constants import (
     REINICIAR_CLICK,
     VOLUME_ALTERADO,
 )
+
+from .handle_audio_events import HandleAudio
+from .handle_mapa_events import HandleMapa
 
 
 class GameController:
@@ -31,9 +32,7 @@ class GameController:
 
         # Instanciação dos handlers
         self.handle_audio = HandleAudio(model.game_state)
-        self.handle_mapa = HandleMapa(
-            model.game_state, mapa_quadrado=model.mapa
-        )
+        self.handle_mapa = HandleMapa(model.game_state, mapa_quadrado=model.mapa)
 
     def inicializar_mapa(self, colunas: int, linhas: int):
         mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
@@ -52,14 +51,14 @@ class GameController:
         if evento.type == CELULA_CLICK:
             gx, gy = evento.pos
             self.handle_mapa.executar_acao_clique(gx, gy, evento.button)
-        
+
         elif evento.type == REINICIAR_CLICK:
             print("Reiniciando jogo...")
             self.inicializar_mapa(18, 18)
-            
+
         elif evento.type == PLACAR_CLICK:
             print("Abrindo Placar...")
-            
+
         elif evento.type == DIFICULDADE_ALTERADA:
             nome = evento.nome
             bombas = evento.bombas
@@ -67,7 +66,7 @@ class GameController:
             self.model.game_state.qtd_bombas = bombas
             self.model.game_state.dificuldade = nome
             self.inicializar_mapa(18, 18)
-            
+
         elif evento.type == VOLUME_ALTERADO:
             self.model.game_state.volume = evento.volume
             self.handle_audio.ajustar_volume(evento.volume)
@@ -91,7 +90,7 @@ class GameController:
             for evento in eventos:
                 if evento.type == pygame.QUIT:
                     rodando = False
-                
+
                 self.tratar_evento_bruto(evento)
                 self.processar_evento_jogo(evento)
 
