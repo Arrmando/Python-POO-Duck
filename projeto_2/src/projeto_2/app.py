@@ -1,15 +1,18 @@
-from projeto_2.controller.tela_controller import TelaController
+from projeto_2.controller.game_controller import GameController
+from projeto_2.model.game_model import GameModel
 from projeto_2.model.game_state import GameState
 from projeto_2.model.mapa_quadrado import MapaQuadrado
-from projeto_2.view.janela import JanelaView
+from projeto_2.view.game_view import GameView
 
 
 def run():
     largura, altura = 800, 600
     mapa = MapaQuadrado(18, 18)
     game_state = GameState()
-    janela = JanelaView(mapa, game_state, largura, altura)
-    controller = TelaController(janela, mapa, game_state)
+    game_model = GameModel(mapa, game_state)
+    
+    view = GameView(game_model, largura, altura)
+    controller = GameController(view, game_model)
     controller.run()
 
 

@@ -6,8 +6,8 @@ from .mapa_view import MapaView
 from .menu_view import MenuView
 
 
-class JanelaView:
-    def __init__(self, mapa_ro, game_state_ro, largura: int = 800, altura: int = 600):
+class GameView:
+    def __init__(self, game_model_ro, largura: int = 800, altura: int = 600):
         pygame.init()
         self.largura = largura
         self.altura = altura
@@ -16,12 +16,12 @@ class JanelaView:
 
         self.spritesheet = self._carregar_spritesheet()
         self.cor_fundo = (30, 30, 30)
-        self.game_state_ro = game_state_ro
+        self.game_model_ro = game_model_ro
 
         # Sub-views
         largura_info = largura // 4
-        self.mapa_view = MapaView(mapa_ro, tamanho_celula=32)
-        self.menu_view = MenuView(game_state_ro, largura, altura, largura_info)
+        self.mapa_view = MapaView(game_model_ro.mapa, tamanho_celula=32)
+        self.menu_view = MenuView(game_model_ro.game_state, largura, altura, largura_info)
 
     @property
     def largura_info(self):

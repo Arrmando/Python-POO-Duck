@@ -8,12 +8,12 @@ from .handle_menu_events import HandleMenu
 from .handle_placar_events import HandlePlacar
 
 
-class TelaController:
-    def __init__(self, janela, mapa, game_state):
-        self.janela = janela
-        self.game_state = game_state
-        self.largura = janela.largura
-        self.altura = janela.altura
+class GameController:
+    def __init__(self, view, model):
+        self.view = view
+        self.model = model
+        self.largura = view.largura
+        self.altura = view.altura
         self.largura_info = self.largura // 4
 
         # Definição das áreas (Lógica de layout de alto nível)
@@ -34,15 +34,16 @@ class TelaController:
         # Instanciação dos handlers
         self.handle_audio = HandleAudio()
         self.handle_mapa = HandleMapa(
-            game_state, controller=self, mapa_quadrado=mapa
+            model.game_state, controller=self, mapa_quadrado=model.mapa
         )
-        self.handle_menu = HandleMenu(game_state, controller=self)
-        self.handle_placar = HandlePlacar(game_state)
+        self.handle_menu = HandleMenu(model.game_state, controller=self)
+        self.handle_placar = HandlePlacar(model.game_state)
 
     def inicializar_mapa(self, colunas: int, linhas: int):
         mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
-        self.janela.mapa_view.mapa_ro = mapa
-        self.janela.calcular_offsets()
+        self.model.mapa = mapa
+        self.view.mapa_view.mapa_ro = mapa
+        self.view.calcular_offsets()
         return mapa
 
     def _esta_dentro(self, pos, area):
@@ -57,12 +58,12 @@ class TelaController:
         if hasattr(evento, "pos"):
             pos = evento.pos
             if self._esta_dentro(pos, self.area_mapa):
-                grid_pos = self.janela.converter_tela_para_grade(pos)
+                grid_pos = self.view.converter_tela_para_grade(pos)
                 self.handle_mapa.processar_evento(evento, grid_pos=grid_pos)
             elif self._esta_dentro(pos, self.area_placar):
                 self.handle_placar.processar_evento(evento)
             elif self._esta_dentro(pos, self.area_menu):
-                view_geometry = self.janela.obter_geometria()
+                view_geometry = self.view.obter_geometria()
                 self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
 
     def _obter_estado_atual(self):
@@ -76,7 +77,7 @@ class TelaController:
         self.handle_audio.iniciar_musica_fundo()
 
         # O mapa inicial já foi passado no construtor e está no handle_mapa
-        self.janela.calcular_offsets()
+        self.view.calcular_offsets()
 
         rodando = True
         while rodando:
@@ -85,7 +86,7 @@ class TelaController:
                     rodando = False
                 self.tratar_evento(evento)
             estado = self._obter_estado_atual()
-            self.janela.render(estado)
+            self.view.render(estado)
 
         pygame.quit()
         sys.exit()
