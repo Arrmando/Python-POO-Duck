@@ -5,6 +5,7 @@ import pygame
 from .base_view import BaseView
 from .mapa_view import MapaView
 from .menu_view import MenuView
+from .widget_views import PausaPopupView
 
 
 class GameView(BaseView):
@@ -35,6 +36,9 @@ class GameView(BaseView):
             area=(self.largura_info, self.altura),
         )
 
+        # Overlays
+        self.pausa_popup = PausaPopupView(area=(largura, altura))
+
     @property
     def offset(self) -> tuple[float, float]:
         return 0.0, 0.0
@@ -56,14 +60,28 @@ class GameView(BaseView):
         return self.mapa_view.converter_tela_para_grade(pos, self.offset_mapa)
 
     def handle_event(self, event, offset=(0, 0)):
-        """Delega o tratamento de eventos para as sub-views com seus devidos offsets."""
+        """
+        Trata eventos. Se um overlay estiver ativo, bloqueia eventos para o jogo.
+        """
+        gs = self.game_model_ro.game_state
+
+        if gs.is_paused:
+            self.pausa_popup.handle_event(event)
+            return  # Bloqueia propagação
+
+        # Fluxo normal
         self.mapa_view.handle_event(event, self.offset_mapa)
         self.menu_view.handle_event(event, self.offset_menu)
 
     def desenhar(self, tela: pygame.Surface, offset=(0, 0)):
-        """Renderiza todos os componentes na tela."""
+        """Renderiza todos os componentes na tela, incluindo overlays."""
+        # 1. Camada de Jogo
         self.mapa_view.desenhar(tela, self.offset_mapa)
         self.menu_view.desenhar(tela, self.offset_menu)
+
+        # 2. Camada de Overlays
+        if self.game_model_ro.game_state.is_paused:
+            self.pausa_popup.desenhar(tela)
 
     def render(self):
         """

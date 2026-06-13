@@ -2,6 +2,7 @@ import pygame
 
 from projeto_2.constants import (
     DIFICULDADE_ALTERADA,
+    PAUSA_TOGGLE,
     PLACAR_CLICK,
     REINICIAR_CLICK,
 )
@@ -41,9 +42,7 @@ class MenuView(BaseView):
 
     def _init_background_e_bordas(self):
         largura, altura = self.area
-        self.bg_box = Box(
-            rect=pygame.Rect(0, 0, largura, altura), cor=self.cor_painel
-        )
+        self.bg_box = Box(rect=pygame.Rect(0, 0, largura, altura), cor=self.cor_painel)
         self.border_v = VerticalSeparator(
             x=0, y_inicio=0, y_fim=altura, cor=self.cor_borda
         )
@@ -67,9 +66,12 @@ class MenuView(BaseView):
             evento_tipo=REINICIAR_CLICK,
         )
         self.btn_placar = Button(
-            rect=pygame.Rect(20, 140, 160, 40), texto="PLACAR", evento_tipo=PLACAR_CLICK
+            rect=pygame.Rect(20, 130, 160, 40), texto="PLACAR", evento_tipo=PLACAR_CLICK
         )
-        self.widgets.extend([self.btn_reiniciar, self.btn_placar])
+        self.btn_pausa = Button(
+            rect=pygame.Rect(20, 450, 160, 40), texto="PAUSAR", evento_tipo=PAUSA_TOGGLE
+        )
+        self.widgets.extend([self.btn_reiniciar, self.btn_placar, self.btn_pausa])
 
     def _init_dificuldade(self):
         self.label_dificuldade = Text(

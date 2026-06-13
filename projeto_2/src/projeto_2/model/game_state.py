@@ -8,6 +8,8 @@ class GameState:
         self._jogo_finalizado = False
         self._primeiro_clique = True
         self._qtd_bombas = 40
+        self._is_paused = False
+        self._overlay_ativo = False
 
         # Timer state
         self._tempo_inicio = 0
@@ -53,6 +55,27 @@ class GameState:
     @qtd_bombas.setter
     def qtd_bombas(self, valor):
         self._qtd_bombas = valor
+
+    @property
+    def is_paused(self):
+        return self._is_paused
+
+    @is_paused.setter
+    def is_paused(self, valor: bool):
+        self._is_paused = valor
+        if valor:
+            self.parar_timer()
+        elif not self.jogo_finalizado and not self.primeiro_clique:
+            # Só retoma o timer se o jogo não acabou e já começou
+            self.iniciar_timer()
+
+    @property
+    def overlay_ativo(self):
+        return self._overlay_ativo
+
+    @overlay_ativo.setter
+    def overlay_ativo(self, valor: bool):
+        self._overlay_ativo = valor
 
     @property
     def tempo_segundos(self) -> int:

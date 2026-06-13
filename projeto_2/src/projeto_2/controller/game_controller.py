@@ -5,6 +5,7 @@ import pygame
 from projeto_2.constants import (
     CELULA_CLICK,
     DIFICULDADE_ALTERADA,
+    PAUSA_TOGGLE,
     PLACAR_CLICK,
     REINICIAR_CLICK,
     VOLUME_ALTERADO,
@@ -62,6 +63,9 @@ class GameController:
         elif evento.type == VOLUME_ALTERADO:
             self.model.game_state.volume = evento.volume
             self.audio_controller.ajustar_volume(evento.volume)
+
+        elif evento.type == PAUSA_TOGGLE:
+            self.model.game_state.is_paused = not self.model.game_state.is_paused
 
     def run(self):
         """Orquestra o loop principal do jogo."""
