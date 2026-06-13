@@ -36,14 +36,11 @@ class GameController:
             model.game_state, mapa_quadrado=model.mapa
         )
 
-    def inicializar_mapa(self, colunas: int, linhas: int):
-        mapa = self.model.iniciar_jogo(colunas, linhas)
-        self.mapa_controller.mapa = mapa
-        self.view.mapa_view.mapa_ro = mapa
+    def inicializar_jogo(self, colunas: int, linhas: int):
+        self.model.iniciar_jogo(colunas, linhas)
         self.view.calcular_offsets()
-        return mapa
 
-    def tratar_evento_bruto(self, evento):
+    def processar_evento_bruto(self, evento):
         """Recebe eventos do pygame (brutos) e repassa para que as views processem."""
         self.view.handle_event(evento)
 
@@ -58,7 +55,7 @@ class GameController:
 
         elif evento.type == REINICIAR_CLICK:
             print("Reiniciando jogo...")
-            self.inicializar_mapa(18, 18)
+            self.inicializar_jogo(18, 18)
 
         elif evento.type == PLACAR_CLICK:
             print("Abrindo Placar...")
@@ -69,7 +66,7 @@ class GameController:
             print(f"Mudando dificuldade para: {nome} ({bombas} bombas)")
             self.model.game_state.qtd_bombas = bombas
             self.model.game_state.dificuldade = nome
-            self.inicializar_mapa(18, 18)
+            self.inicializar_jogo(18, 18)
 
         elif evento.type == VOLUME_ALTERADO:
             self.model.game_state.volume = evento.volume
@@ -95,7 +92,7 @@ class GameController:
                 if evento.type == pygame.QUIT:
                     rodando = False
 
-                self.tratar_evento_bruto(evento)
+                self.processar_evento_bruto(evento)
                 self.processar_evento_jogo(evento)
 
             estado = self._obter_estado_atual()

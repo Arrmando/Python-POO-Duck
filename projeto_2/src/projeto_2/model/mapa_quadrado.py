@@ -10,6 +10,12 @@ class MapaQuadrado:
         self._linhas = linhas
         self._mapa: list[list[Celula]] = self._gerar_mapa()
 
+    def reset(self, colunas: int, linhas: int):
+        """Reseta o mapa para um novo estado inicial."""
+        self._colunas = colunas
+        self._linhas = linhas
+        self._mapa = self._gerar_mapa()
+
     def _gerar_mapa(self) -> list[list[Celula]]:
         """Gera uma matriz de células escondidas (status=True)."""
         mapa = []
