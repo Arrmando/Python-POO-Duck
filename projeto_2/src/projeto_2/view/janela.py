@@ -2,8 +2,6 @@ import os
 
 import pygame
 
-from projeto_2.controller.tela_controller import TelaController
-
 
 class JanelaView:
     def __init__(self, largura: int = 800, altura: int = 600):
@@ -40,8 +38,6 @@ class JanelaView:
         largura_mapa = self.largura - self.largura_info
         self.offset_x = (largura_mapa - (colunas * self.tamanho_celula)) // 2
         self.offset_y = (self.altura - (linhas * self.tamanho_celula)) // 2
-        print(f"{self.offset_x}")
-        print(f"{self.offset_y}")
         return self.offset_x, self.offset_y
 
     def converter_tela_para_grade(self, pos):
@@ -152,11 +148,15 @@ class JanelaView:
         # Botões REINICIAR e PLACAR
         pygame.draw.rect(self.tela, COR_BTN, self.btn_reiniciar_rect, border_radius=5)
         texto_r = fonte_p.render("REINICIAR", True, COR_TEXTO)
-        self.tela.blit(texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center))
+        self.tela.blit(
+            texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center)
+        )
 
         pygame.draw.rect(self.tela, COR_BTN, self.btn_placar_rect, border_radius=5)
         texto_p = fonte_p.render("PLACAR", True, COR_TEXTO)
-        self.tela.blit(texto_p, texto_p.get_rect(center=self.btn_placar_rect.center))
+        self.tela.blit(
+            texto_p, texto_p.get_rect(center=self.btn_placar_rect.center)
+        )
 
         # Dificuldade
         label_fonte = pygame.font.SysFont("Arial", 20, bold=True)
@@ -198,14 +198,3 @@ class JanelaView:
             (knob_x, self.slider_y),
             self.knob_radius - 2,
         )
-
-
-def criar_janela():
-    largura, altura = 800, 600
-    janela = JanelaView(largura, altura)
-    controller = TelaController(largura, altura)
-    controller.run(janela)
-
-
-if __name__ == "__main__":
-    criar_janela()

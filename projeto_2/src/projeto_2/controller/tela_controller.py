@@ -62,7 +62,7 @@ class TelaController:
         """Orquestra o loop principal do jogo."""
         mapa = self.handle_mapa._mapa
         if not mapa:
-            mapa = self.inicializar_mapa(10, 10)
+            mapa = self.inicializar_mapa(18, 18)
 
         self.handle_audio.iniciar_musica_fundo()
 
