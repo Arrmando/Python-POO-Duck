@@ -31,22 +31,35 @@ class MenuView(BaseView):
         self.cor_painel = (50, 50, 50)
         self.cor_borda = (100, 100, 100)
 
-        # Inicialização dos Widgets (coordenadas locais ao Menu)
+        self.widgets = []
 
-        # 1. Background e Bordas
-        self.bg_box = Box(rect=pygame.Rect(0, 0, largura, altura), cor=self.cor_painel)
+        # Inicialização dos Widgets (coordenadas locais ao Menu)
+        self._init_background_e_bordas()
+        self._init_placar()
+        self._init_botoes_principais()
+        self._init_dificuldade()
+        self._init_volume()
+
+    def _init_background_e_bordas(self):
+        self.bg_box = Box(
+            rect=pygame.Rect(0, 0, self.width, self.height), cor=self.cor_painel
+        )
         self.border_v = VerticalSeparator(
-            x=0, y_inicio=0, y_fim=altura, cor=self.cor_borda
+            x=0, y_inicio=0, y_fim=self.height, cor=self.cor_borda
         )
         self.border_h = HorizontalSeparator(
-            x_inicio=0, x_fim=largura, y=altura // 10, cor=self.cor_borda
+            x_inicio=0, x_fim=self.width, y=self.height // 10, cor=self.cor_borda
         )
+        self.widgets.extend([self.bg_box, self.border_v, self.border_h])
 
-        # 2. Placar
-        area_placar = pygame.Rect(0, 0, largura, altura // 10)
-        self.placar_widget = PlacarWidget(rect=area_placar, game_state_ro=game_state_ro)
+    def _init_placar(self):
+        area_placar = pygame.Rect(0, 0, self.width, self.height // 10)
+        self.placar_widget = PlacarWidget(
+            rect=area_placar, game_state_ro=self.game_state_ro
+        )
+        self.widgets.append(self.placar_widget)
 
-        # 3. Botões Principais
+    def _init_botoes_principais(self):
         self.btn_reiniciar = Button(
             rect=pygame.Rect(20, 80, 160, 40),
             texto="REINICIAR",
@@ -55,8 +68,9 @@ class MenuView(BaseView):
         self.btn_placar = Button(
             rect=pygame.Rect(20, 140, 160, 40), texto="PLACAR", evento_tipo=PLACAR_CLICK
         )
+        self.widgets.extend([self.btn_reiniciar, self.btn_placar])
 
-        # 4. Escolha de Dificuldade
+    def _init_dificuldade(self):
         self.label_dificuldade = Text(
             pos=(20, 195), texto="DIFICULDADE:", cor=(200, 200, 200), tamanho=20
         )
@@ -66,7 +80,7 @@ class MenuView(BaseView):
                 texto="FÁCIL",
                 evento_tipo=DIFICULDADE_ALTERADA,
                 id_escolha="Facil",
-                game_state_ro=game_state_ro,
+                game_state_ro=self.game_state_ro,
                 nome="Facil",
                 bombas=10,
             ),
@@ -75,7 +89,7 @@ class MenuView(BaseView):
                 texto="MÉDIO",
                 evento_tipo=DIFICULDADE_ALTERADA,
                 id_escolha="Medio",
-                game_state_ro=game_state_ro,
+                game_state_ro=self.game_state_ro,
                 nome="Medio",
                 bombas=40,
             ),
@@ -84,33 +98,23 @@ class MenuView(BaseView):
                 texto="DIFÍCIL",
                 evento_tipo=DIFICULDADE_ALTERADA,
                 id_escolha="Dificil",
-                game_state_ro=game_state_ro,
+                game_state_ro=self.game_state_ro,
                 nome="Dificil",
                 bombas=99,
             ),
         ]
+        self.widgets.append(self.label_dificuldade)
+        self.widgets.extend(self.btns_dificuldade)
 
-        # 5. Slider de Volume
+    def _init_volume(self):
         self.slider_volume = SliderWidget(
             x_inicio=30,
-            x_fim=largura - 30,
+            x_fim=self.width - 30,
             y=400,
             label="VOLUME:",
-            game_state_ro=game_state_ro,
+            game_state_ro=self.game_state_ro,
         )
-
-        # Lista de widgets para iteração
-        self.widgets = [
-            self.bg_box,
-            self.border_v,
-            self.border_h,
-            self.placar_widget,
-            self.btn_reiniciar,
-            self.btn_placar,
-            self.label_dificuldade,
-            *self.btns_dificuldade,
-            self.slider_volume,
-        ]
+        self.widgets.append(self.slider_volume)
 
     def handle_event(self, event, offset: tuple[float, float] = (0, 0)):
         for widget in self.widgets:
