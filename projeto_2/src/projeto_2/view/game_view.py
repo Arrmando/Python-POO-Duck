@@ -25,10 +25,14 @@ class GameView(BaseView):
 
         # Sub-views
         self.mapa_view = MapaView(
-            game_model_ro.mapa, self.spritesheet, tamanho_celula=32
+            mapa_ro=game_model_ro.mapa,
+            spritesheet=self.spritesheet,
+            area=(self.largura_area_mapa, self.altura),
+            tamanho_celula=32,
         )
         self.menu_view = MenuView(
-            game_model_ro.game_state, self.largura_info, self.altura
+            game_state_ro=game_model_ro.game_state,
+            area=(self.largura_info, self.altura),
         )
 
     @property
@@ -46,10 +50,6 @@ class GameView(BaseView):
     @property
     def tamanho_celula(self):
         return self.mapa_view.tamanho_celula
-
-    def calcular_offsets(self):
-        """Calcula a centralização interna do mapa dentro de sua área reservada."""
-        return self.mapa_view.calcular_offsets(self.largura_area_mapa, self.altura)
 
     def converter_tela_para_grade(self, pos):
         """Converte coordenadas da tela para (x, y) da grade."""

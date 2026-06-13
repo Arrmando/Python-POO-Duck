@@ -9,30 +9,34 @@ from .base_view import BaseView
 
 
 class MapaView(BaseView):
-    def __init__(self, mapa_ro, spritesheet, tamanho_celula: int = 32):
+    def __init__(
+        self,
+        *,
+        mapa_ro,
+        spritesheet,
+        area: tuple[int, int],
+        tamanho_celula: int = 32,
+    ):
         self.mapa_ro = mapa_ro
         self.spritesheet = spritesheet
+        self.area = area
         self.tamanho_celula = tamanho_celula
         # Offset relativo ao pai (calculado dinamicamente)
-        self.local_offset_x = 0
-        self.local_offset_y = 0
+        self.local_offset = (0, 0)
 
-    def calcular_offsets(self, largura_area: int, altura_area: int):
-        """Calcula a centralização do mapa BASEADA na área disponível."""
-        self.local_offset_x = (
-            largura_area - (self.mapa_ro.colunas * self.tamanho_celula)
-        ) // 2
-        self.local_offset_y = (
-            altura_area - (self.mapa_ro.linhas * self.tamanho_celula)
-        ) // 2
-        return self.local_offset_x, self.local_offset_y
+    def _atualizar_offsets(self):
+        """Calcula a centralização do mapa baseada na área disponível."""
+        offset_x = (self.area[0] - (self.mapa_ro.colunas * self.tamanho_celula)) // 2
+        offset_y = (self.area[1] - (self.mapa_ro.linhas * self.tamanho_celula)) // 2
+        self.local_offset = (offset_x, offset_y)
 
     def converter_tela_para_grade(self, pos, parent_offset=(0, 0)):
         """Converte coordenadas da tela para (x, y) da grade, considerando offsets."""
+        self._atualizar_offsets()
         ox, oy = parent_offset
         px, py = pos
-        gx = (px - (ox + self.local_offset_x)) // self.tamanho_celula
-        gy = (py - (oy + self.local_offset_y)) // self.tamanho_celula
+        gx = (px - (ox + self.local_offset[0])) // self.tamanho_celula
+        gy = (py - (oy + self.local_offset[1])) // self.tamanho_celula
         return int(gx), int(gy)
 
     def obter_sprite_numero(self, valor: int) -> int:
@@ -61,10 +65,11 @@ class MapaView(BaseView):
                 post_evento(CELULA_CLICK, pos=grid_pos, button=event.button)
 
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
+        self._atualizar_offsets()
         ox, oy = offset
         # Offset absoluto final
-        ax = ox + self.local_offset_x
-        ay = oy + self.local_offset_y
+        ax = ox + self.local_offset[0]
+        ay = oy + self.local_offset[1]
 
         for y in range(self.mapa_ro.linhas):
             for x in range(self.mapa_ro.colunas):

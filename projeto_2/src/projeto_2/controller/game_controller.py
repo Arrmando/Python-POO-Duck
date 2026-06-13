@@ -30,7 +30,6 @@ class GameController:
     def iniciar_jogo(self):
         """Reinicia o jogo."""
         self.model.iniciar_jogo()
-        self.view.calcular_offsets()
 
     def processar_evento_bruto(self, evento):
         """Repassa eventos do pygame para a view."""
@@ -67,7 +66,6 @@ class GameController:
     def run(self):
         """Orquestra o loop principal do jogo."""
         self.audio_controller.iniciar_musica_fundo()
-        self.view.calcular_offsets()
 
         rodando = True
         while rodando:
