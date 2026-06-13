@@ -2,9 +2,9 @@ import os
 
 import pygame
 
-from .base_view import BaseView
 from .mapa_view import MapaView
 from .menu_view import MenuView
+from .base_view import BaseView
 
 
 class GameView(BaseView):
@@ -19,21 +19,14 @@ class GameView(BaseView):
         self.cor_fundo = (30, 30, 30)
         self.game_model_ro = game_model_ro
 
-        # Sub-views
-        largura_info = largura // 4
-        self.mapa_view = MapaView(
-            game_model_ro.mapa, self.spritesheet, tamanho_celula=32
-        )
-        self.menu_view = MenuView(
-            game_model_ro.game_state, largura, altura, largura_info
-        )
+        # Configurações de layout
+        self.largura_info = largura // 4
+        self.largura_area_mapa = largura - self.largura_info
 
-        # Definição das áreas (Layout)
-        self.area_placar = (
-            self.largura - largura_info,
-            0,
-            largura_info,
-            self.altura // 10,
+        # Sub-views
+        self.mapa_view = MapaView(game_model_ro.mapa, self.spritesheet, tamanho_celula=32)
+        self.menu_view = MenuView(
+            game_model_ro.game_state, self.largura_info, self.altura
         )
 
     @property
@@ -41,39 +34,34 @@ class GameView(BaseView):
         return 0.0, 0.0
 
     @property
-    def largura_info(self):
-        return self.menu_view.largura_info
+    def offset_menu(self) -> tuple[float, float]:
+        return float(self.largura_area_mapa), 0.0
+
+    @property
+    def offset_mapa(self) -> tuple[float, float]:
+        return 0.0, 0.0
 
     @property
     def tamanho_celula(self):
         return self.mapa_view.tamanho_celula
 
-    @property
-    def offset_x(self):
-        return self.mapa_view._offset_x
-
-    @property
-    def offset_y(self):
-        return self.mapa_view._offset_y
-
     def calcular_offsets(self):
-        """Delega o cálculo de offsets para a MapaView."""
-        largura_area_mapa = self.largura - self.largura_info
-        return self.mapa_view.calcular_offsets(largura_area_mapa, self.altura)
+        """Calcula a centralização interna do mapa dentro de sua área reservada."""
+        return self.mapa_view.calcular_offsets(self.largura_area_mapa, self.altura)
 
     def converter_tela_para_grade(self, pos):
-        """Delega a conversão de coordenadas para a MapaView."""
-        return self.mapa_view.converter_tela_para_grade(pos)
+        """Converte coordenadas da tela para (x, y) da grade."""
+        return self.mapa_view.converter_tela_para_grade(pos, self.offset_mapa)
 
-    def handle_event(self, event):
-        """Delega o tratamento de eventos para as sub-views."""
-        self.mapa_view.handle_event(event)
-        self.menu_view.handle_event(event)
+    def handle_event(self, event, offset=(0,0)):
+        """Delega o tratamento de eventos para as sub-views com seus devidos offsets."""
+        self.mapa_view.handle_event(event, self.offset_mapa)
+        self.menu_view.handle_event(event, self.offset_menu)
 
-    def desenhar(self, tela: pygame.Surface):
+    def desenhar(self, tela: pygame.Surface, offset=(0,0)):
         """Renderiza todos os componentes na tela."""
-        self.mapa_view.desenhar(tela)
-        self.menu_view.desenhar(tela)
+        self.mapa_view.desenhar(tela, self.offset_mapa)
+        self.menu_view.desenhar(tela, self.offset_menu)
 
     def render(self):
         """
