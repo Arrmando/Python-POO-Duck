@@ -4,54 +4,41 @@ import pygame
 class HandleMenu:
     def __init__(self, controller=None):
         self._controller = controller
-
-        # O menu começa em X=600 (para largura 800)
-        # 1. Botão REINICIAR
-        self.btn_reiniciar_rect = pygame.Rect(620, 80, 160, 40)
-
-        # 2. Botão PLACAR
-        self.btn_placar_rect = pygame.Rect(620, 140, 160, 40)
-
-        # 3. Botões de Dificuldade
-        self.btn_facil_rect = pygame.Rect(620, 220, 160, 35)
-        self.btn_medio_rect = pygame.Rect(620, 265, 160, 35)
-        self.btn_dificil_rect = pygame.Rect(620, 310, 160, 35)
-
-        # 4. Controle de Volume (Slider)
-        self.slider_x_inicio = 630
-        self.slider_x_fim = 770
-        self.slider_y = 400
         self.volume = 0.5  # Valor entre 0.0 e 1.0
-        self.knob_radius = 8
         self._arrastando_volume = False
-
         self.dificuldade_atual = "Medio"  # Padrão
 
-    def obter_knob_pos(self):
+    def obter_knob_pos(self, slider_x_inicio=630, slider_x_fim=770):
         """Calcula a posição X do círculo baseada no volume atual."""
-        largura_total = self.slider_x_fim - self.slider_x_inicio
-        return int(self.slider_x_inicio + (self.volume * largura_total))
+        largura_total = slider_x_fim - slider_x_inicio
+        return int(slider_x_inicio + (self.volume * largura_total))
 
-    def processar_evento(self, evento):
+    def processar_evento(self, evento, view_geometry=None):
         """Trata cliques e arraste no menu."""
+        if not view_geometry:
+            return
+
         if evento.type == pygame.MOUSEBUTTONDOWN:
             pos = evento.pos
             # Botões normais
-            if self.btn_reiniciar_rect.collidepoint(pos):
+            if view_geometry["btn_reiniciar"].collidepoint(pos):
                 self.reiniciar_jogo()
-            elif self.btn_placar_rect.collidepoint(pos):
+            elif view_geometry["btn_placar"].collidepoint(pos):
                 self.abrir_placar()
-            elif self.btn_facil_rect.collidepoint(pos):
+            elif view_geometry["btn_facil"].collidepoint(pos):
                 self.mudar_dificuldade("Facil", 10)
-            elif self.btn_medio_rect.collidepoint(pos):
+            elif view_geometry["btn_medio"].collidepoint(pos):
                 self.mudar_dificuldade("Medio", 40)
-            elif self.btn_dificil_rect.collidepoint(pos):
+            elif view_geometry["btn_dificil"].collidepoint(pos):
                 self.mudar_dificuldade("Dificil", 99)
 
             # Verifica clique no knob do volume
-            knob_x = self.obter_knob_pos()
-            distancia = ((pos[0] - knob_x) ** 2 + (pos[1] - self.slider_y) ** 2) ** 0.5
-            if distancia <= self.knob_radius + 5:  # Margem extra para facilitar clique
+            slider = view_geometry["slider"]
+            knob_x = self.obter_knob_pos(slider["x_inicio"], slider["x_fim"])
+            distancia = ((pos[0] - knob_x) ** 2 + (pos[1] - slider["y"]) ** 2) ** 0.5
+            if (
+                distancia <= slider["knob_radius"] + 5
+            ):  # Margem extra para facilitar clique
                 self._arrastando_volume = True
 
         elif evento.type == pygame.MOUSEBUTTONUP:
@@ -59,13 +46,14 @@ class HandleMenu:
 
         elif evento.type == pygame.MOUSEMOTION:
             if self._arrastando_volume:
+                slider = view_geometry["slider"]
                 pos_x = evento.pos[0]
                 # Limita o movimento à reta
-                pos_x = max(self.slider_x_inicio, min(pos_x, self.slider_x_fim))
+                pos_x = max(slider["x_inicio"], min(pos_x, slider["x_fim"]))
 
                 # Atualiza o valor do volume
-                largura_total = self.slider_x_fim - self.slider_x_inicio
-                self.volume = (pos_x - self.slider_x_inicio) / largura_total
+                largura_total = slider["x_fim"] - slider["x_inicio"]
+                self.volume = (pos_x - slider["x_inicio"]) / largura_total
 
                 # Sincroniza o volume com o Handler de Áudio
                 if self._controller:

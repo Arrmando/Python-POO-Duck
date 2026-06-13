@@ -14,7 +14,7 @@ class TelaController:
         self.altura = altura
         self.largura_info = largura // 4
 
-        # Definição das áreas
+        # Definição das áreas (Lógica de layout de alto nível)
         self.area_mapa = (0, 0, largura - self.largura_info, altura)
         self.area_placar = (
             largura - self.largura_info,
@@ -43,7 +43,9 @@ class TelaController:
         ax, ay, aw, ah = area
         return ax <= px < ax + aw and ay <= py < ay + ah
 
-    def tratar_evento(self, evento, offset_x: int = 0, offset_y: int = 0):
+    def tratar_evento(
+        self, evento, offset_x: int = 0, offset_y: int = 0, view_geometry=None
+    ):
         # O Handler de áudio pode escutar eventos globais (teclado, etc)
         self.handle_audio.processar_evento(evento)
 
@@ -54,7 +56,7 @@ class TelaController:
             elif self._esta_dentro(pos, self.area_placar):
                 self.handle_placar.processar_evento(evento)
             elif self._esta_dentro(pos, self.area_menu):
-                self.handle_menu.processar_evento(evento)
+                self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
 
     def run(self, janela):
         """Orquestra o loop principal do jogo."""
@@ -74,11 +76,17 @@ class TelaController:
         while rodando:
             # O mapa pode mudar se for reiniciado via menu
             mapa = self.handle_mapa._mapa
+            view_geometry = janela.obter_geometria()
 
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     rodando = False
-                self.tratar_evento(evento, offset_x=offset_x, offset_y=offset_y)
+                self.tratar_evento(
+                    evento,
+                    offset_x=offset_x,
+                    offset_y=offset_y,
+                    view_geometry=view_geometry,
+                )
 
             janela.limpar_tela()
             janela.desenhar_celulas(mapa, self.handle_mapa, offset_x, offset_y)

@@ -19,6 +19,35 @@ class JanelaView:
         self.cor_painel = (50, 50, 50)
         self.cor_borda = (100, 100, 100)
 
+        # Definição de Geometria da UI (Movido do Controller)
+        self.largura_info = largura // 4
+        self.btn_reiniciar_rect = pygame.Rect(620, 80, 160, 40)
+        self.btn_placar_rect = pygame.Rect(620, 140, 160, 40)
+        self.btn_facil_rect = pygame.Rect(620, 220, 160, 35)
+        self.btn_medio_rect = pygame.Rect(620, 265, 160, 35)
+        self.btn_dificil_rect = pygame.Rect(620, 310, 160, 35)
+
+        self.slider_x_inicio = 630
+        self.slider_x_fim = 770
+        self.slider_y = 400
+        self.knob_radius = 8
+
+    def obter_geometria(self):
+        """Retorna os Rects e dimensões para o Controller processar eventos."""
+        return {
+            "btn_reiniciar": self.btn_reiniciar_rect,
+            "btn_placar": self.btn_placar_rect,
+            "btn_facil": self.btn_facil_rect,
+            "btn_medio": self.btn_medio_rect,
+            "btn_dificil": self.btn_dificil_rect,
+            "slider": {
+                "x_inicio": self.slider_x_inicio,
+                "x_fim": self.slider_x_fim,
+                "y": self.slider_y,
+                "knob_radius": self.knob_radius,
+            },
+        }
+
     def _carregar_spritesheet(self):
         caminho_sprites = os.path.join("imagens", "New Piskel.png")
         try:
@@ -102,21 +131,13 @@ class JanelaView:
         COR_TEXTO = (30, 30, 30)
 
         # Botões REINICIAR e PLACAR
-        pygame.draw.rect(
-            self.tela, COR_BTN, menu_handler.btn_reiniciar_rect, border_radius=5
-        )
+        pygame.draw.rect(self.tela, COR_BTN, self.btn_reiniciar_rect, border_radius=5)
         texto_r = fonte_p.render("REINICIAR", True, COR_TEXTO)
-        self.tela.blit(
-            texto_r, texto_r.get_rect(center=menu_handler.btn_reiniciar_rect.center)
-        )
+        self.tela.blit(texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center))
 
-        pygame.draw.rect(
-            self.tela, COR_BTN, menu_handler.btn_placar_rect, border_radius=5
-        )
+        pygame.draw.rect(self.tela, COR_BTN, self.btn_placar_rect, border_radius=5)
         texto_p = fonte_p.render("PLACAR", True, COR_TEXTO)
-        self.tela.blit(
-            texto_p, texto_p.get_rect(center=menu_handler.btn_placar_rect.center)
-        )
+        self.tela.blit(texto_p, texto_p.get_rect(center=self.btn_placar_rect.center))
 
         # Dificuldade
         label_fonte = pygame.font.SysFont("Arial", 20, bold=True)
@@ -125,9 +146,9 @@ class JanelaView:
         )
 
         botoes = [
-            (menu_handler.btn_facil_rect, "FÁCIL", "Facil"),
-            (menu_handler.btn_medio_rect, "MÉDIO", "Medio"),
-            (menu_handler.btn_dificil_rect, "DIFÍCIL", "Dificil"),
+            (self.btn_facil_rect, "FÁCIL", "Facil"),
+            (self.btn_medio_rect, "MÉDIO", "Medio"),
+            (self.btn_dificil_rect, "DIFÍCIL", "Dificil"),
         ]
 
         for rect, label_txt, id_dif in botoes:
@@ -141,22 +162,22 @@ class JanelaView:
         pygame.draw.line(
             self.tela,
             (100, 100, 100),
-            (menu_handler.slider_x_inicio, menu_handler.slider_y),
-            (menu_handler.slider_x_fim, menu_handler.slider_y),
+            (self.slider_x_inicio, self.slider_y),
+            (self.slider_x_fim, self.slider_y),
             3,
         )
-        knob_x = menu_handler.obter_knob_pos()
+        knob_x = menu_handler.obter_knob_pos(self.slider_x_inicio, self.slider_x_fim)
         pygame.draw.circle(
             self.tela,
             (200, 200, 200),
-            (knob_x, menu_handler.slider_y),
-            menu_handler.knob_radius,
+            (knob_x, self.slider_y),
+            self.knob_radius,
         )
         pygame.draw.circle(
             self.tela,
             (255, 255, 255),
-            (knob_x, menu_handler.slider_y),
-            menu_handler.knob_radius - 2,
+            (knob_x, self.slider_y),
+            self.knob_radius - 2,
         )
 
 
