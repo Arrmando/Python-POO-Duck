@@ -9,8 +9,9 @@ from .handle_placar_events import HandlePlacar
 
 
 class TelaController:
-    def __init__(self, janela, mapa):
+    def __init__(self, janela, mapa, game_state):
         self.janela = janela
+        self.game_state = game_state
         self.largura = janela.largura
         self.altura = janela.altura
         self.largura_info = self.largura // 4
@@ -32,9 +33,11 @@ class TelaController:
 
         # Instanciação dos handlers
         self.handle_audio = HandleAudio()
-        self.handle_mapa = HandleMapa(controller=self, mapa_quadrado=mapa)
-        self.handle_menu = HandleMenu(controller=self)
-        self.handle_placar = HandlePlacar()
+        self.handle_mapa = HandleMapa(
+            game_state, controller=self, mapa_quadrado=mapa
+        )
+        self.handle_menu = HandleMenu(game_state, controller=self)
+        self.handle_placar = HandlePlacar(game_state)
 
     def inicializar_mapa(self, colunas: int, linhas: int):
         mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
@@ -66,7 +69,7 @@ class TelaController:
         """Captura um snapshot do estado atual para a View."""
         return {
             "mapa": self.handle_mapa._mapa,
-            "tempo_formatado": self.handle_placar.obter_tempo_formatado(),
+            "tempo_formatado": self.game_state.tempo_formatado,
             "area_placar": self.area_placar,
             "menu_handler": self.handle_menu,
         }

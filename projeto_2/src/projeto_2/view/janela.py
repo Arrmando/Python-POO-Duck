@@ -7,7 +7,7 @@ from .menu_view import MenuView
 
 
 class JanelaView:
-    def __init__(self, mapa_ro, largura: int = 800, altura: int = 600):
+    def __init__(self, mapa_ro, game_state_ro, largura: int = 800, altura: int = 600):
         pygame.init()
         self.largura = largura
         self.altura = altura
@@ -16,6 +16,7 @@ class JanelaView:
 
         self.spritesheet = self._carregar_spritesheet()
         self.cor_fundo = (30, 30, 30)
+        self.game_state_ro = game_state_ro
 
         # Sub-views
         largura_info = largura // 4

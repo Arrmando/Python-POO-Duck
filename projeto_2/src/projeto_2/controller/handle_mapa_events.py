@@ -6,57 +6,22 @@ from projeto_2.model.mapa_quadrado import MapaQuadrado
 
 
 class HandleMapa:
-    def __init__(self, controller=None, mapa_quadrado=None):
+    def __init__(self, game_state, controller=None, mapa_quadrado=None):
         self._controller = controller
         self._mapa = mapa_quadrado
-        self._primeiro_clique = True
-        self._qtd_bombas = 40  # Valor padrão
-        self._jogo_finalizado = False
+        self._game_state = game_state
 
     def inicializar_mapa(self, colunas: int, linhas: int) -> MapaQuadrado:
         """Cria e retorna um novo mapa."""
         self._mapa = MapaQuadrado(colunas, linhas)
-        self._primeiro_clique = True
-        self._jogo_finalizado = False
-        # Notifica o placar para resetar o relógio
-        if self._controller:
-            self._controller.handle_placar.reiniciar()
+        self._game_state.primeiro_clique = True
+        self._game_state.jogo_finalizado = False
+        self._game_state.reiniciar_timer()
         return self._mapa
 
     def set_qtd_bombas(self, qtd: int):
         """Define a quantidade de bombas para o próximo jogo."""
-        self._qtd_bombas = qtd
-
-    def obter_sprite_numero(self, valor: int) -> int:
-        """
-        Retorna a posição X do sprite para um determinado valor numérico.
-        Segundo a regra: começa em 4*32 para o número 0.
-        Assim: 0 -> 4*32, 1 -> 5*32, etc.
-        """
-        return (4 + valor) * 32
-
-    def obter_sprites_sobrepostos(self, celula) -> list[int]:
-        """
-        Analisa a célula e retorna uma lista de posições X dos sprites
-        que devem ser desenhados sobre a base.
-        """
-        sprites = []
-
-        if celula.status:  # Célula escondida
-            bandeira = celula.obter_entidade(Bandeira)
-            if bandeira:
-                sprites.append(bandeira.sprite)
-        else:  # Célula revelada
-            # 1. Adiciona número se houver
-            if celula.valor > 0:
-                sprites.append(self.obter_sprite_numero(celula.valor))
-
-            # 2. Adiciona bomba se houver
-            bomba = celula.obter_entidade(Bomba)
-            if bomba:
-                sprites.append(bomba.sprite)
-
-        return sprites
+        self._game_state.qtd_bombas = qtd
 
     def executar_acao_clique(self, x: int, y: int, botao: int):
         """
@@ -64,7 +29,7 @@ class HandleMapa:
         1: Botão Esquerdo -> Revelar célula.
         3: Botão Direito -> Adicionar/Alternar bandeira.
         """
-        if not self._mapa or self._jogo_finalizado:
+        if not self._mapa or self._game_state.jogo_finalizado:
             return
 
         celula = self._mapa.obter_celula(x, y)
@@ -76,20 +41,17 @@ class HandleMapa:
             if celula.obter_entidade(Bandeira):
                 return
 
-            if self._primeiro_clique:
-                self._mapa.distribuir_bombas(x, y, self._qtd_bombas)
-                self._primeiro_clique = False
+            if self._game_state.primeiro_clique:
+                self._mapa.distribuir_bombas(x, y, self._game_state.qtd_bombas)
+                self._game_state.primeiro_clique = False
                 print("Bombas distribuídas.")
                 # Inicia o relógio no primeiro clique
-                if self._controller:
-                    self._controller.handle_placar.iniciar()
+                self._game_state.iniciar_timer()
 
             if self._mapa.revelar(x, y):
                 # Game Over
-                self._jogo_finalizado = True
-                # Para o relógio
-                if self._controller:
-                    self._controller.handle_placar.parar()
+                self._game_state.jogo_finalizado = True
+                self._game_state.parar_timer()
 
                 # Executa explodir apenas na bomba que foi clicada
                 bomba_clicada = celula.obter_entidade(Bomba)
