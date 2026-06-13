@@ -25,6 +25,14 @@ class GameView:
             game_model_ro.game_state, largura, altura, largura_info
         )
 
+        # Definição das áreas (Layout)
+        self.area_placar = (
+            self.largura - largura_info,
+            0,
+            largura_info,
+            self.altura // 10,
+        )
+
     @property
     def largura_info(self):
         return self.menu_view.largura_info
@@ -59,14 +67,14 @@ class GameView:
         self.mapa_view.handle_event(event)
         self.menu_view.handle_event(event)
 
-    def render(self, estado):
+    def render(self):
         """
-        Renderiza o quadro completo baseado no snapshot de estado fornecido.
+        Renderiza o quadro completo.
         """
         self.limpar_tela()
         self.mapa_view.desenhar(self.tela, self.spritesheet)
         self.menu_view.desenhar_layout_base(self.tela)
-        self.menu_view.desenhar_placar(self.tela, estado["area_placar"])
+        self.menu_view.desenhar_placar(self.tela, self.area_placar)
         self.menu_view.desenhar_menu(self.tela)
         self.atualizar()
 

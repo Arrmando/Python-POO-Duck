@@ -10,10 +10,8 @@ class MapaQuadrado:
         self._linhas = linhas
         self._mapa: list[list[Celula]] = self._gerar_mapa()
 
-    def reset(self, colunas: int, linhas: int):
+    def reset(self):
         """Reseta o mapa para um novo estado inicial."""
-        self._colunas = colunas
-        self._linhas = linhas
         self._mapa = self._gerar_mapa()
 
     def _gerar_mapa(self) -> list[list[Celula]]:
