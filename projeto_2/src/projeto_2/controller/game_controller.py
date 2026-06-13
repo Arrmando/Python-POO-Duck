@@ -6,6 +6,13 @@ from .handle_audio_events import HandleAudio
 from .handle_mapa_events import HandleMapa
 from .handle_menu_events import HandleMenu
 from .handle_placar_events import HandlePlacar
+from projeto_2.constants import (
+    CELULA_CLICK,
+    DIFICULDADE_ALTERADA,
+    PLACAR_CLICK,
+    REINICIAR_CLICK,
+    VOLUME_ALTERADO,
+)
 
 
 class GameController:
@@ -46,44 +53,35 @@ class GameController:
         self.view.calcular_offsets()
         return mapa
 
-    def _esta_dentro(self, pos, area):
-        px, py = pos
-        ax, ay, aw, ah = area
-        return ax <= px < ax + aw and ay <= py < ay + ah
-
-    def tratar_evento(self, evento):
-        # O Handler de áudio pode escutar eventos globais (teclado, etc)
+    def tratar_evento_bruto(self, evento):
+        """Passa eventos brutos para a View traduzir, e para handlers globais."""
         self.handle_audio.processar_evento(evento)
+        self.view.handle_event(evento)
 
-        if hasattr(evento, "pos"):
-            pos = evento.pos
-            if self._esta_dentro(pos, self.area_mapa):
-                grid_pos = self.view.converter_tela_para_grade(pos)
-                self.handle_mapa.processar_evento(evento, grid_pos=grid_pos)
-            elif self._esta_dentro(pos, self.area_placar):
-                self.handle_placar.processar_evento(evento)
-            elif self._esta_dentro(pos, self.area_menu):
-                view_geometry = self.view.obter_geometria()
-                resultado = self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
-                if resultado:
-                    self._processar_resultado_menu(resultado)
-
-    def _processar_resultado_menu(self, resultado):
-        acao = resultado.get("acao")
-        if acao == "reiniciar":
+    def processar_evento_jogo(self, evento):
+        """Reage aos eventos customizados emitidos pelas Views."""
+        if evento.type == CELULA_CLICK:
+            gx, gy = evento.pos
+            self.handle_mapa.executar_acao_clique(gx, gy, evento.button)
+        
+        elif evento.type == REINICIAR_CLICK:
             print("Reiniciando jogo...")
             self.inicializar_mapa(18, 18)
-        elif acao == "abrir_placar":
+            
+        elif evento.type == PLACAR_CLICK:
             print("Abrindo Placar...")
-        elif acao == "mudar_dificuldade":
-            nome = resultado.get("nome")
-            bombas = resultado.get("bombas")
+            
+        elif evento.type == DIFICULDADE_ALTERADA:
+            nome = evento.nome
+            bombas = evento.bombas
             print(f"Mudando dificuldade para: {nome} ({bombas} bombas)")
             self.handle_mapa.set_qtd_bombas(bombas)
+            self.model.game_state.dificuldade = nome
             self.inicializar_mapa(18, 18)
-        elif acao == "ajustar_volume":
-            volume = resultado.get("volume")
-            self.handle_audio.ajustar_volume(volume)
+            
+        elif evento.type == VOLUME_ALTERADO:
+            self.model.game_state.volume = evento.volume
+            self.handle_audio.ajustar_volume(evento.volume)
 
     def _obter_estado_atual(self):
         """Captura um snapshot do estado atual para a View."""
@@ -100,10 +98,18 @@ class GameController:
 
         rodando = True
         while rodando:
-            for evento in pygame.event.get():
+            # Primeiro, processamos todos os eventos na fila
+            eventos = pygame.event.get()
+            for evento in eventos:
                 if evento.type == pygame.QUIT:
                     rodando = False
-                self.tratar_evento(evento)
+                
+                # Trata eventos brutos (sistema/mouse/teclado)
+                self.tratar_evento_bruto(evento)
+                
+                # Trata eventos de lógica de jogo (customizados)
+                self.processar_evento_jogo(evento)
+
             estado = self._obter_estado_atual()
             self.view.render(estado)
 

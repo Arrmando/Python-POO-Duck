@@ -1,5 +1,6 @@
 import pygame
 
+from projeto_2.constants import CELULA_CLICK
 from projeto_2.model.bandeira import Bandeira
 from projeto_2.model.bomba import Bomba
 
@@ -55,6 +56,21 @@ class MapaView:
                 sprites.append(bomba.sprite)
 
         return sprites
+
+    def handle_event(self, event):
+        """
+        Traduz eventos brutos do pygame em eventos de jogo (CELULA_CLICK).
+        """
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            grid_pos = self.converter_tela_para_grade(event.pos)
+            gx, gy = grid_pos
+            if 0 <= gx < self.mapa_ro.colunas and 0 <= gy < self.mapa_ro.linhas:
+                # Emite o evento customizado
+                new_event = pygame.event.Event(CELULA_CLICK, {
+                    'pos': grid_pos,
+                    'button': event.button
+                })
+                pygame.event.post(new_event)
 
     def desenhar(self, tela, spritesheet):
         """Exibe cada célula e seus sprites sobrepostos (números, bombas, bandeiras)."""

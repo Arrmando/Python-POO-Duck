@@ -20,8 +20,10 @@ class HandlePlacar:
 
     def obter_tempo_formatado(self) -> str:
         """Retorna o tempo no formato MM:SS."""
-        return self._game_state.tempo_formatado
-
-    def processar_evento(self, evento):
-        # Por enquanto, o placar não processa eventos de clique
-        pass
+        # Note: This is now handled by the View's _formatar_tempo
+        # Keeping this for now if any other logic needs it, 
+        # but the View calculates it itself now.
+        total_segundos = self._game_state.tempo_segundos
+        minutos = total_segundos // 60
+        segundos = total_segundos % 60
+        return f"{minutos:02}:{segundos:02}"

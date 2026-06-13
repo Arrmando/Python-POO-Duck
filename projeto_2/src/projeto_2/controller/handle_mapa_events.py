@@ -1,5 +1,3 @@
-import pygame
-
 from projeto_2.model.bandeira import Bandeira
 from projeto_2.model.bomba import Bomba
 from projeto_2.model.mapa_quadrado import MapaQuadrado
@@ -72,8 +70,3 @@ class HandleMapa:
                 else:
                     nova_bandeira = Bandeira(id=celula.address, status=True, sprite=0)
                     celula.adicionar_bandeira(nova_bandeira)
-
-    def processar_evento(self, evento, grid_pos=None):
-        """Trata apenas eventos de clique do mouse (MOUSEBUTTONDOWN)."""
-        if evento.type == pygame.MOUSEBUTTONDOWN and grid_pos:
-            self.executar_acao_clique(grid_pos[0], grid_pos[1], evento.button)

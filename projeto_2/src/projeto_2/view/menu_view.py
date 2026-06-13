@@ -1,5 +1,12 @@
 import pygame
 
+from projeto_2.constants import (
+    DIFICULDADE_ALTERADA,
+    PLACAR_CLICK,
+    REINICIAR_CLICK,
+    VOLUME_ALTERADO,
+)
+
 
 class MenuView:
     def __init__(self, game_state_ro, largura: int, altura: int, largura_info: int):
@@ -22,6 +29,9 @@ class MenuView:
 
         self.cor_painel = (50, 50, 50)
         self.cor_borda = (100, 100, 100)
+        
+        # Estado interno da View para interação
+        self._arrastando_volume = False
 
     def obter_geometria(self):
         """Retorna os Rects e dimensões para o Controller."""
@@ -85,6 +95,39 @@ class MenuView:
         texto = fonte.render(texto_str, True, (255, 0, 0))
         texto_rect = texto.get_rect(center=rect_placar.center)
         tela.blit(texto, texto_rect)
+
+    def handle_event(self, event):
+        """Traduz eventos brutos do pygame em eventos de jogo."""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = event.pos
+            # Botões
+            if self.btn_reiniciar_rect.collidepoint(pos):
+                pygame.event.post(pygame.event.Event(REINICIAR_CLICK))
+            elif self.btn_placar_rect.collidepoint(pos):
+                pygame.event.post(pygame.event.Event(PLACAR_CLICK))
+            elif self.btn_facil_rect.collidepoint(pos):
+                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Facil', 'bombas': 10}))
+            elif self.btn_medio_rect.collidepoint(pos):
+                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Medio', 'bombas': 40}))
+            elif self.btn_dificil_rect.collidepoint(pos):
+                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Dificil', 'bombas': 99}))
+            
+            # Knob do Volume
+            knob_x = self.obter_knob_pos()
+            distancia = ((pos[0] - knob_x) ** 2 + (pos[1] - self.slider_y) ** 2) ** 0.5
+            if distancia <= self.knob_radius + 5:
+                self._arrastando_volume = True
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self._arrastando_volume = False
+
+        elif event.type == pygame.MOUSEMOTION:
+            if self._arrastando_volume:
+                pos_x = event.pos[0]
+                pos_x = max(self.slider_x_inicio, min(pos_x, self.slider_x_fim))
+                largura_total = self.slider_x_fim - self.slider_x_inicio
+                novo_volume = (pos_x - self.slider_x_inicio) / largura_total
+                pygame.event.post(pygame.event.Event(VOLUME_ALTERADO, {'volume': novo_volume}))
 
     def desenhar_menu(self, tela):
         """Desenha botões e o slider de volume."""

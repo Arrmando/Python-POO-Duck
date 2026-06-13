@@ -54,6 +54,11 @@ class GameView:
         """Delega a obtenção de geometria para a MenuView."""
         return self.menu_view.obter_geometria()
 
+    def handle_event(self, event):
+        """Delega o tratamento de eventos para as sub-views."""
+        self.mapa_view.handle_event(event)
+        self.menu_view.handle_event(event)
+
     def render(self, estado):
         """
         Renderiza o quadro completo baseado no snapshot de estado fornecido.
