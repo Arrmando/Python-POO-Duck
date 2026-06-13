@@ -1,7 +1,8 @@
 import pygame
-from projeto_2.model.mapa_quadrado import MapaQuadrado
+
 from projeto_2.model.bandeira import Bandeira
 from projeto_2.model.bomba import Bomba
+from projeto_2.model.mapa_quadrado import MapaQuadrado
 
 
 class HandleMapa:
@@ -27,7 +28,12 @@ class HandleMapa:
         self._qtd_bombas = qtd
 
     def obter_endereco_pela_posicao(
-        self, pos_x: int, pos_y: int, offset_x: int = 0, offset_y: int = 0, tamanho_celula: int = 32
+        self,
+        pos_x: int,
+        pos_y: int,
+        offset_x: int = 0,
+        offset_y: int = 0,
+        tamanho_celula: int = 32,
     ):
         """
         Converte coordenadas de pixels da tela para coordenadas (x, y) da grade,
@@ -54,11 +60,11 @@ class HandleMapa:
 
     def obter_sprites_sobrepostos(self, celula) -> list[int]:
         """
-        Analisa a célula e retorna uma lista de posições X dos sprites 
+        Analisa a célula e retorna uma lista de posições X dos sprites
         que devem ser desenhados sobre a base.
         """
         sprites = []
-        
+
         if celula.status:  # Célula escondida
             bandeira = celula.obter_entidade(Bandeira)
             if bandeira:
@@ -67,12 +73,12 @@ class HandleMapa:
             # 1. Adiciona número se houver
             if celula.valor > 0:
                 sprites.append(self.obter_sprite_numero(celula.valor))
-            
+
             # 2. Adiciona bomba se houver
             bomba = celula.obter_entidade(Bomba)
             if bomba:
                 sprites.append(bomba.sprite)
-                
+
         return sprites
 
     def executar_acao_clique(self, x: int, y: int, botao: int):
@@ -107,7 +113,7 @@ class HandleMapa:
                 # Para o relógio
                 if self._controller:
                     self._controller.handle_placar.parar()
-                
+
                 # Executa explodir apenas na bomba que foi clicada
                 bomba_clicada = celula.obter_entidade(Bomba)
                 if bomba_clicada:

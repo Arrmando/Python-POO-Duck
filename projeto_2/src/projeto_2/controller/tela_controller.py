@@ -1,7 +1,7 @@
+from .handle_audio_events import HandleAudio
 from .handle_mapa_events import HandleMapa
 from .handle_menu_events import HandleMenu
 from .handle_placar_events import HandlePlacar
-from .handle_audio_events import HandleAudio
 
 
 class TelaController:
@@ -9,15 +9,20 @@ class TelaController:
         self.largura = largura
         self.altura = altura
         self.largura_info = largura // 4
-        
+
         # Definição das áreas
         self.area_mapa = (0, 0, largura - self.largura_info, altura)
-        self.area_placar = (largura - self.largura_info, 0, self.largura_info, altura // 10)
+        self.area_placar = (
+            largura - self.largura_info,
+            0,
+            self.largura_info,
+            altura // 10,
+        )
         self.area_menu = (
-            largura - self.largura_info, 
-            altura // 10, 
-            self.largura_info, 
-            altura - (altura // 10)
+            largura - self.largura_info,
+            altura // 10,
+            self.largura_info,
+            altura - (altura // 10),
         )
 
         # Instanciação dos handlers
@@ -37,7 +42,7 @@ class TelaController:
     def tratar_evento(self, evento, offset_x: int = 0, offset_y: int = 0):
         # O Handler de áudio pode escutar eventos globais (teclado, etc)
         self.handle_audio.processar_evento(evento)
-        
+
         if hasattr(evento, "pos"):
             pos = evento.pos
             if self._esta_dentro(pos, self.area_mapa):
