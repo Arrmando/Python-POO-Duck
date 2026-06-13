@@ -2,11 +2,12 @@ import os
 
 import pygame
 
+from .base_view import BaseView
 from .mapa_view import MapaView
 from .menu_view import MenuView
 
 
-class GameView:
+class GameView(BaseView):
     def __init__(self, game_model_ro, largura: int = 800, altura: int = 600):
         pygame.init()
         self.largura = largura
@@ -20,7 +21,9 @@ class GameView:
 
         # Sub-views
         largura_info = largura // 4
-        self.mapa_view = MapaView(game_model_ro.mapa, tamanho_celula=32)
+        self.mapa_view = MapaView(
+            game_model_ro.mapa, self.spritesheet, tamanho_celula=32
+        )
         self.menu_view = MenuView(
             game_model_ro.game_state, largura, altura, largura_info
         )
@@ -34,6 +37,10 @@ class GameView:
         )
 
     @property
+    def offset(self) -> tuple[float, float]:
+        return 0.0, 0.0
+
+    @property
     def largura_info(self):
         return self.menu_view.largura_info
 
@@ -43,11 +50,11 @@ class GameView:
 
     @property
     def offset_x(self):
-        return self.mapa_view.offset_x
+        return self.mapa_view._offset_x
 
     @property
     def offset_y(self):
-        return self.mapa_view.offset_y
+        return self.mapa_view._offset_y
 
     def calcular_offsets(self):
         """Delega o cálculo de offsets para a MapaView."""
@@ -58,24 +65,22 @@ class GameView:
         """Delega a conversão de coordenadas para a MapaView."""
         return self.mapa_view.converter_tela_para_grade(pos)
 
-    def obter_geometria(self):
-        """Delega a obtenção de geometria para a MenuView."""
-        return self.menu_view.obter_geometria()
-
     def handle_event(self, event):
         """Delega o tratamento de eventos para as sub-views."""
         self.mapa_view.handle_event(event)
         self.menu_view.handle_event(event)
 
+    def desenhar(self, tela: pygame.Surface):
+        """Renderiza todos os componentes na tela."""
+        self.mapa_view.desenhar(tela)
+        self.menu_view.desenhar(tela)
+
     def render(self):
         """
-        Renderiza o quadro completo.
+        Executa o ciclo completo de renderização: limpar, desenhar e atualizar.
         """
         self.limpar_tela()
-        self.mapa_view.desenhar(self.tela, self.spritesheet)
-        self.menu_view.desenhar_layout_base(self.tela)
-        self.menu_view.desenhar_placar(self.tela, self.area_placar)
-        self.menu_view.desenhar_menu(self.tela)
+        self.desenhar(self.tela)
         self.atualizar()
 
     def _carregar_spritesheet(self):
