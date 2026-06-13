@@ -3,10 +3,10 @@ import os
 import pygame
 
 from .base_view import BaseView
+from .colors import Colors
 from .mapa_view import MapaView
 from .menu_view import MenuView
 from .widget_views import PausaPopupView
-from .colors import Colors
 
 
 class GameView(BaseView):

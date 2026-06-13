@@ -101,7 +101,9 @@ class Text(BaseView):
 
 
 class Button(BaseView):
-    def __init__(self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data):
+    def __init__(
+        self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data
+    ):
         self.rect = rect
         self.cor_fundo = Colors.BUTTON_BG
         self.evento_tipo = evento_tipo
@@ -270,7 +272,7 @@ class PopupView(BaseView):
         return box_rect
 
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
-        # 1. Dimming background (cobre a tela inteira, ignora offset pois é modal global)
+        # 1. Dimming background
         overlay = pygame.Surface(self.area, pygame.SRCALPHA)
         overlay.fill(Colors.POPUP_OVERLAY)
         tela.blit(overlay, (0, 0))
@@ -300,7 +302,9 @@ class PausaPopupView(PopupView):
 
         # Define os widgets internos (posicionados relativos ao Box de 300x200)
         self.btn_retomar = Button(
-            rect=pygame.Rect(75, 120, 150, 40), texto="RETOMAR", evento_tipo=PAUSA_TOGGLE
+            rect=pygame.Rect(75, 120, 150, 40),
+            texto="RETOMAR",
+            evento_tipo=PAUSA_TOGGLE,
         )
         self.label_titulo = Text(
             pos=(0, 0),

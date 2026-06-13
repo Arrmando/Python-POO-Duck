@@ -6,6 +6,8 @@ from projeto_2.model.bomba import Bomba
 from projeto_2.utils import post_evento
 
 from .base_view import BaseView
+from .colors import Colors
+from .widget_views import Text
 
 
 class MapaView(BaseView):
@@ -24,11 +26,34 @@ class MapaView(BaseView):
         # Offset relativo ao pai (calculado dinamicamente)
         self.local_offset = (0, 0)
 
+        # Widget de texto reutilizável para os números
+        self._text_widget = Text(
+            pos=(0, 0),
+            texto="",
+            cor=Colors.TEXT_DEFAULT,
+            tamanho=22,
+            bold=True,
+            fonte_nome="Arial",
+        )
+
     def _atualizar_offsets(self):
         """Calcula a centralização do mapa baseada na área disponível."""
         offset_x = (self.area[0] - (self.mapa_ro.colunas * self.tamanho_celula)) // 2
         offset_y = (self.area[1] - (self.mapa_ro.linhas * self.tamanho_celula)) // 2
         self.local_offset = (offset_x, offset_y)
+
+    def _obter_cor_numero(self, valor: int):
+        cores = {
+            1: Colors.NUM_1,
+            2: Colors.NUM_2,
+            3: Colors.NUM_3,
+            4: Colors.NUM_4,
+            5: Colors.NUM_5,
+            6: Colors.NUM_6,
+            7: Colors.NUM_7,
+            8: Colors.NUM_8,
+        }
+        return cores.get(valor, Colors.TEXT_DEFAULT)
 
     def converter_tela_para_grade(self, pos, parent_offset=(0, 0)):
         """Converte coordenadas da tela para (x, y) da grade, considerando offsets."""
@@ -39,18 +64,14 @@ class MapaView(BaseView):
         gy = (py - (oy + self.local_offset[1])) // self.tamanho_celula
         return int(gx), int(gy)
 
-    def obter_sprite_numero(self, valor: int) -> int:
-        return (4 + valor) * 32
-
     def obter_sprites_sobrepostos(self, celula) -> list[int]:
+        """Retorna sprites que NÃO são números (bombas e bandeiras)."""
         sprites = []
-        if celula.status:
+        if celula.status:  # Escondida
             bandeira = celula.obter_entidade(Bandeira)
             if bandeira:
                 sprites.append(bandeira.sprite)
-        else:
-            if celula.valor > 0:
-                sprites.append(self.obter_sprite_numero(celula.valor))
+        else:  # Revelada
             bomba = celula.obter_entidade(Bomba)
             if bomba:
                 sprites.append(bomba.sprite)
@@ -58,7 +79,6 @@ class MapaView(BaseView):
 
     def handle_event(self, event, offset: tuple[float, float] = (0, 0)):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Passamos o offset do pai para a conversão
             grid_pos = self.converter_tela_para_grade(event.pos, offset)
             gx, gy = grid_pos
             if 0 <= gx < self.mapa_ro.colunas and 0 <= gy < self.mapa_ro.linhas:
@@ -67,7 +87,6 @@ class MapaView(BaseView):
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
         self._atualizar_offsets()
         ox, oy = offset
-        # Offset absoluto final
         ax = ox + self.local_offset[0]
         ay = oy + self.local_offset[1]
 
@@ -82,13 +101,28 @@ class MapaView(BaseView):
                     y * self.tamanho_celula + ay,
                 )
 
-                # Sprite base da célula
+                # 1. Sprite base da célula (fundo escondido ou revelado)
                 rect_base = pygame.Rect(
                     celula.sprite, 0, self.tamanho_celula, self.tamanho_celula
                 )
                 tela.blit(self.spritesheet, pos_tela, rect_base)
 
-                # Sprites sobrepostos
+                # 2. Se revelada e tiver valor, desenha o número com a cor correta
+                if not celula.status and celula.valor > 0:
+                    self._text_widget.texto = str(celula.valor)
+                    self._text_widget.cor = self._obter_cor_numero(celula.valor)
+                    # Centraliza o texto na célula
+                    rect_celula = pygame.Rect(
+                        pos_tela[0],
+                        pos_tela[1],
+                        self.tamanho_celula,
+                        self.tamanho_celula,
+                    )
+                    self._text_widget.centralizar_em_rect = rect_celula
+                    # Desenha sem offset extra pois pos_tela já é absoluto
+                    self._text_widget.desenhar(tela, offset=(0, 0))
+
+                # 3. Desenha outras entidades sobrepostas (bombas, bandeiras)
                 sprites_extras = self.obter_sprites_sobrepostos(celula)
                 for sprite_x in sprites_extras:
                     rect_extra = pygame.Rect(
