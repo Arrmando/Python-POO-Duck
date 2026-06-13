@@ -2,7 +2,8 @@ import pygame
 
 
 class MenuView:
-    def __init__(self, largura: int, altura: int, largura_info: int):
+    def __init__(self, game_state_ro, largura: int, altura: int, largura_info: int):
+        self.game_state_ro = game_state_ro
         self.largura = largura
         self.altura = altura
         self.largura_info = largura_info
@@ -38,6 +39,11 @@ class MenuView:
             },
         }
 
+    def obter_knob_pos(self):
+        """Calcula a posição X do círculo baseada no volume atual."""
+        largura_total = self.slider_x_fim - self.slider_x_inicio
+        return int(self.slider_x_inicio + (self.game_state_ro.volume * largura_total))
+
     def desenhar_layout_base(self, tela):
         """Desenha o painel lateral e as linhas divisórias."""
         pygame.draw.rect(
@@ -60,18 +66,27 @@ class MenuView:
             2,
         )
 
-    def desenhar_placar(self, tela, area, tempo_str):
+    def _formatar_tempo(self) -> str:
+        """Converte segundos do GameState para o formato MM:SS."""
+        total_segundos = self.game_state_ro.tempo_segundos
+        minutos = total_segundos // 60
+        segundos = total_segundos % 60
+        return f"{minutos:02}:{segundos:02}"
+
+    def desenhar_placar(self, tela, area):
         """Desenha o relógio na área do placar."""
         rect_placar = pygame.Rect(area)
         pygame.draw.rect(tela, (20, 20, 20), rect_placar)
         pygame.draw.rect(tela, (100, 100, 100), rect_placar, 1)
 
+        texto_str = self._formatar_tempo()
+
         fonte = pygame.font.SysFont("Consolas", 32, bold=True)
-        texto = fonte.render(tempo_str, True, (255, 0, 0))
+        texto = fonte.render(texto_str, True, (255, 0, 0))
         texto_rect = texto.get_rect(center=rect_placar.center)
         tela.blit(texto, texto_rect)
 
-    def desenhar_menu(self, tela, menu_handler):
+    def desenhar_menu(self, tela):
         """Desenha botões e o slider de volume."""
         fonte_p = pygame.font.SysFont("Arial", 24, bold=True)
         fonte_s = pygame.font.SysFont("Arial", 18, bold=True)
@@ -103,7 +118,7 @@ class MenuView:
         ]
 
         for rect, label_txt, id_dif in botoes:
-            cor = COR_BTN_SEL if menu_handler.dificuldade_atual == id_dif else COR_BTN
+            cor = COR_BTN_SEL if self.game_state_ro.dificuldade == id_dif else COR_BTN
             pygame.draw.rect(tela, cor, rect, border_radius=5)
             txt = fonte_s.render(label_txt, True, COR_TEXTO)
             tela.blit(txt, txt.get_rect(center=rect.center))
@@ -120,7 +135,7 @@ class MenuView:
             (self.slider_x_fim, self.slider_y),
             3,
         )
-        knob_x = menu_handler.obter_knob_pos(self.slider_x_inicio, self.slider_x_fim)
+        knob_x = self.obter_knob_pos()
         pygame.draw.circle(
             tela, (200, 200, 200), (knob_x, self.slider_y), self.knob_radius
         )

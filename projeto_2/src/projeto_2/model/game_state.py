@@ -60,13 +60,6 @@ class GameState:
             return int(time.time() - self._tempo_inicio)
         return int(self._tempo_pausado)
 
-    @property
-    def tempo_formatado(self) -> str:
-        total_segundos = self.tempo_segundos
-        minutos = total_segundos // 60
-        segundos = total_segundos % 60
-        return f"{minutos:02}:{segundos:02}"
-
     def iniciar_timer(self):
         if not self._timer_rodando:
             self._tempo_inicio = time.time() - self._tempo_pausado

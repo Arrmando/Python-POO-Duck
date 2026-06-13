@@ -68,10 +68,7 @@ class TelaController:
     def _obter_estado_atual(self):
         """Captura um snapshot do estado atual para a View."""
         return {
-            "mapa": self.handle_mapa._mapa,
-            "tempo_formatado": self.game_state.tempo_formatado,
             "area_placar": self.area_placar,
-            "menu_handler": self.handle_menu,
         }
 
     def run(self):

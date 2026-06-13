@@ -21,7 +21,7 @@ class JanelaView:
         # Sub-views
         largura_info = largura // 4
         self.mapa_view = MapaView(mapa_ro, tamanho_celula=32)
-        self.menu_view = MenuView(largura, altura, largura_info)
+        self.menu_view = MenuView(game_state_ro, largura, altura, largura_info)
 
     @property
     def largura_info(self):
@@ -61,10 +61,8 @@ class JanelaView:
         self.limpar_tela()
         self.mapa_view.desenhar(self.tela, self.spritesheet)
         self.menu_view.desenhar_layout_base(self.tela)
-        self.menu_view.desenhar_placar(
-            self.tela, estado["area_placar"], estado["tempo_formatado"]
-        )
-        self.menu_view.desenhar_menu(self.tela, estado["menu_handler"])
+        self.menu_view.desenhar_placar(self.tela, estado["area_placar"])
+        self.menu_view.desenhar_menu(self.tela)
         self.atualizar()
 
     def _carregar_spritesheet(self):
