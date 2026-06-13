@@ -6,6 +6,7 @@ from projeto_2.constants import (
     REINICIAR_CLICK,
     VOLUME_ALTERADO,
 )
+from projeto_2.utils import post_evento
 
 
 class MenuView:
@@ -102,15 +103,15 @@ class MenuView:
             pos = event.pos
             # Botões
             if self.btn_reiniciar_rect.collidepoint(pos):
-                pygame.event.post(pygame.event.Event(REINICIAR_CLICK))
+                post_evento(REINICIAR_CLICK)
             elif self.btn_placar_rect.collidepoint(pos):
-                pygame.event.post(pygame.event.Event(PLACAR_CLICK))
+                post_evento(PLACAR_CLICK)
             elif self.btn_facil_rect.collidepoint(pos):
-                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Facil', 'bombas': 10}))
+                post_evento(DIFICULDADE_ALTERADA, nome='Facil', bombas=10)
             elif self.btn_medio_rect.collidepoint(pos):
-                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Medio', 'bombas': 40}))
+                post_evento(DIFICULDADE_ALTERADA, nome='Medio', bombas=40)
             elif self.btn_dificil_rect.collidepoint(pos):
-                pygame.event.post(pygame.event.Event(DIFICULDADE_ALTERADA, {'nome': 'Dificil', 'bombas': 99}))
+                post_evento(DIFICULDADE_ALTERADA, nome='Dificil', bombas=99)
             
             # Knob do Volume
             knob_x = self.obter_knob_pos()
@@ -127,7 +128,7 @@ class MenuView:
                 pos_x = max(self.slider_x_inicio, min(pos_x, self.slider_x_fim))
                 largura_total = self.slider_x_fim - self.slider_x_inicio
                 novo_volume = (pos_x - self.slider_x_inicio) / largura_total
-                pygame.event.post(pygame.event.Event(VOLUME_ALTERADO, {'volume': novo_volume}))
+                post_evento(VOLUME_ALTERADO, volume=novo_volume)
 
     def desenhar_menu(self, tela):
         """Desenha botões e o slider de volume."""
