@@ -5,7 +5,7 @@ import pygame
 from projeto_2.constants import VOLUME_MAX
 
 
-class HandleAudio:
+class AudioController:
     def __init__(self, game_state):
         pygame.mixer.init()
         self._game_state = game_state

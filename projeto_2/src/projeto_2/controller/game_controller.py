@@ -10,8 +10,8 @@ from projeto_2.constants import (
     VOLUME_ALTERADO,
 )
 
-from .handle_audio_events import HandleAudio
-from .handle_mapa_events import HandleMapa
+from .audio_controller import AudioController
+from .mapa_controller import MapaController
 
 
 class GameController:
@@ -30,27 +30,31 @@ class GameController:
             self.altura // 10,
         )
 
-        # Instanciação dos handlers
-        self.handle_audio = HandleAudio(model.game_state)
-        self.handle_mapa = HandleMapa(model.game_state, mapa_quadrado=model.mapa)
+        # Instanciação dos handlers (agora Controllers)
+        self.audio_controller = AudioController(model.game_state)
+        self.mapa_controller = MapaController(
+            model.game_state, mapa_quadrado=model.mapa
+        )
 
     def inicializar_mapa(self, colunas: int, linhas: int):
-        mapa = self.handle_mapa.inicializar_mapa(colunas, linhas)
-        self.model.mapa = mapa
+        mapa = self.model.iniciar_jogo(colunas, linhas)
+        self.mapa_controller.mapa = mapa
         self.view.mapa_view.mapa_ro = mapa
         self.view.calcular_offsets()
         return mapa
 
     def tratar_evento_bruto(self, evento):
-        """Passa eventos brutos para a View traduzir, e para handlers globais."""
-        self.handle_audio.processar_evento(evento)
+        """Recebe eventos do pygame (brutos) e repassa para que as views processem."""
         self.view.handle_event(evento)
 
     def processar_evento_jogo(self, evento):
-        """Reage aos eventos customizados emitidos pelas Views."""
+        """Recebe eventos de jogo e delega sub-controllers para atuar nos models."""
         if evento.type == CELULA_CLICK:
             gx, gy = evento.pos
-            self.handle_mapa.executar_acao_clique(gx, gy, evento.button)
+            if evento.button == 1:  # Esquerdo
+                self.mapa_controller.handle_clique_esquerdo(gx, gy)
+            elif evento.button == 3:  # Direito
+                self.mapa_controller.handle_clique_direito(gx, gy)
 
         elif evento.type == REINICIAR_CLICK:
             print("Reiniciando jogo...")
@@ -69,7 +73,7 @@ class GameController:
 
         elif evento.type == VOLUME_ALTERADO:
             self.model.game_state.volume = evento.volume
-            self.handle_audio.ajustar_volume(evento.volume)
+            self.audio_controller.ajustar_volume(evento.volume)
 
     def _obter_estado_atual(self):
         """Captura um snapshot do estado atual para a View."""
@@ -79,9 +83,9 @@ class GameController:
 
     def run(self):
         """Orquestra o loop principal do jogo."""
-        self.handle_audio.iniciar_musica_fundo()
+        self.audio_controller.iniciar_musica_fundo()
 
-        # O mapa inicial já foi passado no construtor e está no handle_mapa
+        # O mapa inicial já foi passado no construtor
         self.view.calcular_offsets()
 
         rodando = True
