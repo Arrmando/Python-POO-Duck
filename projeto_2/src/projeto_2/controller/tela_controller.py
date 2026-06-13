@@ -1,3 +1,7 @@
+import sys
+
+import pygame
+
 from .handle_audio_events import HandleAudio
 from .handle_mapa_events import HandleMapa
 from .handle_menu_events import HandleMenu
@@ -51,3 +55,37 @@ class TelaController:
                 self.handle_placar.processar_evento(evento)
             elif self._esta_dentro(pos, self.area_menu):
                 self.handle_menu.processar_evento(evento)
+
+    def run(self, janela):
+        """Orquestra o loop principal do jogo."""
+        mapa = self.handle_mapa._mapa
+        if not mapa:
+            mapa = self.inicializar_mapa(18, 18)
+
+        self.handle_audio.iniciar_musica_fundo()
+
+        # Cálculo de offsets (ainda dependente do tamanho da célula da View)
+        offset_x = (
+            (self.largura - self.largura_info) - (mapa.colunas * janela.tamanho_celula)
+        ) // 2
+        offset_y = (self.altura - (mapa.linhas * janela.tamanho_celula)) // 2
+
+        rodando = True
+        while rodando:
+            # O mapa pode mudar se for reiniciado via menu
+            mapa = self.handle_mapa._mapa
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    rodando = False
+                self.tratar_evento(evento, offset_x=offset_x, offset_y=offset_y)
+
+            janela.limpar_tela()
+            janela.desenhar_celulas(mapa, self, offset_x, offset_y)
+            janela.desenhar_layout_base(self.largura_info)
+            janela.desenhar_placar(self)
+            janela.desenhar_menu(self)
+            janela.atualizar()
+
+        pygame.quit()
+        sys.exit()

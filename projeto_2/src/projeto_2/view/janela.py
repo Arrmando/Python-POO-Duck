@@ -1,5 +1,4 @@
 import os
-import sys
 
 import pygame
 
@@ -161,34 +160,8 @@ class JanelaView:
 def criar_janela():
     largura, altura = 800, 600
     janela = JanelaView(largura, altura)
-
     controller = TelaController(largura, altura)
-    mapa = controller.inicializar_mapa(18, 18)
-
-    # Inicia a música através do Handler de Áudio
-    controller.handle_audio.iniciar_musica_fundo()
-
-    largura_info = largura // 4
-    offset_x = ((largura - largura_info) - (mapa.colunas * janela.tamanho_celula)) // 2
-    offset_y = (altura - (mapa.linhas * janela.tamanho_celula)) // 2
-
-    rodando = True
-    while rodando:
-        mapa = controller.handle_mapa._mapa
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                rodando = False
-            controller.tratar_evento(evento, offset_x=offset_x, offset_y=offset_y)
-
-        janela.limpar_tela()
-        janela.desenhar_celulas(mapa, controller, offset_x, offset_y)
-        janela.desenhar_layout_base(largura_info)
-        janela.desenhar_placar(controller)
-        janela.desenhar_menu(controller)
-        janela.atualizar()
-
-    pygame.quit()
-    sys.exit()
+    controller.run(janela)
 
 
 if __name__ == "__main__":
