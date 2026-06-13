@@ -8,6 +8,7 @@ from projeto_2.constants import (
 )
 
 from .base_view import BaseView
+from .colors import Colors
 from .widget_views import (
     Box,
     Button,
@@ -28,8 +29,8 @@ class MenuView(BaseView):
         self.game_state_ro = game_state_ro
         self.area = area
 
-        self.cor_painel = (50, 50, 50)
-        self.cor_borda = (100, 100, 100)
+        self.cor_painel = Colors.PANEL_BG
+        self.cor_borda = Colors.PANEL_BORDER
 
         self.widgets = []
 

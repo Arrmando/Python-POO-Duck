@@ -6,6 +6,7 @@ from .base_view import BaseView
 from .mapa_view import MapaView
 from .menu_view import MenuView
 from .widget_views import PausaPopupView
+from .colors import Colors
 
 
 class GameView(BaseView):
@@ -17,7 +18,7 @@ class GameView(BaseView):
         pygame.display.set_caption("Campo Minado - Pygame")
 
         self.spritesheet = self._carregar_spritesheet()
-        self.cor_fundo = (30, 30, 30)
+        self.cor_fundo = Colors.BACKGROUND
         self.game_model_ro = game_model_ro
 
         # Configurações de layout

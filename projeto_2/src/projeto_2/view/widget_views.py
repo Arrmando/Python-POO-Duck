@@ -1,9 +1,10 @@
 import pygame
 
-from projeto_2.constants import PAUSA_TOGGLE, VOLUME_ALTERADO
+from projeto_2.constants import VOLUME_ALTERADO
 from projeto_2.utils import post_evento
 
 from .base_view import BaseView
+from .colors import Colors
 
 
 class Box(BaseView):
@@ -100,18 +101,16 @@ class Text(BaseView):
 
 
 class Button(BaseView):
-    def __init__(
-        self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data
-    ):
+    def __init__(self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data):
         self.rect = rect
-        self.cor_fundo = (150, 150, 150)
+        self.cor_fundo = Colors.BUTTON_BG
         self.evento_tipo = evento_tipo
         self.evento_data = evento_data
 
         self.text_widget = Text(
             pos=(0, 0),
             texto=texto,
-            cor=(30, 30, 30),
+            cor=Colors.TEXT_DARK,
             tamanho=24,
             bold=True,
             centralizar_em_rect=self.rect,
@@ -145,7 +144,7 @@ class ChoiceButton(Button):
         super().__init__(rect=rect, texto=texto, evento_tipo=evento_tipo, **evento_data)
         self.id_escolha = id_escolha
         self.game_state_ro = game_state_ro
-        self.cor_sel = (100, 200, 100)
+        self.cor_sel = Colors.BUTTON_SELECTED
 
         self.text_widget.fonte = pygame.font.SysFont("Arial", 18, bold=True)
 
@@ -168,7 +167,7 @@ class SliderWidget(BaseView):
         self._arrastando = False
 
         self.label_widget = Text(
-            pos=(x_inicio, y - 35), texto=label, cor=(200, 200, 200), tamanho=20
+            pos=(x_inicio, y - 35), texto=label, cor=Colors.TEXT_DEFAULT, tamanho=20
         )
 
     def _obter_knob_pos_abs(self, offset_x):
@@ -187,7 +186,7 @@ class SliderWidget(BaseView):
 
         pygame.draw.line(
             tela,
-            (100, 100, 100),
+            Colors.SLIDER_LINE,
             (self.x_inicio + ox, self.y + oy),
             (self.x_fim + ox, self.y + oy),
             3,
@@ -195,10 +194,10 @@ class SliderWidget(BaseView):
 
         knob_x_abs = self._obter_knob_pos_abs(ox)
         pygame.draw.circle(
-            tela, (200, 200, 200), (knob_x_abs, self.y + oy), self.knob_radius
+            tela, Colors.KNOB_MAIN, (knob_x_abs, self.y + oy), self.knob_radius
         )
         pygame.draw.circle(
-            tela, (255, 255, 255), (knob_x_abs, self.y + oy), self.knob_radius - 2
+            tela, Colors.KNOB_INNER, (knob_x_abs, self.y + oy), self.knob_radius - 2
         )
 
     def handle_event(
@@ -230,7 +229,7 @@ class PlacarWidget(BaseView):
         self.text_widget = Text(
             pos=(0, 0),
             texto="00:00",
-            cor=(255, 0, 0),
+            cor=Colors.TEXT_RED,
             tamanho=32,
             bold=True,
             fonte_nome="Consolas",
@@ -245,9 +244,11 @@ class PlacarWidget(BaseView):
 
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
         abs_rect = self.rect.move(offset)
-        pygame.draw.rect(tela, (20, 20, 20), abs_rect)
-        pygame.draw.rect(tela, (100, 100, 100), abs_rect, 1)
+        # Fundo do placar
+        pygame.draw.rect(tela, Colors.PLACAR_BG, abs_rect)
+        pygame.draw.rect(tela, Colors.PANEL_BORDER, abs_rect, 1)
 
+        # Atualiza o texto do widget antes de desenhar
         self.text_widget.texto = self._formatar_tempo()
         self.text_widget.desenhar(tela, offset)
 
@@ -260,8 +261,8 @@ class PopupView(BaseView):
         self.widgets = widgets
         self.largura_box = largura_box
         self.altura_box = altura_box
-        self.cor_bg = (40, 40, 40)
-        self.cor_borda = (200, 200, 200)
+        self.cor_bg = Colors.POPUP_BG
+        self.cor_borda = Colors.POPUP_BORDER
 
     def _obter_box_rect(self) -> pygame.Rect:
         box_rect = pygame.Rect(0, 0, self.largura_box, self.altura_box)
@@ -269,9 +270,9 @@ class PopupView(BaseView):
         return box_rect
 
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
-        # 1. Dimming background
+        # 1. Dimming background (cobre a tela inteira, ignora offset pois é modal global)
         overlay = pygame.Surface(self.area, pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 150))
+        overlay.fill(Colors.POPUP_OVERLAY)
         tela.blit(overlay, (0, 0))
 
         # 2. Caixa Centralizada
@@ -295,16 +296,16 @@ class PopupView(BaseView):
 
 class PausaPopupView(PopupView):
     def __init__(self, *, area: tuple[int, int]):
+        from projeto_2.constants import PAUSA_TOGGLE
+
         # Define os widgets internos (posicionados relativos ao Box de 300x200)
         self.btn_retomar = Button(
-            rect=pygame.Rect(75, 120, 150, 40),
-            texto="RETOMAR",
-            evento_tipo=PAUSA_TOGGLE,
+            rect=pygame.Rect(75, 120, 150, 40), texto="RETOMAR", evento_tipo=PAUSA_TOGGLE
         )
         self.label_titulo = Text(
             pos=(0, 0),
             texto="PAUSADO",
-            cor=(255, 255, 255),
+            cor=Colors.WHITE,
             tamanho=36,
             centralizar_em_rect=pygame.Rect(0, 40, 300, 50),
         )
