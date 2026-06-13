@@ -35,11 +35,11 @@ class HorizontalSeparator(BaseView):
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
         ox, oy = offset
         pygame.draw.line(
-            tela, 
-            self.cor, 
-            (self.x_inicio + ox, self.y + oy), 
-            (self.x_fim + ox, self.y + oy), 
-            self.largura
+            tela,
+            self.cor,
+            (self.x_inicio + ox, self.y + oy),
+            (self.x_fim + ox, self.y + oy),
+            self.largura,
         )
 
 
@@ -62,11 +62,11 @@ class VerticalSeparator(BaseView):
     def desenhar(self, tela: pygame.Surface, offset: tuple[float, float] = (0, 0)):
         ox, oy = offset
         pygame.draw.line(
-            tela, 
-            self.cor, 
-            (self.x + ox, self.y_inicio + oy), 
-            (self.x + ox, self.y_fim + oy), 
-            self.largura
+            tela,
+            self.cor,
+            (self.x + ox, self.y_inicio + oy),
+            (self.x + ox, self.y_fim + oy),
+            self.largura,
         )
 
 
@@ -100,7 +100,9 @@ class Text(BaseView):
 
 
 class Button(BaseView):
-    def __init__(self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data):
+    def __init__(
+        self, *, rect: pygame.Rect, texto: str, evento_tipo: int, **evento_data
+    ):
         self.rect = rect
         self.cor_fundo = (150, 150, 150)
         self.evento_tipo = evento_tipo
@@ -120,7 +122,9 @@ class Button(BaseView):
         pygame.draw.rect(tela, self.cor_fundo, abs_rect, border_radius=5)
         self.text_widget.desenhar(tela, offset)
 
-    def handle_event(self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)):
+    def handle_event(
+        self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)
+    ):
         if event.type == pygame.MOUSEBUTTONDOWN:
             abs_rect = self.rect.move(offset)
             if abs_rect.collidepoint(event.pos):
@@ -156,18 +160,22 @@ class ChoiceButton(Button):
 
 class SliderWidget(BaseView):
     def __init__(self, *, x_inicio, x_fim, y, label, game_state_ro):
-        self.x_inicio = x_inicio 
-        self.x_fim = x_fim     
-        self.y = y             
+        self.x_inicio = x_inicio
+        self.x_fim = x_fim
+        self.y = y
         self.game_state_ro = game_state_ro
         self.knob_radius = 8
         self._arrastando = False
 
-        self.label_widget = Text(pos=(x_inicio, y - 35), texto=label, cor=(200, 200, 200), tamanho=20)
+        self.label_widget = Text(
+            pos=(x_inicio, y - 35), texto=label, cor=(200, 200, 200), tamanho=20
+        )
 
     def _obter_knob_pos_abs(self, offset_x):
         largura_total = self.width
-        return int(offset_x + self.x_inicio + (self.game_state_ro.volume * largura_total))
+        return int(
+            offset_x + self.x_inicio + (self.game_state_ro.volume * largura_total)
+        )
 
     @property
     def width(self):
@@ -178,24 +186,30 @@ class SliderWidget(BaseView):
         self.label_widget.desenhar(tela, offset)
 
         pygame.draw.line(
-            tela, 
-            (100, 100, 100), 
-            (self.x_inicio + ox, self.y + oy), 
-            (self.x_fim + ox, self.y + oy), 
-            3
+            tela,
+            (100, 100, 100),
+            (self.x_inicio + ox, self.y + oy),
+            (self.x_fim + ox, self.y + oy),
+            3,
         )
 
         knob_x_abs = self._obter_knob_pos_abs(ox)
-        pygame.draw.circle(tela, (200, 200, 200), (knob_x_abs, self.y + oy), self.knob_radius)
+        pygame.draw.circle(
+            tela, (200, 200, 200), (knob_x_abs, self.y + oy), self.knob_radius
+        )
         pygame.draw.circle(
             tela, (255, 255, 255), (knob_x_abs, self.y + oy), self.knob_radius - 2
         )
 
-    def handle_event(self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)):
+    def handle_event(
+        self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)
+    ):
         ox, oy = offset
         if event.type == pygame.MOUSEBUTTONDOWN:
             knob_x_abs = self._obter_knob_pos_abs(ox)
-            dist = ((event.pos[0] - knob_x_abs) ** 2 + (event.pos[1] - (self.y + oy)) ** 2) ** 0.5
+            dist = (
+                (event.pos[0] - knob_x_abs) ** 2 + (event.pos[1] - (self.y + oy)) ** 2
+            ) ** 0.5
             if dist <= self.knob_radius + 5:
                 self._arrastando = True
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -203,14 +217,14 @@ class SliderWidget(BaseView):
         elif event.type == pygame.MOUSEMOTION and self._arrastando:
             pos_x_local = event.pos[0] - ox
             pos_x_local = max(self.x_inicio, min(pos_x_local, self.x_fim))
-            
+
             novo_vol = (pos_x_local - self.x_inicio) / self.width
             post_evento(VOLUME_ALTERADO, volume=novo_vol)
 
 
 class PlacarWidget(BaseView):
     def __init__(self, *, rect: pygame.Rect, game_state_ro):
-        self.rect = rect 
+        self.rect = rect
         self.game_state_ro = game_state_ro
 
         self.text_widget = Text(

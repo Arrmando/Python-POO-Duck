@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 import pygame
 
 
@@ -16,7 +17,9 @@ class BaseView(ABC):
         """
         pass
 
-    def handle_event(self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)):
+    def handle_event(
+        self, event: pygame.event.Event, offset: tuple[float, float] = (0, 0)
+    ):
         """
         Processa eventos do Pygame considerando o offset absoluto do componente.
         """

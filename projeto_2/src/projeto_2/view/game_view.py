@@ -2,9 +2,9 @@ import os
 
 import pygame
 
+from .base_view import BaseView
 from .mapa_view import MapaView
 from .menu_view import MenuView
-from .base_view import BaseView
 
 
 class GameView(BaseView):
@@ -24,7 +24,9 @@ class GameView(BaseView):
         self.largura_area_mapa = largura - self.largura_info
 
         # Sub-views
-        self.mapa_view = MapaView(game_model_ro.mapa, self.spritesheet, tamanho_celula=32)
+        self.mapa_view = MapaView(
+            game_model_ro.mapa, self.spritesheet, tamanho_celula=32
+        )
         self.menu_view = MenuView(
             game_model_ro.game_state, self.largura_info, self.altura
         )
@@ -53,12 +55,12 @@ class GameView(BaseView):
         """Converte coordenadas da tela para (x, y) da grade."""
         return self.mapa_view.converter_tela_para_grade(pos, self.offset_mapa)
 
-    def handle_event(self, event, offset=(0,0)):
+    def handle_event(self, event, offset=(0, 0)):
         """Delega o tratamento de eventos para as sub-views com seus devidos offsets."""
         self.mapa_view.handle_event(event, self.offset_mapa)
         self.menu_view.handle_event(event, self.offset_menu)
 
-    def desenhar(self, tela: pygame.Surface, offset=(0,0)):
+    def desenhar(self, tela: pygame.Surface, offset=(0, 0)):
         """Renderiza todos os componentes na tela."""
         self.mapa_view.desenhar(tela, self.offset_mapa)
         self.menu_view.desenhar(tela, self.offset_menu)

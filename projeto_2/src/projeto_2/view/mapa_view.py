@@ -4,6 +4,7 @@ from projeto_2.constants import CELULA_CLICK
 from projeto_2.model.bandeira import Bandeira
 from projeto_2.model.bomba import Bomba
 from projeto_2.utils import post_evento
+
 from .base_view import BaseView
 
 
@@ -21,7 +22,9 @@ class MapaView(BaseView):
         self.local_offset_x = (
             largura_area - (self.mapa_ro.colunas * self.tamanho_celula)
         ) // 2
-        self.local_offset_y = (altura_area - (self.mapa_ro.linhas * self.tamanho_celula)) // 2
+        self.local_offset_y = (
+            altura_area - (self.mapa_ro.linhas * self.tamanho_celula)
+        ) // 2
         return self.local_offset_x, self.local_offset_y
 
     def converter_tela_para_grade(self, pos, parent_offset=(0, 0)):
