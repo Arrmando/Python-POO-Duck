@@ -57,7 +57,7 @@ class JanelaView:
             2,
         )
 
-    def desenhar_celulas(self, mapa, controller, offset_x: int, offset_y: int):
+    def desenhar_celulas(self, mapa, mapa_handler, offset_x: int, offset_y: int):
         """Exibe cada célula e seus sprites sobrepostos (números, bombas, bandeiras)."""
         for y in range(mapa.linhas):
             for x in range(mapa.colunas):
@@ -74,29 +74,25 @@ class JanelaView:
                 )
                 self.tela.blit(self.spritesheet, pos_tela, rect_base)
 
-                sprites_extras = controller.handle_mapa.obter_sprites_sobrepostos(
-                    celula
-                )
+                sprites_extras = mapa_handler.obter_sprites_sobrepostos(celula)
                 for sprite_x in sprites_extras:
                     rect_extra = pygame.Rect(
                         sprite_x, 0, self.tamanho_celula, self.tamanho_celula
                     )
                     self.tela.blit(self.spritesheet, pos_tela, rect_extra)
 
-    def desenhar_placar(self, controller):
+    def desenhar_placar(self, area, tempo_str):
         """Desenha o relógio na área do placar."""
-        area = controller.area_placar
         rect_placar = pygame.Rect(area)
         pygame.draw.rect(self.tela, (20, 20, 20), rect_placar)
         pygame.draw.rect(self.tela, (100, 100, 100), rect_placar, 1)
 
-        tempo_str = controller.handle_placar.obter_tempo_formatado()
         fonte = pygame.font.SysFont("Consolas", 32, bold=True)
         texto = fonte.render(tempo_str, True, (255, 0, 0))
         texto_rect = texto.get_rect(center=rect_placar.center)
         self.tela.blit(texto, texto_rect)
 
-    def desenhar_menu(self, controller):
+    def desenhar_menu(self, menu_handler):
         """Desenha botões e o slider de volume."""
         fonte_p = pygame.font.SysFont("Arial", 24, bold=True)
         fonte_s = pygame.font.SysFont("Arial", 18, bold=True)
@@ -105,18 +101,22 @@ class JanelaView:
         COR_BTN_SEL = (100, 200, 100)
         COR_TEXTO = (30, 30, 30)
 
-        h_menu = controller.handle_menu
-
         # Botões REINICIAR e PLACAR
-        pygame.draw.rect(self.tela, COR_BTN, h_menu.btn_reiniciar_rect, border_radius=5)
+        pygame.draw.rect(
+            self.tela, COR_BTN, menu_handler.btn_reiniciar_rect, border_radius=5
+        )
         texto_r = fonte_p.render("REINICIAR", True, COR_TEXTO)
         self.tela.blit(
-            texto_r, texto_r.get_rect(center=h_menu.btn_reiniciar_rect.center)
+            texto_r, texto_r.get_rect(center=menu_handler.btn_reiniciar_rect.center)
         )
 
-        pygame.draw.rect(self.tela, COR_BTN, h_menu.btn_placar_rect, border_radius=5)
+        pygame.draw.rect(
+            self.tela, COR_BTN, menu_handler.btn_placar_rect, border_radius=5
+        )
         texto_p = fonte_p.render("PLACAR", True, COR_TEXTO)
-        self.tela.blit(texto_p, texto_p.get_rect(center=h_menu.btn_placar_rect.center))
+        self.tela.blit(
+            texto_p, texto_p.get_rect(center=menu_handler.btn_placar_rect.center)
+        )
 
         # Dificuldade
         label_fonte = pygame.font.SysFont("Arial", 20, bold=True)
@@ -125,13 +125,13 @@ class JanelaView:
         )
 
         botoes = [
-            (h_menu.btn_facil_rect, "FÁCIL", "Facil"),
-            (h_menu.btn_medio_rect, "MÉDIO", "Medio"),
-            (h_menu.btn_dificil_rect, "DIFÍCIL", "Dificil"),
+            (menu_handler.btn_facil_rect, "FÁCIL", "Facil"),
+            (menu_handler.btn_medio_rect, "MÉDIO", "Medio"),
+            (menu_handler.btn_dificil_rect, "DIFÍCIL", "Dificil"),
         ]
 
         for rect, label_txt, id_dif in botoes:
-            cor = COR_BTN_SEL if h_menu.dificuldade_atual == id_dif else COR_BTN
+            cor = COR_BTN_SEL if menu_handler.dificuldade_atual == id_dif else COR_BTN
             pygame.draw.rect(self.tela, cor, rect, border_radius=5)
             txt = fonte_s.render(label_txt, True, COR_TEXTO)
             self.tela.blit(txt, txt.get_rect(center=rect.center))
@@ -141,19 +141,22 @@ class JanelaView:
         pygame.draw.line(
             self.tela,
             (100, 100, 100),
-            (h_menu.slider_x_inicio, h_menu.slider_y),
-            (h_menu.slider_x_fim, h_menu.slider_y),
+            (menu_handler.slider_x_inicio, menu_handler.slider_y),
+            (menu_handler.slider_x_fim, menu_handler.slider_y),
             3,
         )
-        knob_x = h_menu.obter_knob_pos()
+        knob_x = menu_handler.obter_knob_pos()
         pygame.draw.circle(
-            self.tela, (200, 200, 200), (knob_x, h_menu.slider_y), h_menu.knob_radius
+            self.tela,
+            (200, 200, 200),
+            (knob_x, menu_handler.slider_y),
+            menu_handler.knob_radius,
         )
         pygame.draw.circle(
             self.tela,
             (255, 255, 255),
-            (knob_x, h_menu.slider_y),
-            h_menu.knob_radius - 2,
+            (knob_x, menu_handler.slider_y),
+            menu_handler.knob_radius - 2,
         )
 
 

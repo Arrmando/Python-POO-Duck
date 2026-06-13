@@ -81,10 +81,12 @@ class TelaController:
                 self.tratar_evento(evento, offset_x=offset_x, offset_y=offset_y)
 
             janela.limpar_tela()
-            janela.desenhar_celulas(mapa, self, offset_x, offset_y)
+            janela.desenhar_celulas(mapa, self.handle_mapa, offset_x, offset_y)
             janela.desenhar_layout_base(self.largura_info)
-            janela.desenhar_placar(self)
-            janela.desenhar_menu(self)
+            janela.desenhar_placar(
+                self.area_placar, self.handle_placar.obter_tempo_formatado()
+            )
+            janela.desenhar_menu(self.handle_menu)
             janela.atualizar()
 
         pygame.quit()
