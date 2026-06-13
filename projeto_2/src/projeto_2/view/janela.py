@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+from .mapa_view import MapaView
+
 
 class JanelaView:
     def __init__(self, largura: int = 800, altura: int = 600):
@@ -12,12 +14,14 @@ class JanelaView:
         pygame.display.set_caption("Campo Minado - Pygame")
 
         self.spritesheet = self._carregar_spritesheet()
-        self.tamanho_celula = 32
         self.cor_fundo = (30, 30, 30)
         self.cor_painel = (50, 50, 50)
         self.cor_borda = (100, 100, 100)
 
-        # Definição de Geometria da UI (Movido do Controller)
+        # Sub-views
+        self.mapa_view = MapaView(tamanho_celula=32)
+
+        # Geometria da UI remanescente (Será movido para MenuView na próxima task)
         self.largura_info = largura // 4
         self.btn_reiniciar_rect = pygame.Rect(620, 80, 160, 40)
         self.btn_placar_rect = pygame.Rect(620, 140, 160, 40)
@@ -30,22 +34,28 @@ class JanelaView:
         self.slider_y = 400
         self.knob_radius = 8
 
-        self.offset_x = 0
-        self.offset_y = 0
+    @property
+    def tamanho_celula(self):
+        return self.mapa_view.tamanho_celula
+
+    @property
+    def offset_x(self):
+        return self.mapa_view.offset_x
+
+    @property
+    def offset_y(self):
+        return self.mapa_view.offset_y
 
     def calcular_offsets(self, colunas, linhas):
-        """Calcula a centralização do mapa baseado na grade."""
-        largura_mapa = self.largura - self.largura_info
-        self.offset_x = (largura_mapa - (colunas * self.tamanho_celula)) // 2
-        self.offset_y = (self.altura - (linhas * self.tamanho_celula)) // 2
-        return self.offset_x, self.offset_y
+        """Delega o cálculo de offsets para a MapaView."""
+        largura_area_mapa = self.largura - self.largura_info
+        return self.mapa_view.calcular_offsets(
+            largura_area_mapa, self.altura, colunas, linhas
+        )
 
     def converter_tela_para_grade(self, pos):
-        """Converte coordenadas da tela para (x, y) da grade."""
-        px, py = pos
-        gx = (px - self.offset_x) // self.tamanho_celula
-        gy = (py - self.offset_y) // self.tamanho_celula
-        return int(gx), int(gy)
+        """Delega a conversão de coordenadas para a MapaView."""
+        return self.mapa_view.converter_tela_para_grade(pos)
 
     def obter_geometria(self):
         """Retorna os Rects e dimensões para o Controller processar eventos."""
@@ -68,7 +78,6 @@ class JanelaView:
         try:
             return pygame.image.load(caminho_sprites).convert_alpha()
         except Exception:
-            # Fallback em caso de erro no carregamento: superfície vazia
             return pygame.Surface((32 * 20, 32))
 
     def limpar_tela(self):
@@ -79,13 +88,11 @@ class JanelaView:
 
     def desenhar_layout_base(self, largura_info: int):
         """Desenha o painel lateral e as linhas divisórias."""
-        # Fundo do painel lateral
         pygame.draw.rect(
             self.tela,
             self.cor_painel,
             (self.largura - largura_info, 0, largura_info, self.altura),
         )
-        # Linhas divisórias
         pygame.draw.line(
             self.tela,
             self.cor_borda,
@@ -102,28 +109,8 @@ class JanelaView:
         )
 
     def desenhar_celulas(self, mapa, mapa_handler, offset_x: int, offset_y: int):
-        """Exibe cada célula e seus sprites sobrepostos (números, bombas, bandeiras)."""
-        for y in range(mapa.linhas):
-            for x in range(mapa.colunas):
-                celula = mapa.obter_celula(x, y)
-                if not celula:
-                    continue
-
-                pos_tela = (
-                    x * self.tamanho_celula + offset_x,
-                    y * self.tamanho_celula + offset_y,
-                )
-                rect_base = pygame.Rect(
-                    celula.sprite, 0, self.tamanho_celula, self.tamanho_celula
-                )
-                self.tela.blit(self.spritesheet, pos_tela, rect_base)
-
-                sprites_extras = mapa_handler.obter_sprites_sobrepostos(celula)
-                for sprite_x in sprites_extras:
-                    rect_extra = pygame.Rect(
-                        sprite_x, 0, self.tamanho_celula, self.tamanho_celula
-                    )
-                    self.tela.blit(self.spritesheet, pos_tela, rect_extra)
+        """Delega o desenho do mapa para a MapaView."""
+        self.mapa_view.desenhar(self.tela, self.spritesheet, mapa, mapa_handler)
 
     def desenhar_placar(self, area, tempo_str):
         """Desenha o relógio na área do placar."""
