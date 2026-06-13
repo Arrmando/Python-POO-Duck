@@ -95,3 +95,7 @@ _build/
 # Project specific (added from projeto_1)
 .ruff_cache/
 *.local
+
+# drawio
+*.bkp
+*.dtmp

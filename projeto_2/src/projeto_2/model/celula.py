@@ -1,13 +1,16 @@
-from .bomba import Bomba
+from typing import TypeVar
+
 from .bandeira import Bandeira
+from .bomba import Bomba
 from .entidade import Entidade
-from typing import List, Type, TypeVar
 
 T = TypeVar("T", bound=Entidade)
 
 
 class Celula:
-    def __init__(self, address: int, status: bool = True, valor: int = 0, sprite: int = 0):
+    def __init__(
+        self, address: int, status: bool = True, valor: int = 0, sprite: int = 0
+    ):
         """
         status: True para escondida (padrão), False para cavada.
         """
@@ -15,7 +18,7 @@ class Celula:
         self._status = status
         self._valor = valor
         self._sprite = sprite
-        self._entidades: List[Entidade] = []
+        self._entidades: list[Entidade] = []
 
     @property
     def address(self):
@@ -38,19 +41,19 @@ class Celula:
         return self._sprite
 
     @property
-    def entidades(self) -> List[Entidade]:
+    def entidades(self) -> list[Entidade]:
         return self._entidades
 
     def cavar(self):
         """
-        Muda o status para False (cavada), mas apenas se a célula estiver escondida (True).
+        Muda o status para False (cavada) se a célula estiver escondida (True).
         """
         if self._status:
             self._status = False
             # Define o sprite base como 'aberto' (index 1)
             self._sprite = 32 * 1
 
-    def _tem_entidade_do_tipo(self, tipo: Type[Entidade]) -> bool:
+    def _tem_entidade_do_tipo(self, tipo: type[Entidade]) -> bool:
         return any(isinstance(e, tipo) for e in self._entidades)
 
     def adicionar_bandeira(self, bandeira: Bandeira):
@@ -63,10 +66,10 @@ class Celula:
             raise ValueError("Esta célula já possui uma bomba.")
         self._entidades.append(bomba)
 
-    def remover_entidade(self, tipo: Type[Entidade]):
+    def remover_entidade(self, tipo: type[Entidade]):
         self._entidades = [e for e in self._entidades if not isinstance(e, tipo)]
 
-    def obter_entidade(self, tipo: Type[T]) -> T | None:
+    def obter_entidade(self, tipo: type[T]) -> T | None:
         for e in self._entidades:
             if isinstance(e, tipo):
                 return e

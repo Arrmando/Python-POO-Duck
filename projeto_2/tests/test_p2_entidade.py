@@ -1,8 +1,9 @@
 import pytest
-from projeto_2.model.entidade import Entidade
-from projeto_2.model.bomba import Bomba
+
 from projeto_2.model.bandeira import Bandeira
+from projeto_2.model.bomba import Bomba
 from projeto_2.model.celula import Celula
+from projeto_2.model.entidade import Entidade
 
 
 def test_entidade_nao_pode_ser_instanciada():
@@ -12,7 +13,7 @@ def test_entidade_nao_pode_ser_instanciada():
 
 
 def test_bomba_instanciacao():
-    """Garante que a Bomba é instanciada com os valores corretos e comportamento inicial."""
+    """A Bomba devei ser instanciada com os valores corretos e comportamento inicial."""
     bomba = Bomba(1, True, 0)
     assert bomba.id == 1
     assert bomba.status is False
@@ -40,7 +41,7 @@ def test_celula_status_inicial_e_cavar():
     celula = Celula(10)
     assert celula.status is True  # Escondida
     celula.cavar()
-    assert celula.status is False # Cavada
+    assert celula.status is False  # Cavada
 
 
 def test_celula_multiplas_entidades_tipos_diferentes():
@@ -69,7 +70,7 @@ def test_celula_proibir_duplicata_mesmo_tipo():
 
     bandeira1 = Bandeira(2, True, 0)
     bandeira2 = Bandeira(4, True, 0)
-    
+
     celula.adicionar_bandeira(bandeira1)
     with pytest.raises(ValueError, match="já possui uma bandeira"):
         celula.adicionar_bandeira(bandeira2)
