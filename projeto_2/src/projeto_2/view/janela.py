@@ -3,6 +3,7 @@ import os
 import pygame
 
 from .mapa_view import MapaView
+from .menu_view import MenuView
 
 
 class JanelaView:
@@ -15,24 +16,15 @@ class JanelaView:
 
         self.spritesheet = self._carregar_spritesheet()
         self.cor_fundo = (30, 30, 30)
-        self.cor_painel = (50, 50, 50)
-        self.cor_borda = (100, 100, 100)
 
         # Sub-views
+        largura_info = largura // 4
         self.mapa_view = MapaView(tamanho_celula=32)
+        self.menu_view = MenuView(largura, altura, largura_info)
 
-        # Geometria da UI remanescente (Será movido para MenuView na próxima task)
-        self.largura_info = largura // 4
-        self.btn_reiniciar_rect = pygame.Rect(620, 80, 160, 40)
-        self.btn_placar_rect = pygame.Rect(620, 140, 160, 40)
-        self.btn_facil_rect = pygame.Rect(620, 220, 160, 35)
-        self.btn_medio_rect = pygame.Rect(620, 265, 160, 35)
-        self.btn_dificil_rect = pygame.Rect(620, 310, 160, 35)
-
-        self.slider_x_inicio = 630
-        self.slider_x_fim = 770
-        self.slider_y = 400
-        self.knob_radius = 8
+    @property
+    def largura_info(self):
+        return self.menu_view.largura_info
 
     @property
     def tamanho_celula(self):
@@ -58,20 +50,23 @@ class JanelaView:
         return self.mapa_view.converter_tela_para_grade(pos)
 
     def obter_geometria(self):
-        """Retorna os Rects e dimensões para o Controller processar eventos."""
-        return {
-            "btn_reiniciar": self.btn_reiniciar_rect,
-            "btn_placar": self.btn_placar_rect,
-            "btn_facil": self.btn_facil_rect,
-            "btn_medio": self.btn_medio_rect,
-            "btn_dificil": self.btn_dificil_rect,
-            "slider": {
-                "x_inicio": self.slider_x_inicio,
-                "x_fim": self.slider_x_fim,
-                "y": self.slider_y,
-                "knob_radius": self.knob_radius,
-            },
-        }
+        """Delega a obtenção de geometria para a MenuView."""
+        return self.menu_view.obter_geometria()
+
+    def render(self, estado):
+        """
+        Renderiza o quadro completo baseado no snapshot de estado fornecido.
+        """
+        self.limpar_tela()
+        self.mapa_view.desenhar(
+            self.tela, self.spritesheet, estado["mapa"], estado["mapa_handler"]
+        )
+        self.menu_view.desenhar_layout_base(self.tela)
+        self.menu_view.desenhar_placar(
+            self.tela, estado["area_placar"], estado["tempo_formatado"]
+        )
+        self.menu_view.desenhar_menu(self.tela, estado["menu_handler"])
+        self.atualizar()
 
     def _carregar_spritesheet(self):
         caminho_sprites = os.path.join("imagens", "New Piskel.png")
@@ -85,99 +80,3 @@ class JanelaView:
 
     def atualizar(self):
         pygame.display.flip()
-
-    def desenhar_layout_base(self, largura_info: int):
-        """Desenha o painel lateral e as linhas divisórias."""
-        pygame.draw.rect(
-            self.tela,
-            self.cor_painel,
-            (self.largura - largura_info, 0, largura_info, self.altura),
-        )
-        pygame.draw.line(
-            self.tela,
-            self.cor_borda,
-            (self.largura - largura_info, 0),
-            (self.largura - largura_info, self.altura),
-            2,
-        )
-        pygame.draw.line(
-            self.tela,
-            self.cor_borda,
-            (self.largura - largura_info, (self.altura // 10)),
-            (self.largura, self.altura // 10),
-            2,
-        )
-
-    def desenhar_celulas(self, mapa, mapa_handler, offset_x: int, offset_y: int):
-        """Delega o desenho do mapa para a MapaView."""
-        self.mapa_view.desenhar(self.tela, self.spritesheet, mapa, mapa_handler)
-
-    def desenhar_placar(self, area, tempo_str):
-        """Desenha o relógio na área do placar."""
-        rect_placar = pygame.Rect(area)
-        pygame.draw.rect(self.tela, (20, 20, 20), rect_placar)
-        pygame.draw.rect(self.tela, (100, 100, 100), rect_placar, 1)
-
-        fonte = pygame.font.SysFont("Consolas", 32, bold=True)
-        texto = fonte.render(tempo_str, True, (255, 0, 0))
-        texto_rect = texto.get_rect(center=rect_placar.center)
-        self.tela.blit(texto, texto_rect)
-
-    def desenhar_menu(self, menu_handler):
-        """Desenha botões e o slider de volume."""
-        fonte_p = pygame.font.SysFont("Arial", 24, bold=True)
-        fonte_s = pygame.font.SysFont("Arial", 18, bold=True)
-
-        COR_BTN = (150, 150, 150)
-        COR_BTN_SEL = (100, 200, 100)
-        COR_TEXTO = (30, 30, 30)
-
-        # Botões REINICIAR e PLACAR
-        pygame.draw.rect(self.tela, COR_BTN, self.btn_reiniciar_rect, border_radius=5)
-        texto_r = fonte_p.render("REINICIAR", True, COR_TEXTO)
-        self.tela.blit(texto_r, texto_r.get_rect(center=self.btn_reiniciar_rect.center))
-
-        pygame.draw.rect(self.tela, COR_BTN, self.btn_placar_rect, border_radius=5)
-        texto_p = fonte_p.render("PLACAR", True, COR_TEXTO)
-        self.tela.blit(texto_p, texto_p.get_rect(center=self.btn_placar_rect.center))
-
-        # Dificuldade
-        label_fonte = pygame.font.SysFont("Arial", 20, bold=True)
-        self.tela.blit(
-            label_fonte.render("DIFICULDADE:", True, (200, 200, 200)), (620, 195)
-        )
-
-        botoes = [
-            (self.btn_facil_rect, "FÁCIL", "Facil"),
-            (self.btn_medio_rect, "MÉDIO", "Medio"),
-            (self.btn_dificil_rect, "DIFÍCIL", "Dificil"),
-        ]
-
-        for rect, label_txt, id_dif in botoes:
-            cor = COR_BTN_SEL if menu_handler.dificuldade_atual == id_dif else COR_BTN
-            pygame.draw.rect(self.tela, cor, rect, border_radius=5)
-            txt = fonte_s.render(label_txt, True, COR_TEXTO)
-            self.tela.blit(txt, txt.get_rect(center=rect.center))
-
-        # Volume
-        self.tela.blit(label_fonte.render("VOLUME:", True, (200, 200, 200)), (620, 365))
-        pygame.draw.line(
-            self.tela,
-            (100, 100, 100),
-            (self.slider_x_inicio, self.slider_y),
-            (self.slider_x_fim, self.slider_y),
-            3,
-        )
-        knob_x = menu_handler.obter_knob_pos(self.slider_x_inicio, self.slider_x_fim)
-        pygame.draw.circle(
-            self.tela,
-            (200, 200, 200),
-            (knob_x, self.slider_y),
-            self.knob_radius,
-        )
-        pygame.draw.circle(
-            self.tela,
-            (255, 255, 255),
-            (knob_x, self.slider_y),
-            self.knob_radius - 2,
-        )

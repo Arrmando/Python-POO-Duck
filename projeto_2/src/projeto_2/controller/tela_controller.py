@@ -59,6 +59,16 @@ class TelaController:
                 view_geometry = self.janela.obter_geometria()
                 self.handle_menu.processar_evento(evento, view_geometry=view_geometry)
 
+    def _obter_estado_atual(self):
+        """Captura um snapshot do estado atual para a View."""
+        return {
+            "mapa": self.handle_mapa._mapa,
+            "mapa_handler": self.handle_mapa,
+            "tempo_formatado": self.handle_placar.obter_tempo_formatado(),
+            "area_placar": self.area_placar,
+            "menu_handler": self.handle_menu,
+        }
+
     def run(self):
         """Orquestra o loop principal do jogo."""
         self.handle_audio.iniciar_musica_fundo()
@@ -69,24 +79,12 @@ class TelaController:
 
         rodando = True
         while rodando:
-            # O mapa pode mudar se for reiniciado via menu
-            mapa = self.handle_mapa._mapa
-
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
                     rodando = False
                 self.tratar_evento(evento)
-
-            self.janela.limpar_tela()
-            self.janela.desenhar_celulas(
-                mapa, self.handle_mapa, self.janela.offset_x, self.janela.offset_y
-            )
-            self.janela.desenhar_layout_base(self.largura_info)
-            self.janela.desenhar_placar(
-                self.area_placar, self.handle_placar.obter_tempo_formatado()
-            )
-            self.janela.desenhar_menu(self.handle_menu)
-            self.janela.atualizar()
+            estado = self._obter_estado_atual()
+            self.janela.render(estado)
 
         pygame.quit()
         sys.exit()
