@@ -1,16 +1,20 @@
 import random
-from .celula import Celula
+
 from .bomba import Bomba
-from typing import List
+from .celula import Celula
 
 
 class MapaQuadrado:
     def __init__(self, colunas: int, linhas: int):
         self._colunas = colunas
         self._linhas = linhas
-        self._mapa: List[List[Celula]] = self._gerar_mapa()
+        self._mapa: list[list[Celula]] = self._gerar_mapa()
 
-    def _gerar_mapa(self) -> List[List[Celula]]:
+    def reset(self):
+        """Reseta o mapa para um novo estado inicial."""
+        self._mapa = self._gerar_mapa()
+
+    def _gerar_mapa(self) -> list[list[Celula]]:
         """Gera uma matriz de células escondidas (status=True)."""
         mapa = []
         for y in range(self._linhas):
@@ -22,7 +26,7 @@ class MapaQuadrado:
         return mapa
 
     @property
-    def mapa(self) -> List[List[Celula]]:
+    def mapa(self) -> list[list[Celula]]:
         return self._mapa
 
     @property
@@ -60,7 +64,7 @@ class MapaQuadrado:
             celula = self.obter_celula(bx, by)
             if celula:
                 celula.adicionar_bomba(Bomba(id=i, status=False, sprite=0))
-        
+
         # Após distribuir, atualiza os valores de vizinhança
         self.contar_bombas_vizinhas()
 
@@ -83,11 +87,11 @@ class MapaQuadrado:
                         for dx in [-1, 0, 1]:
                             if dx == 0 and dy == 0:
                                 continue
-                            
+
                             vizinha = self.obter_celula(x + dx, y + dy)
                             if vizinha and vizinha.obter_entidade(Bomba):
                                 bombas += 1
-                    
+
                     celula.valor = bombas
 
     def revelar(self, x: int, y: int) -> bool:
@@ -97,16 +101,16 @@ class MapaQuadrado:
         Retorna True se a célula revelada contiver uma bomba.
         """
         celula = self.obter_celula(x, y)
-        
+
         if not celula or not celula.status:
             return False
-            
-        celula.cavar() # Define status como False
-        
+
+        celula.cavar()  # Define status como False
+
         # Se encontrou uma bomba, retorna True
         if celula.obter_entidade(Bomba):
             return True
-            
+
         # Se for uma célula vazia (valor 0), revela vizinhos recursivamente
         if celula.valor == 0:
             for dy in [-1, 0, 1]:
@@ -114,7 +118,7 @@ class MapaQuadrado:
                     if dx == 0 and dy == 0:
                         continue
                     self.revelar(x + dx, y + dy)
-        
+
         return False
 
     def __str__(self) -> str:

@@ -28,7 +28,7 @@ test *args: sync
 
 # Executa a janela principal do jogo
 run: sync
-    uv run python -m projeto_2.view.janela
+    uv run python -m projeto_2.app
 
 # Remove artefatos de build e cache
 clean: sync
