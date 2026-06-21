@@ -1,6 +1,8 @@
 import json
 import os
+
 from .base import RepositorioRanking
+
 
 class RepositorioRankingJSON(RepositorioRanking):
     """Implementação concreta que gerencia o Ranking usando um arquivo JSON."""
@@ -17,25 +19,25 @@ class RepositorioRankingJSON(RepositorioRanking):
 
     def listar_melhores(self, dificuldade: str) -> list[dict]:
         """Lê o JSON, filtra pela dificuldade e ordena do menor tempo para o maior."""
-        with open(self.caminho_arquivo, "r", encoding="utf-8") as f:
+        with open(self.caminho_arquivo, encoding="utf-8") as f:
             dados = json.load(f)
-        
+
         # Filtrar e Ordenar
         filtrados = [p for p in dados if p["dificuldade"] == dificuldade]
         ranking_ordenado = sorted(filtrados, key=lambda x: x["tempo_segundos"])
-        
+
         # Retorna apenas os 10 melhores tempos
         return ranking_ordenado[:10]
 
     def salvar_pontuacao(self, nome: str, tempo: int, dificuldade: str) -> None:
         """Adiciona um novo recorde e salva no arquivo JSON."""
-        with open(self.caminho_arquivo, "r", encoding="utf-8") as f:
+        with open(self.caminho_arquivo, encoding="utf-8") as f:
             dados = json.load(f)
 
         novo_registro = {
             "nome_jogador": nome,
             "tempo_segundos": tempo,
-            "dificuldade": dificuldade 
+            "dificuldade": dificuldade,
         }
         dados.append(novo_registro)
 

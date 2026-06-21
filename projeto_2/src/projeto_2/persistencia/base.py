@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class RepositorioRanking(ABC):
     """Classe Abstrata (Interface) que define o contrato do Ranking do jogo."""
 
