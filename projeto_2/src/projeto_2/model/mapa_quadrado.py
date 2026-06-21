@@ -2,9 +2,10 @@ import random
 
 from .bomba import Bomba
 from .celula import Celula
+from .mapa import Mapa
 
 
-class MapaQuadrado:
+class MapaQuadrado(Mapa):
     def __init__(self, colunas: int, linhas: int):
         self._colunas = colunas
         self._linhas = linhas
