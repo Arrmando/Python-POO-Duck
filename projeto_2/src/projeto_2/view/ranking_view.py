@@ -43,7 +43,7 @@ class GameRankingView:
             texto_sub, (self.largura // 2 - texto_sub.get_width() // 2, 90)
         )
 
-        # 3. Busca os 10 melhores tempos do seu arquivo JSON
+        # 3. Busca os 10 melhores tempos do arquivo JSON
         melhores = self.repo.listar_melhores(dificuldade_atual)
 
         posicao_y = 160
