@@ -1,4 +1,5 @@
 from projeto_2.controller.handle_mapa_events import HandleMapa
+
 from projeto_2.model.bomba import Bomba
 from projeto_2.model.mapa_quadrado import MapaQuadrado
 
