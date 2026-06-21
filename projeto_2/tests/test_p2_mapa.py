@@ -1,6 +1,12 @@
 from projeto_2.model.bomba import Bomba
 from projeto_2.model.celula import Celula
 from projeto_2.model.mapa_quadrado import MapaQuadrado
+from projeto_2.model.mapa import Mapa
+
+
+def test_mapa_quadrado_subclasse_de_mapa():
+    """Garante que MapaQuadrado herda da classe abstrata Mapa."""
+    assert issubclass(MapaQuadrado, Mapa)
 
 
 def test_mapa_quadrado_geracao_dimensoes():
